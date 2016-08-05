@@ -19,6 +19,9 @@
   <warp10-display-gauge 
     data="[[data]]" 
     label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
     description="[[description]]"></warp10-display-gauge>
 </template>
 <script>
@@ -33,7 +36,10 @@
         secondaryColor: "#B7E1CD",
       } 
       template.label = "A nice gauge";
-      template.description = "This is an example gauge"
+      template.tile = "normal";
+      template.fgColor = "white";
+      template.bgColor = "orange";
+      template.description = "This is an example gauge";
 </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </body>

@@ -20,6 +20,8 @@
     data="[[data]]" 
     label="[[label]]"
     tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
     description="[[description]]"></warp10-display-sparkline>
 </template>
 <script>
@@ -28,8 +30,10 @@
       template.data = [{"gts":[{"c":"hbase.puts","l":{},"a":{},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"params":[{"key":"base.puts{}","color":"#0795ff", "strokeWidth":3}],"globalParams":{"interpolate":"linear"}}];
 
       template.label = "A nice sparkline";
-      template.description = "This is an example sparkline"
-      template.tile = "large"
+      template.tile = "large";
+      template.fgColor = "white";
+      template.bgColor = "orange";
+      template.description = "This is an example sparkline";
 
 </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>

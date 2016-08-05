@@ -19,15 +19,21 @@
   <warp10-display-num 
     data="[[data]]" 
     label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
     description="[[description]]"></warp10-display-num>
 </template>
 <script>
       var template = document.querySelector('#template');
 
       template.data = 42;
-      
+
       template.label = "A nice num";
-      template.description = "This is an example num"
+      template.tile = "normal";
+      template.fgColor = "white";
+      template.bgColor = "orange";
+      template.description = "This is an example num";
 </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </body>
