@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Display gauge test</title>
+
+<style>
+
+</style>
+<script src=" ../webcomponentsjs/webcomponents-lite.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+
+<link   rel="import" href=" ../warp10-dashboard-elements/warp10-display-gauge.html">
+</head>
+<body>
+
+<template is="dom-bind" id="template">
+  <warp10-display-gauge 
+    data="[[data]]" 
+    label="[[label]]"
+    description="[[description]]"></warp10-display-gauge>
+</template>
+<script>
+      var template = document.querySelector('#template');
+
+      template.data = {
+        value: 42,
+        secondaryValue: 0,
+        max: 100,
+        min: 0,
+        color: "#0F9D58",
+        secondaryColor: "#B7E1CD",
+      } 
+      template.label = "A nice gauge";
+      template.description = "This is an example gauge"
+</script>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

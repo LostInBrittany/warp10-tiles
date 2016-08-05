@@ -1,0 +1,48 @@
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-img">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <warp10-dashboard-tile 
+      tile="{{tile}}"  width="{{width}}" height="{{height}}"
+      bg-color="{{bgColor}}" fg-color="{{fgColor}}"
+    >
+      <div class="card-content">
+        <div class="main-content"> 
+          <img src="{{data}}">
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-img",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      // Properties
+      properties: {
+        /**
+         * The value to display
+         */
+        data: {
+          type: String,
+          value: ""
+        },
+      },
+      
+      // Lifecycle methods
+      attached: function() {     
+        this._isAttached = true;        
+      },
+      
+    });
+  </script>
+</dom-module>

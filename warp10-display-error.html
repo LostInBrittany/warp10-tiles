@@ -1,0 +1,49 @@
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-error">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+
+      .error {
+        font-size: 1.5em;
+        text-align: center;
+      }
+    </style>
+    <warp10-dashboard-tile 
+      tile="{{tile}}" width="{{width}}" height="{{height}}"
+      bg-color="{{bgColor}}" fg-color="{{fgColor}}"
+    >
+      <div class="card-content">
+        <div class="main-content">        
+          <div class="error">[[data]]</div>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-error",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {        
+    
+        /**
+         * The data to display
+         */
+        data: {
+          type: String,
+          value: ''
+        },        
+      },
+    });
+  </script>
+</dom-module>

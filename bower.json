@@ -1,0 +1,37 @@
+{
+  "name": "warp10-dashboard-elements",
+  "authors": [
+    "Horacio Gonzalez <horacio.gonzalez@gmail.com>",
+    "Aurelien Hébert <aurelien.hebert@cityzendata.com"
+  ],
+  "description": "Warp10's dashboard elements",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "template"
+  ],
+  "main": "warp10-dashboard-elements.html",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "homepage": "https://www.warp10.io",
+  "ignore": [
+    "/.*"
+  ],
+  "dependencies": {
+    "polymer": "~1.5.0",
+    "warp10-iron": "cityzendata/warp10-iron#1.1.0-rc1",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.2.0-rc1",
+    "font-roboto": "PolymerElements/font-roboto#^1.0.1",
+    "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
+    "paper-progress": "PolymerElements/paper-progress#^1.0.9",
+    "iron-meta": "PolymerElements/iron-meta#^1.1.1"
+  },
+  "resolutions": {
+    "polymer": "~1.5.0"
+  }
+}

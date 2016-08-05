@@ -1,0 +1,60 @@
+<dom-module is="warp10-dashboard-tile-dimensions">
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-dashboard-tile-dimensions",
+      properties: {
+        tile:{
+          type: String,
+          value: '',
+        },
+        width: {
+          type: Number,
+          computed: '_getWidth(tile, _palette)',
+          notify: true
+        },
+        height: {
+          type: Number,
+          computed: '_getHeight(tile, _palette)',
+          notify: true
+        },
+        _palette: {
+          type: Object,
+          value: { 
+            'small': { width: 70, height: 70 }, 
+            '': { width: 150, height: 150 }, 
+            'normal': { width: 150, height: 150 },
+            'square': { width: 150, height: 150 },
+            'wide': { width: 310, height: 150 },
+            'tall': { width: 150, height: 310 },
+            'large': { width: 310, height: 310 },
+            'big': { width: 470, height: 470 },
+            'super': { width: 470, height: 470 }   
+          } 
+        },              
+      },  
+      attached: function(){
+        // console.debug("[warp10-dashboard-tile-dimensions] attached", {tile: this.tile, width: this.width, height: this.height, usefulWidth: this.usefulWidth, usefulHeight: this.usefulHeight });
+        this.isAttached = true;
+        
+      },
+      _getWidth: function() {
+        if (this._palette[this.tile] === undefined) {
+          return this._palette[''].width;
+        }        
+        // console.debug("[warp10-dashboard-tile-dimensions] _getWidth", this._palette[this.tile].width);
+        return this._palette[this.tile].width;
+      },      
+      _getHeight: function() {
+        if (this._palette[this.tile] === undefined) {
+          return this._palette[''].height;
+        }
+        // console.debug("[warp10-dashboard-tile-dimensions] _getHeight", this._palette[this.tile].height);
+        return this._palette[this.tile].height;
+      },   
+    });
+  </script>
+</dom-module> 
+      
+
+

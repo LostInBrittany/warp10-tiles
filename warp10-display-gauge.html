@@ -1,0 +1,174 @@
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-gauge">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+
+      paper-progress {
+      --paper-progress-active-color: var(--color);
+      --paper-progress-secondary-color: var(--sndcolor);
+      --paper-progress-height: var(--height);
+      width: var(--width);
+      height: var(--height);
+    }
+
+    .value {
+      font-size: 1.5em;
+      /*
+      margin-top: var(--margin);
+      margin-bottom: var(--margin);
+      margin-left: 10px;
+      margin-right: 10px;
+      */
+    }
+
+
+    </style>
+    <warp10-dashboard-tile id='tile'
+      tile="{{tile}}"  width="{{width}}" height="{{height}}"
+      bg-color="{{bgColor}}" fg-color="{{fgColor}}" description="[[description]]"
+    >
+      <div class="card-content">
+        <div class="main-content">  
+
+          <div class="value" id="content">{{_stringValue}}</div>
+
+          <paper-progress id="progress" value="{{data.value}}" secondary-progress="{{data.secondaryValue}}" 
+              min="{{data.min}}" max="{{data.max}}">
+          </paper-progress>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>      
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-gauge",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+
+      // Properties
+      properties: {
+        
+        /**
+         * The value to display
+         */
+        data: {
+          type: Object,
+          value: function(){
+            return {
+              value: 0,
+              secondaryValue: 0,
+              max: 100,
+              min: 0,
+              color: "#0F9D58",
+              secondaryColor: "#B7E1CD"
+            };
+          }
+        },
+      /**
+         *
+      */
+        _stringValue: {
+          type: String,
+          computed: "_getValueString(data.value)"
+        },
+
+        /**
+        *
+        */
+        _isAttached: {
+          type: Boolean,
+          value: false
+        },       
+
+      },
+      
+      // Observers
+      observers: [
+        '_colorChanged(data.color)',
+        '_secondaryColorChanged(data.secondaryColor)',
+      ],
+      
+      // Lifecycle methods
+      attached: function() {     
+        this._isAttached = true;  
+        this._initializeTile();
+      },
+
+      // Observers
+      _colorChanged: function() {
+        if (!this.isAttached) {
+          return;
+        }        
+        this.customStyle['--color'] = this.gaugeColor;   
+      },
+      _secondaryColorChanged: function() {
+        if (!this.isAttached) {
+          return;
+        }         
+        this.customStyle['--sndcolor'] = this.sndGaugeColor;
+      },
+
+      _getValueString: function() {
+          return this.data.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+       },
+      
+      // Other methods
+      _initializeTile: function(){
+        progressWidth = 120;
+        progressHeight = 8;
+        this.customStyle['--color'] = this.gaugeColor;
+        this.customStyle['--sndcolor'] = this.sndGaugeColor;
+        
+        
+        console.debug("[warp10-display-gauge] _initialize - width: "+ this.width+" and usefulWidth: "+ this.usefulWidth);
+        console.debug("[warp10-display-gauge] _initialize - height: "+ this.height+" and usefulHeight: "+ this.usefulHeight);
+        
+        if(this.usefulWidth > 200 || this.usefulHeight > 200) {
+          progressHeight = 12;
+        }
+
+        if(this.usefulWidth > 260) {
+          progressWidth = this.usefulWidth - 40;
+        }
+
+        if(this.usefulWidth > 260 && this.usefulHeight > 260) {
+          progressHeight = 30;
+        }
+
+        this.customStyle['--height'] = progressHeight.toString() + "px";
+        this.customStyle['--width'] = progressWidth.toString() + "px";
+
+        this.style.positon = "relative";
+        this.$.content.style.position = "absolute";
+        var valueWidth = this.$.content.getBoundingClientRect().width;
+        var valueHeight = this.$.content.getBoundingClientRect().height;
+        var widthSize = (this.width - valueWidth) / 2;
+        this.$.content.style.left = widthSize.toString() + "px";
+
+        this.$.progress.style.position = "absolute";
+        //var progressWidth = this.$.progress.getBoundingClientRect().width;
+        //var progressHeight = this.$.progress.getBoundingClientRect().height;
+        widthSize = (this.width - progressWidth) / 2;
+        this.$.progress.style.left = widthSize.toString() + "px";
+
+        var largHeight = this.usefulHeight - valueHeight - progressHeight;
+        var topValue = largHeight / 3;
+        var topProgress = 2 * topValue + valueHeight;
+
+        this.$.content.style.top = topValue.toString() + "px";
+        this.$.progress.style.top = topProgress.toString() + "px";
+        this.updateStyles();
+      },
+      
+    });
+  </script>
+</dom-module>

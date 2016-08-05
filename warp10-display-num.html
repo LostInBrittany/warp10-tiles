@@ -1,0 +1,59 @@
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-num">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <warp10-dashboard-tile 
+      tile="{{tile}}" width="{{width}}" height="{{height}}"
+      bg-color="{{bgColor}}" fg-color="{{fgColor}}" description="[[description]]"
+    >
+      <div class="card-content">
+        <div class="main-content">        
+          <div class="value">[[_stringValue]]</div>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-num",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {        
+          
+            
+        /**
+         * The data to display
+         */
+        data: {
+          type: Number,
+          value: 0
+        },
+        
+        /**
+         *
+         */
+        _stringValue: {
+          type: String,
+          computed: "_getValueString(data)"
+        },
+      },
+      
+      // Computed properties' methods
+      _getValueString: function() {
+          return this.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      },
+      
+    });
+  </script>
+</dom-module>

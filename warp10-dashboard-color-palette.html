@@ -1,0 +1,34 @@
+<dom-module is="warp10-dashboard-color-palette">
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-dashboard-color-palette",
+      properties: {
+        color:{
+          type: String,
+          value: 'transparent'
+        },
+        hex: {
+          type: String,
+          computed: '_getHexCode(color, _palette)',
+          notify: true
+        },
+        _palette: {
+          type: Object,
+          value: { transparent: 'transparent', black: '#000000', white: '#ffffff', lime: '#a4c400', green: '#60a917', emerald: '#008a00', blue: '#00AFF0', teal: '#00aba9', cyan: '#1ba1e2', cobalt: '#0050ef', indigo: '#6a00ff', violet: '#aa00ff', pink: '#dc4fad', magenta: '#d80073', crimson: '#a20025', red: '#CE352C', orange: '#fa6800', amber: '#f0a30a', yellow: '#e3c800', brown: '#825a2c', olive: '#6d8764', steel: '#647687', mauve: '#76608a', taupe: '#87794e', dark: '#1d1d1d', darkBrown: '#63362F', darkCrimson: '#640024', darkMagenta: '#81003C', darkIndigo: '#4B0096', darkCyan: '#1B6EAE', darkCobalt: '#00356A', darkTeal: '#004050', darkEmerald: '#003e00', darkGreen: '#128023', darkOrange: '#bf5a15', darkRed: '#9a1616', darkPink: '#9a165a', darkViolet: '#57169a', darkBlue: '#16499a', lightBlue: '#4390df', lighterBlue: '#00CCFF', lightTeal: '#45fffd', lightOlive: '#78aa1c', lightOrange: '#ffc194', lightPink: '#f472d0', lightRed: ' #da5a53', lightGreen: '#7ad61d', lightCyan: '#59cde2', grayed: '#585858', grayDarker: '#222222', darker: '#222222', grayDark: '#333333', gray: '#555555', grayLight: '#999999', grayLighter: '#eeeeee', darkGray: '#333333', darkerGray: '#222222', lightGray: '#999999', lighterGray: '#eeeeee' } 
+        },              
+      },  
+      attached: function(){
+        // console.debug("[warp10-dashboard-color-palette] attached", this.color);
+        this.isAttached = true;
+      },
+      _getHexCode: function() {
+        // console.debug("[warp10-dashboard-color-palette] _getHexCode", this.color);
+        return this._palette[this.color];
+      },      
+    });
+  </script>
+</dom-module> 
+      
+
+

@@ -1,0 +1,178 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile-dimensions.html">
+
+
+<dom-module is="warp10-dashboard-tile">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        position: relative;
+        display: inline-block;
+      }
+      .description {
+        position: absolute;
+        top: 0; 
+        left: 0;
+        width: 100%;  
+        height: 100%;
+        background-color: rgba(128,128,128,0.8);   
+        display: flex;
+        flex-flow: column;
+        justify-content: space-around;
+      }
+      
+      .description[hidden] {
+        display: none;
+      }
+      .description-text {         
+        text-align: center;    
+      }
+      .description-open, 
+      .description-close {
+        position: absolute;
+        top:0;
+        right:0;
+        height: 17px;
+        padding: 5px;   
+        font-weight: bolder;     
+      } 
+      .description-open::before {
+        content: " ";
+      }      
+      .description-open.mouse_in::before {
+        content: "?";
+      }
+      .description-close::before {
+        content: "X";        
+      }
+    </style>
+  
+
+    <warp10-dashboard-tile-dimensions tile="{{tile}}" height="{{height}}" width="{{width}}">
+    </warp10-dashboard-tile-dimensions>
+    
+    <div id='tile' class$="tile {{_tileType}} {{_bgColor}} {{_fgColor}}"  on-mouseenter="_mouseEntered" on-mouseleave="_mouseLeft" >
+      
+      <div class="tile-main">
+        <div class$="description-open {{_mouseIn}}" on-click="_openDescription"  on-mouseenter="_initOpenDescription" on-mouseleave="_cancelOpenDescription"></div>
+        <div class="tile-content">
+          <content></content>
+        </div>
+      </div>
+      <div class="description" hidden="{{_hideDescription}}" on-mouseleave="_initCloseDescription" on-mouseenter="_cancelCloseDescription" >
+        <div class="description-close" on-click="_closeDescription"></div>
+        <div class="description-text">
+          {{description}}
+        </div>
+      </div>
+    </div>  
+    
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-dashboard-tile",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {
+        
+        /**
+         * The tile type. 
+         * Allowed values are listed on `_tilePalette`
+         */
+        tile: {
+          type: String,
+          value: '',
+          observer: "_tileChanged"
+            
+        },           
+        _hideDescription: {
+          type: Boolean,
+          value: true     
+        },
+        _tileType:{ 
+          type: String,
+          computed: "_getTileType(tile)"
+        },
+        
+        _hoverDelay:{
+          type: Number,
+          value: 500
+        },
+        _mouseIn: {
+          type: String,
+          value: ''
+        }
+        
+        
+      },      
+      
+      // Lifecycle methods
+      ready: function() {     
+        this._isAttached = true;
+        this._initialize(); 
+      },
+      
+      // Observers
+      _tileChanged: function(){
+        if (!this.isAttached) {
+          return;
+        }        
+        if (this._tilePalette.indexOf(this.tile) < 0){
+          this.tile = '';          
+        }
+      },
+      _getTileType: function() {
+        return 'tile-'+this.tile;
+      },
+      
+      // Other methods
+      _initialize: function(){
+        this._bgColorChanged();
+        this._fgColorChanged();
+        this._tileChanged();
+      },
+      
+      _mouseEntered: function() {
+        console.debug("[warp10-dashboard-tile] _mouseEntered");
+        this._mouseIn = 'mouse_in';
+      },
+      _mouseLeft: function() {
+        this._mouseIn = '';
+      },
+      
+      _openDescription: function() {
+        // console.debug("[warp10-dashboard-tile] _openDescription");
+        this._hideDescription = false;
+      },
+      _initOpenDescription: function(){
+        console.debug("[warp10-dashboard-tile] _initOpenDescription");
+        this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
+      },
+      _cancelOpenDescription: function(){
+        this._mouseIn = '';
+        // console.debug("[warp10-dashboard-tile] _cancelOpenDescription");
+        clearTimeout(this.openTimeout);
+      },
+      
+      _closeDescription: function() {
+         // console.debug("[warp10-dashboard-tile] _closeDescription");
+        this._hideDescription = true;
+      },      
+      _initCloseDescription: function(){
+        this.closeTimeout = setTimeout(this._closeDescription.bind(this), this._hoverDelay);
+      },   
+      _cancelCloseDescription: function(){
+        clearTimeout(this.closeTimeout);
+      },
+    });
+  </script>
+</dom-module>
+    
+      
+       

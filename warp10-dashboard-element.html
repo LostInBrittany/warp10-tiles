@@ -1,0 +1,442 @@
+<link   rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-behavior.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-tile-dimensions.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-dashboard-color-palette.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-num.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-gauge.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-map-elems.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-sparkline.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-img.html">
+<link rel="import" href="../warp10-dashboard-elements/warp10-display-error.html">
+
+<dom-module is="warp10-dashboard-element">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>   
+    
+    <warp10-warpscript-caller
+      id="warpscriptcaller"
+      url="{{warpscriptBaseUrl}}" warpscript="{{warpscriptScript}}"
+      on-response="_handleResponse"  on-error="_handleError" reload="{{warpscriptReload}}"
+      loading="{{loading}}" header-name="CityzenData">
+    </warp10-warpscript-caller>
+    
+    <warp10-dashboard-tile-dimensions 
+      tile="{{tile}}" height="{{height}}" width="{{width}}"
+    >
+    </warp10-dashboard-tile-dimensions>
+    
+    <warp10-dashboard-color-palette color="{{fgColor}}" hex="{{_hexFgColor}}">
+    </warp10-dashboard-color-palette>
+    
+    <warp10-dashboard-color-palette color="{{bgColor}}" hex="{{_hexBgColor}}">
+    </warp10-dashboard-color-palette>  
+    
+    <template is="dom-if" if="{{_resultIsANumber}}">
+      <warp10-display-num 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        data="{{_response.data}}" label="{{_response.label}}"
+        description="{{_response.description}}" >
+    </warp10-display-num>
+    </template>
+
+    <template is="dom-if" if="{{_resultIsAGauge}}">
+      <warp10-display-gauge
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}"
+        data="{{ _response.data}}" label="{{_response.label}}"
+        description="{{_response.description}}" >
+    </warp10-display-gauge>
+    </template>
+
+    <template is="dom-if" if="{{_resultIsAMap}}">
+      <warp10-display-map-elems 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        data="{{_response.data}}" label="{{_response.label}}"
+        description="{{_response.description}}" >
+    </warp10-display-map-elems>
+    </template>
+
+    <template is="dom-if" if="{{_resultIsAnImg}}">
+      <warp10-display-img 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        data="{{_response.data}}" label="{{_response.label}}"
+        description="{{_response.description}}" >
+    </warp10-display-img>
+    </template>
+
+    <template is="dom-if" if="{{_resultIsAnError}}">
+      <warp10-display-error 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        data="{{_response.data}}" label="{{_response.label}}" 
+        description="{{_response.description}}" >
+    </warp10-display-error>
+    </template>
+
+    <template is="dom-if" if="{{_resultIsAChart}}">
+      <warp10-display-sparkline 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        label="{{_response.label}}" data="{{_response.data}}"
+        description="{{_response.description}}" >
+      </warp10-display-sparkline>
+    </template>
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-dashboard-element",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {        
+        /**
+         * If true, widget is in WarpScript mode
+         */
+        _warpscript: {
+          type: Boolean,
+          computed: "_isWarpscriptMode(warpscriptScript)" 
+        },
+
+        /**
+         * The WarpScript script to execute
+         */
+        warpscriptScript: {
+          type: String,
+          value: ""
+        },
+        
+        /**
+         * A value of `reload > 0` it's 
+         * the number of seconds between two calls
+         * to the WarpScript server
+         */
+        warpscriptReload: {
+          type: Number,
+          value: -1
+        },
+
+        /**
+         * Base URL of WarpScript platform
+         */
+        warpscriptBaseUrl: {
+          type: String,
+          value: ""
+        },
+
+        /**
+         * The response of the Warp 10 server
+         */
+        warpscriptResponse: {
+          type: Array,
+          value: function() { return []; }
+        },
+        
+        _dimensionsReady: {
+          type: Boolean,
+          value: false,
+          computed: "_areDimensionsReady(width, height)"
+        },
+        
+        _hexBgColor: {
+          type: String,
+          value: "transparent",
+        },
+        _hexFgColor: {
+          type: String,
+          value: "transparent",
+        },
+        
+        _resultType: {
+          type: String,
+          computed: "_getResultType(warpscriptResponse)"
+        },
+        
+        _resultIsANumber: {
+          type: Boolean,
+          computed: "_isResultANumber(_resultType)",
+        },
+
+        _resultIsAGauge: {
+          type: Boolean,
+          computed: "_isResultAGauge(_resultType)",
+        },
+
+        _resultIsAMap: {
+          type: Boolean,
+          computed: "_isResultAMap(_resultType)",
+        },
+
+        _resultIsAnImg: {
+          type: Boolean,
+          computed: "_isResultAnImg(_resultType)",
+        },
+
+        _resultIsAChart: {
+          type: Boolean,
+          computed: "_isResultAChart(_resultType)",
+        },
+
+        _resultIsAnError: {
+          type: Boolean,
+          computed: "_isResultAnError(_resultType)",
+        },
+
+        _response: {
+          type: Object,
+          value: function() { return []; }       
+        },
+        
+        _isAttached: {
+          type: Boolean,
+          value: false
+        }
+      },
+      
+      // Observers
+      observers: [
+        '_paramsChanged(warpscriptScript, warpscriptReload, warpscriptBaseUrl,' + 
+                      'width, height, bgColor, fgColor, label, tile, _isAttached)'
+      ],
+      
+      
+      // Lifecycle methods
+      attached: function() {   
+        this._initializeWarpscript();
+        // console.debug("[warp10-dashboard-element] attached + desc: ", this.description);  
+        this._isAttached = true;
+      },
+      
+      dettached: function() {
+        this._isAttached = false;
+      },
+
+      
+      // Observers      
+      _paramsChanged: function () {
+        if (!this._isAttached || !this._isWarpscriptMode() ) {
+          return false;
+        }
+        
+        // console.debug("[warp10-dashboard-element] _paramsChanged called",  {tile:this.tile, width: this.width, height: this.height,  usefulWidth: this.usefulWidth, usefulHeight: this.usefulHeight, _dimensionsReady: this._dimensionsReady});  
+        if (this._dimensionsReady ) {
+          // console.debug("[warp10-dashboard-element] _paramsChanged generateRequest"); 
+          this.$.warpscriptcaller.generateRequest();          
+        }
+        
+      },
+
+      _handleResponse: function(event, response){     
+        if (!response.stack ||
+          !response.stack instanceof Array ) {
+          this.data = null;
+          return;
+        }        
+        
+        if (!this._isValidResponse(response.stack)) {
+           return null;
+        }
+        this.warpscriptResponse = response.stack;
+
+
+        // console.debug("[warp10-dashboard-element] _receivedResponse from event", {event: event, response: response});
+
+        var params = this.warpscriptResponse[0].params;
+        if (params.tile === undefined) {
+          params.tile = this.tile;
+        } 
+        if (params.fgColor === undefined) {
+          params.fgColor = this.fgColor;
+        } 
+        if (params.bgColor === undefined) {
+          params.bgColor = this.bgColor;
+        } 
+        if (params.label === undefined) {
+          params.label = this.label;
+        } 
+        
+        if ("gauge" == this._resultType) {  
+          this._defaultParamsFromGauge(params)
+        }        
+        
+        this._response = params;
+      },
+       
+      _handleError: function(event, error) {
+        
+      }, 
+      
+      _defaultParamsFromGauge: function(params) {
+        if (params.data === undefined) {
+          params.data = {};
+        }
+        if (params.data.min === undefined) {
+          params.data.min = 0;
+        } 
+        if (params.data.max === undefined) {
+          params.data.max = 100;
+        }  
+        if (params.data.secondaryValue === undefined) {
+          params.data.secondaryValue = 0;
+        } 
+        if (params.data.color === undefined) {
+          params.data.color = "#0F9D58";
+        } 
+        if (params.data.secondaryColor === undefined) {
+          params.data.secondaryColor = "#B7E1CD";
+        }         
+        console.debug("[warp10-dashboard-element] _defaultParamsFromGauge", params);
+      },
+      
+      // Computed properties' methods
+      _areDimensionsReady: function() {
+        if (this.width === undefined || this.height === undefined 
+            || this.width == 0 || this.height == 0  
+            || this.usefulWidth === undefined || this.usefulHeight === undefined 
+            || this.usefulWidth == 0 || this.usefulHeight == 0) {
+          return false;
+        }
+        return true;
+      },
+      _getBgColor: function() {
+        return 'bg-'+this.bgColor;
+      },
+      _getFgColor: function() {
+        return 'fg-'+this.fgColor;
+      },
+      _isWarpscriptMode: function() {
+        if (this.warpscriptScript != '') {                   
+          return true;
+        }
+        return false;
+      },      
+      _isResultAValidResponse: function() {
+        return this._isValidResponse(this.warpscriptResponse);
+      },
+      _isValidResponse: function(response){
+        // console.debug("[warp10-dashboard-element] _isValidResponse - eval",  response);
+        if (response.length != 1) {
+          // console.debug("[warp10-dashboard-element] _isValidResponse - response.length != 1");  
+          return false;
+        }
+        if (typeof response[0] !== "object" ) {
+          // console.debug("[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object");  
+          return false;          
+        }
+        if (! "type" in response[0] || ! "params" in response[0] ){
+          // console.debug("[warp10-dashboard-element] _isValidResponse - 'type' and/or 'params' not in wresponse[0]");  
+          return false;          
+        }
+        if (typeof response[0].params !== "object") {
+          // console.debug("[warp10-dashboard-element] _isValidResponse - 'params' not !== object"");  
+          return false;  
+        }
+        return true;
+      },
+      
+      _getResultType: function() {
+        
+        if (!this._isResultAValidResponse()) {
+           return null;
+        }
+        
+        if ( this.warpscriptResponse[0].type == "number") {
+           //console.debug("[warp10-dashboard-element] _getResultType - number");
+           return "number"  
+        }
+        
+        if ( this.warpscriptResponse[0].type == "gauge") {
+           //console.debug("[warp10-dashboard-element] _getResultType - gauge");
+           return "gauge"  
+        }
+        
+        if ( this.warpscriptResponse[0].type == "map" ) {
+           //console.debug("[warp10-dashboard-element] _getResultType - map");
+           return "map"  
+        }
+         
+        if ( this.warpscriptResponse[0].type == "img") {
+           //console.debug("[warp10-dashboard-element] _getResultType - img");
+           return "img"  
+        }
+                    
+        if ( this.warpscriptResponse[0].type == "chart") {
+           //console.debug("[warp10-dashboard-element] _getResultType - chart");
+           return "chart"  
+        }  
+
+        if ( this.warpscriptResponse[0].type == "error") {
+           //console.debug("[warp10-dashboard-element] _getResultType - error");
+           return "error"  
+        }
+             
+      },
+
+      _isResultANumber: function() {
+        return ("number" == this._resultType);
+      },
+      
+      _isResultAGauge: function() {
+        return ("gauge" == this._resultType);
+      },
+
+      _isResultAMap: function() {
+        return ("map" == this._resultType);
+      },
+
+      _isResultAnImg: function() {
+        return ("img" == this._resultType);
+      },
+
+      _isResultAChart: function() {
+        return ("chart" == this._resultType);
+      },
+
+      _isResultAnError: function() {
+        return ("error" == this._resultType);
+      },
+
+      
+      // Other methods
+      _initializeWarpscript: function(){
+        // Trying to get content as HTML content
+        var htmlContent = Polymer.dom(this).innerHTML.trim();          
+        // If we have a value in the `warpscript` attribute, we keep it, else we use the HTML content        
+        
+        // console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
+        if (this.warpscriptScript == "") {
+          this.warpscriptScript = htmlContent;
+        }
+         
+        this.warpscriptScript = this._storeParams() + this.warpscriptScript;
+        
+        // console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", {warpscriptScript: this.warpscriptScript, htmlContent:htmlContent} );
+       
+      },
+
+      _storeParams: function(){
+        var str = 
+          "'"+this.tile + "' 'tile' STORE \n" +
+          "'"+ this.label + "' 'label' STORE \n" +
+          "'"+ this.description + "' 'description' STORE \n" +
+          ""+ this.usefulWidth + " 'width' STORE \n" +
+          ""+ this.usefulHeight + " 'height' STORE \n" +
+          "'"+this.fgColor + "' 'fgColor' STORE \n" +
+          "'"+this.bgColor + "' 'bgColor' STORE \n" +
+          "'"+this._hexFgColor + "' 'hexFgColor' STORE \n" +
+          "'"+this._hexBgColor + "' 'hexBgColor' STORE \n" 
+        return str  
+      },
+      
+    });
+  </script>
+</dom-module>      
