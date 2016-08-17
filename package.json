@@ -1,6 +1,6 @@
 {
-  "name": "warp10-dashboard-elements",
-  "description": "Elements for Warp10 dashboards",
+  "name": "warp10-tiles",
+  "description": "Warp10's metric displaying tiles",
   "repository": "none",
   "author": { 
     "name": "Horacio Gonzalez",
@@ -25,7 +25,7 @@
     "serve": "./node_modules/.bin/live-server --host=localhost --port=8080 .",
     "go": "concurrent \"npm run tsc:w\" \"npm run serve\" "
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "es6-promise": "3.1.2",
     "es6-shim": "0.35.0",
