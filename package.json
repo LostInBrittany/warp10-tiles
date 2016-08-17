@@ -19,7 +19,7 @@
     "less": "npm-run-all lessDashboardTileCSS",
     "wrapDashboardTileElement": "node src/css2polymerStyleModule.js ./css/warp10-dashboard-styles.css .",
     "wrapElements": "npm-run-all wrapDashboardTileElement",
-    "generateElements": "npm-run-all less wrapElements",
+    "generateElements": "npm-run-all --sequential less wrapElements",
     "tsc": "./node_modules/.bin/tsc",
     "tsc:w": "./node_modules/.bin/tsc -w",
     "serve": "./node_modules/.bin/live-server --host=localhost --port=8080 .",
