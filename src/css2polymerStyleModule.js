@@ -1,3 +1,8 @@
+/**
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+*/
 var  fs = require('fs-extra');
 
 if (process.argv.length < 4) {
