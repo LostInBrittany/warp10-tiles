@@ -15,12 +15,12 @@
       }
     </style>
     <warp10-dashboard-tile 
-      tile="{{tile}}" width="{{width}}" height="{{height}}"
-      bg-color="{{bgColor}}" fg-color="{{fgColor}}" description="[[description]]"
-    >
+        tile="{{tile}}" description="[[description]]"
+        width="{{width}}" height="{{height}}"
+        bg-color="{{bgColor}}" fg-color="{{fgColor}}">
       <div class="card-content">
         <div class="main-content">        
-          <div class="value">[[_stringValue]]</div>
+          <div id="value" class="value">[[_stringValue]]</div>
         </div>
         <div class="label">[[label]]</div>
       </div>     
@@ -50,14 +50,30 @@
          */
         _stringValue: {
           type: String,
-          computed: "_getValueString(data)"
+          computed: "_getValueString(data)",
+          observer: "_textWidth"
         },
+
+        _valueFontSize: {
+          type: Number,
+          value: 1
+        }
       },
       
       // Computed properties' methods
       _getValueString: function() {
           return this.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
       },
+
+      _textWidth: function() {
+        if ( this.$.value.clientWidth >= this.width) {
+          var currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
+          var newFontSize = currentFontSize * 0.9 + "px";
+          this.$.value.style.fontSize = newFontSize;
+          console.debug("[warp10-display-num] _textWidth - value.style", newFontSize);
+          this._textWidth();
+        }
+      }
       
     });
   </script>
