@@ -26,7 +26,8 @@
     tile="[[tile]]"
     fg-color="[[fgColor]]"
     bg-color="[[bgColor]]"
-    description="[[description]]"></warp10-display-sparkline>
+    description="[[description]]"
+    reload="[[reload]]"></warp10-display-sparkline>
 </template>
 <script>
       var template = document.querySelector('#template');
@@ -38,6 +39,7 @@
       template.fgColor = "white";
       template.bgColor = "orange";
       template.description = "This is an example sparkline";
+      template.reload = "10";
 
 </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>

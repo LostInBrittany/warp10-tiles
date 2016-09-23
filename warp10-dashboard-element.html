@@ -216,6 +216,7 @@
       
       // Lifecycle methods
       attached: function() {   
+        // console.debug("[warp10-dashboard-element] attached + desc: ", this.warpscriptScript);
         this._initializeWarpscript();
         // console.debug("[warp10-dashboard-element] attached + desc: ", this.description);  
         this._isAttached = true;
@@ -232,7 +233,7 @@
           return false;
         }
         
-        // console.debug("[warp10-dashboard-element] _paramsChanged called",  {tile:this.tile, width: this.width, height: this.height,  usefulWidth: this.usefulWidth, usefulHeight: this.usefulHeight, _dimensionsReady: this._dimensionsReady});  
+        console.debug("[warp10-dashboard-element] _paramsChanged called",  {tile:this.tile, width: this.width, height: this.height,  usefulWidth: this.usefulWidth, usefulHeight: this.usefulHeight, _dimensionsReady: this._dimensionsReady, warpscriptScript: this.warpscriptScript});  
         if (this._dimensionsReady ) {
           // console.debug("[warp10-dashboard-element] _paramsChanged generateRequest"); 
           this.$.warpscriptcaller.generateRequest();          
@@ -240,7 +241,7 @@
         
       },
 
-      _handleResponse: function(event, response){     
+      _handleResponse: function(event, response){   
         if (!response.stack ||
           !response.stack instanceof Array ) {
           this.data = null;
@@ -253,7 +254,7 @@
         this.warpscriptResponse = response.stack;
 
 
-        // console.debug("[warp10-dashboard-element] _receivedResponse from event", {event: event, response: response});
+        console.debug("[warp10-dashboard-element] _receivedResponse from event", {event: event, response: response});
 
         var params = this.warpscriptResponse[0].params;
         if (params.tile === undefined) {
@@ -274,6 +275,7 @@
         }        
         
         this._response = params;
+        console.debug("[warp10-dashboard-element] _receivedResponse params",  this._response = params);
       },
        
       _handleError: function(event, error) {

@@ -24,8 +24,8 @@
   ],
   "dependencies": {
     "polymer": "^1.6.0",
-    "warp10-iron": "cityzendata/warp10-iron#1.1.0",
-    "warp10-quantumviz": "cityzendata/warp10-quantumviz#~1.2.0",
+    "warp10-iron": "cityzendata/warp10-iron#^1.1.2",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#^1.2.0",
     "font-roboto": "PolymerElements/font-roboto#^1.0.1",
     "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
     "paper-progress": "PolymerElements/paper-progress#^1.0.9",
