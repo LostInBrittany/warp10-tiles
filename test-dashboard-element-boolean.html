@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>Warp10 Dashboard - Display sparkline test</title>
+<title>Warp10 Dashboard - Boolean dashboard element</title>
 
 <style>
 
@@ -19,13 +19,17 @@
 </head>
 <body>
 
-<template is="dom-bind" id="template">
-  <warp10-dashboard-element 
-    warpscript-script="[[warpscript]]"
-    warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
-    warpscript-reload="[[reload]]"></warp10-dashboard-element>
-</template>
-<script>
+  <h2>Warp10 Dashboard - Boolean dashboard element</h2>
+
+  <p>Results are polled every two seconds</p>
+
+  <template is="dom-bind" id="template">
+    <warp10-dashboard-element 
+      warpscript-script="[[warpscript]]"
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      warpscript-reload="[[reload]]"></warp10-dashboard-element>
+  </template>
+  <script>
       var template = document.querySelector('#template');
 
       template.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
@@ -36,7 +40,7 @@
       template.bgColor = "ortange";
       template.description = "This is an example of changing boolean";
 
-</script>
+  </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </body>
 </html>
