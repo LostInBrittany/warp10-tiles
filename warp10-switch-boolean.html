@@ -1,0 +1,176 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+
+<dom-module is="warp10-switch-boolean">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+      .horizontal {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+      .vertical {
+        height: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        @apply(--layout-around-justified);
+      }
+      #booleanIcon {
+        --iron-icon-height: 64px;
+        --iron-icon-width: 64px;
+      }
+      .switchbar iron-icon {
+        --iron-icon-height: 18px;
+        --iron-icon-width: 18px;
+        margin-right: 5px;
+      }
+      #switch {
+        --paper-toggle-button-checked-bar-color: 	#000000;
+        --paper-toggle-button-checked-button-color: var(--paper-grey-50);
+        --paper-toggle-button-checked-ink-color: var(--dark-primary-color);
+
+      }
+    </style>
+
+    <iron-ajax 
+        id="service"
+        url="{{url}}"
+        handle-as="json"
+        method='POST'
+        on-response="_handleServiceResponse"
+        on-error="_handleServiceApiError"
+        debounce-duration="300"></iron-ajax>
+
+    <warp10-dashboard-tile 
+        tile="{{tile}}" description="[[description]]"
+        width="{{width}}" height="{{height}}"
+        bg-color="{{bgColor}}" fg-color="{{fgColor}}">
+      <div class="card-content">
+        <div class="main-content">        
+          <div class="vertical">
+            <div id="value" class="value">
+              <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+            </div>
+            <div class="horizontal switchbar">
+              <iron-icon icon="{{iconForFalse}}"></iron-icon>
+              <paper-toggle-button
+                  id="switch"
+                  on-change="_callService"></paper-toggle-button>
+              <iron-icon icon="{{iconForTrue}}"></iron-icon>
+            </div>
+          </div>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-switch-boolean",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {       
+            
+        /**
+         * The data to display
+         */
+        data: {
+          type: Boolean,
+          value: false
+        },
+        
+        /**
+         * Icon to show when the value est true
+         */
+        iconForTrue: {
+          type: String,
+          value: "check"
+        },
+        /**
+         * Icon to show when the value est true
+         */
+        iconForFalse: {
+          type: String,
+          value: "clear"
+        },
+
+
+        /**
+         * Switch service url
+         */
+        url: {
+          type: String,
+          value: "./service"
+        },
+
+        /**
+         *
+         */
+        _isReady: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         *
+         */
+        _iconName: {
+          type: String,
+          computed: "_getIconName(data, _isReady)"
+        },
+      },
+
+      // Livecycle
+      ready: function() {
+        this._isReady = true;
+      },
+      
+      // Computed properties' methods
+      _getIconName: function() {
+        // console.debug("[warp10-switch-boolean] _getIconName", this.data, this.iconForTrue, this.iconForFalse);
+        if (this.data) {
+          return this.iconForTrue;
+        } else {
+          return this.iconForFalse;
+        }
+      },
+
+      // **********************************************************************
+      // Action listener
+      // **********************************************************************
+      _callService: function() {
+        this.$.service.body = '{"value":"'+ this.$.switch.active+'"}';
+        this.$.service.generateRequest();
+      },
+
+      // **********************************************************************
+      // Event Handlers
+      // **********************************************************************
+      _handleServiceResponse: function(evt, request) {
+        console.debug("[warp10-switch-boolean] _handleServiceResponse", request.response);
+        
+      },
+      _handleServiceError: function(evt, error) {
+
+      },
+      
+    });
+  </script>
+</dom-module>
