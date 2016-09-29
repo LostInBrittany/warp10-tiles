@@ -61,11 +61,21 @@
       <div class="value-bounds" hidden="{{_hideValueBounds}}">
         <div class="value-bounds-close" on-click="_closeValueBounds"></div>
         <div class="value-bounds-content">
-          <div>
-           max: {{_formattedCurrentValues.1.yval}} <br>
-           
-           min: {{_formattedCurrentValues.0.yval}}
-          </div> 
+          <template is="dom-if" if="{{_hasNLines(_currentValues,1)}}">
+              {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>   
+          </template>
+          <template is="dom-if" if="{{_hasNLines(_currentValues,2)}}">
+            <div>
+              {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>            
+              {{_getName(_currentValues,1)}}: {{_getValue(_currentValues,1)}}
+            </div> 
+          </template>
+          <template is="dom-if" if="{{_hasMoreThanNLines(_currentValues,2)}}">
+            <div>
+              max: {{_maxValue(_currentValues)}} <br>            
+              min: {{_minValue(_currentValues)}}
+            </div> 
+          </template>
         </div>
       </div>
         
@@ -101,48 +111,76 @@
         },
 
         _currentValues: {
-          type: String,
-          value: 'No data'
+          type: Object,
+          value: null
         },
-        
-        _formattedCurrentValues: {
-          type: Array,
-          computed: "_formatCurrentValues(_currentValues)"
+      },
+      
+      // Computed bindings
+      _hasNLines: function(currentValues, n) {
+        // console.debug("[warp10-display-sparkline] _hasNLines", currentValues);
+        if (!currentValues || !currentValues.yValues) {
+          return false;
         }
+        return (currentValues.yValues.length == n);
+      },
+      _hasMoreThanNLines: function(currentValues, n) {
+        // console.debug("[warp10-display-sparkline] _hasMoreThanNLines", currentValues);
+        if (!currentValues || !currentValues.yValues) { 
+          return false;
+        }
+        return (currentValues.yValues.length > n);
       },
 
-      // Computed properties
-      _formatCurrentValues: function() {
-        var formattedValues = [];
-        
-        var min = Number.MAX_VALUE;
-        var minIndex = -1;
+      _maxValue:  function(currentValues) {
         var max = - Number.MAX_VALUE;
         var maxIndex = -1;
-        
-        if (!this._currentValues 
-          || this._currentValues.yValues === undefined  ) {
+        if (!currentValues || !currentValues.yValues  ) {
             return;
         }
-        
-        for (var i=0; i<this._currentValues.yValues.length; i++) {
-           //console.debug('[warp10-display-map-elems] _formatCurrentValues i='+i, this._currentValues.yValues[i] );
-          if (this._currentValues.yValues[i].yval < min ) {
-            min = this._currentValues.yValues[i].yval;
-            minIndex = i;
-          }
-          if (this._currentValues.yValues[i].yval > max) {
-            max = this._currentValues.yValues[i].yval;
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval > max) {
+            max = currentValues.yValues[i].yval;
             maxIndex = i;
-          }
+          }        
         }
-        
-        formattedValues[0] = this._currentValues.yValues[minIndex];
-        formattedValues[1] = this._currentValues.yValues[maxIndex];       
-         
-        // console.debug('[warp10-display-map-elems] _formatCurrentValues', formattedValues );
-        return formattedValues;
+        return max;
       },
+
+      _minValue:  function(currentValues) {
+        var min =  Number.MAX_VALUE;
+        var minIndex = -1;
+        if (!currentValues || !currentValues.yValues  ) {
+            return;
+        }
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval < min) {
+            min = currentValues.yValues[i].yval;
+            minIndex = i;
+          }        
+        }
+        return min;
+      },
+
+      _getValue: function(currentValues, i) {
+        if (!currentValues || !currentValues.yValues) { 
+          return false;
+        }
+        return currentValues.yValues[i].yval;
+      },
+
+      _getName: function(currentValues,i) {
+        if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
+          return "";
+        }
+        var label = this.data[0].params[i].key;
+        if (!label) {
+          label = "Line "+i;
+        }
+        console.debug("[warp10-display-sparkline] _getName", label);
+        return label;
+      },
+
 
       _mouseEnter: function() {
         
