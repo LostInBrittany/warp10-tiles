@@ -11,12 +11,13 @@
 <link rel="import" href="../warp10-tiles/warp10-dashboard-tile-dimensions.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-color-palette.html">
-<link rel="import" href="../warp10-tiles/warp10-display-num.html">
-<link rel="import" href="../warp10-tiles/warp10-display-gauge.html">
-<link rel="import" href="../warp10-tiles/warp10-display-map-elems.html">
-<link rel="import" href="../warp10-tiles/warp10-display-sparkline.html">
-<link rel="import" href="../warp10-tiles/warp10-display-img.html">
+<link rel="import" href="../warp10-tiles/warp10-display-boolean.html">
 <link rel="import" href="../warp10-tiles/warp10-display-error.html">
+<link rel="import" href="../warp10-tiles/warp10-display-gauge.html">
+<link rel="import" href="../warp10-tiles/warp10-display-img.html">
+<link rel="import" href="../warp10-tiles/warp10-display-map-elems.html">
+<link rel="import" href="../warp10-tiles/warp10-display-num.html">
+<link rel="import" href="../warp10-tiles/warp10-display-sparkline.html">
 
 <dom-module is="warp10-dashboard-element">
   <template>    
@@ -46,6 +47,14 @@
     
     <warp10-dashboard-color-palette color="{{bgColor}}" hex="{{_hexBgColor}}">
     </warp10-dashboard-color-palette>  
+    
+    <template is="dom-if" if="{{_resultIsABoolean}}">
+      <warp10-display-boolean 
+        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
+        data="{{_response.data}}" label="{{_response.label}}"
+        description="{{_response.description}}" >
+    </warp10-display-boolean>
+    </template>
     
     <template is="dom-if" if="{{_resultIsANumber}}">
       <warp10-display-num 
@@ -166,6 +175,11 @@
           computed: "_getResultType(warpscriptResponse)"
         },
         
+        _resultIsABoolean: {
+          type: Boolean,
+          computed: "_isResultABoolean(_resultType)",
+        },
+        
         _resultIsANumber: {
           type: Boolean,
           computed: "_isResultANumber(_resultType)",
@@ -242,6 +256,7 @@
       },
 
       _handleResponse: function(event, response){   
+        console.debug("[warp10-dashboard-element] _receivedResponse from event", {event: event, response: response});
         if (!response.stack ||
           !response.stack instanceof Array ) {
           this.data = null;
@@ -327,26 +342,28 @@
         return false;
       },      
       _isResultAValidResponse: function() {
+        console.debug("[warp10-dashboard-element] _isResultAValidResponse",  this.warpscriptResponse);
         return this._isValidResponse(this.warpscriptResponse);
       },
       _isValidResponse: function(response){
-        // console.debug("[warp10-dashboard-element] _isValidResponse - eval",  response);
+        console.debug("[warp10-dashboard-element] _isValidResponse - eval",  response);
         if (response.length != 1) {
-          // console.debug("[warp10-dashboard-element] _isValidResponse - response.length != 1");  
+          console.debug("[warp10-dashboard-element] _isValidResponse - response.length != 1");  
           return false;
         }
         if (typeof response[0] !== "object" ) {
-          // console.debug("[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object");  
+          console.debug("[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object");  
           return false;          
         }
         if (! "type" in response[0] || ! "params" in response[0] ){
-          // console.debug("[warp10-dashboard-element] _isValidResponse - 'type' and/or 'params' not in wresponse[0]");  
+          console.debug("[warp10-dashboard-element] _isValidResponse - 'type' and/or 'params' not in wresponse[0]");  
           return false;          
         }
         if (typeof response[0].params !== "object") {
-          // console.debug("[warp10-dashboard-element] _isValidResponse - 'params' not !== object"");  
+          console.debug("[warp10-dashboard-element] _isValidResponse - 'params' not !== object");  
           return false;  
         }
+        console.debug("[warp10-dashboard-element] _isValidResponse");
         return true;
       },
       
@@ -355,7 +372,12 @@
         if (!this._isResultAValidResponse()) {
            return null;
         }
-        
+
+        if ( this.warpscriptResponse[0].type == "boolean") {
+           // console.debug("[warp10-dashboard-element] _getResultType - boolean");
+           return "boolean"  
+        }
+
         if ( this.warpscriptResponse[0].type == "number") {
            //console.debug("[warp10-dashboard-element] _getResultType - number");
            return "number"  
@@ -391,7 +413,10 @@
       _isResultANumber: function() {
         return ("number" == this._resultType);
       },
-      
+
+      _isResultABoolean: function() {
+        return ("boolean" == this._resultType);
+      },      
       _isResultAGauge: function() {
         return ("gauge" == this._resultType);
       },
