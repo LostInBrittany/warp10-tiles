@@ -53,7 +53,7 @@
         handle-as="json"
         method='POST'
         on-response="_handleServiceResponse"
-        on-error="_handleServiceApiError"
+        on-error="_handleServiceError"
         debounce-duration="300"></iron-ajax>
 
     <warp10-dashboard-tile 
@@ -78,6 +78,7 @@
         <div class="label">[[label]]</div>
       </div>     
     </warp10-dashboard-tile>  
+
   </template>
   <script>
     Polymer({
@@ -155,8 +156,9 @@
       // **********************************************************************
       // Action listener
       // **********************************************************************
-      _callService: function() {
-        this.$.service.body = '{"value":"'+ this.$.switch.active+'"}';
+      _callService: function(evt) {
+        evt.stopPropagation();
+        this.$.service.body = '{"value":"' + this.$.switch.active + '"}';
         this.$.service.generateRequest();
       },
 
@@ -164,11 +166,14 @@
       // Event Handlers
       // **********************************************************************
       _handleServiceResponse: function(evt, request) {
+        evt.stopPropagation();
         console.debug("[warp10-switch-boolean] _handleServiceResponse", request.response);
-        
+        this.fire('service-response', response);        
       },
       _handleServiceError: function(evt, error) {
-
+        evt.stopPropagation();
+        console.debug("[warp10-switch-boolean] _handleServiceError", error);
+        this.fire('service-error', error);
       },
       
     });

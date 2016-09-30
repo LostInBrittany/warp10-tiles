@@ -18,6 +18,7 @@
 <link rel="import" href="../warp10-tiles/warp10-display-map-elems.html">
 <link rel="import" href="../warp10-tiles/warp10-display-num.html">
 <link rel="import" href="../warp10-tiles/warp10-display-sparkline.html">
+<link rel="import" href="../warp10-tiles/warp10-switch-boolean.html">
 
 <dom-module is="warp10-dashboard-element">
   <template>    
@@ -34,8 +35,7 @@
       id="warpscriptcaller"
       url="{{warpscriptBaseUrl}}" warpscript="{{warpscriptScript}}"
       on-response="_handleResponse"  on-error="_handleError" reload="{{warpscriptReload}}"
-      loading="{{loading}}" header-name="CityzenData">
-    </warp10-warpscript-caller>
+      loading="{{loading}}" header-name="CityzenData"></warp10-warpscript-caller>
     
     <warp10-dashboard-tile-dimensions 
       tile="{{tile}}" height="{{height}}" width="{{width}}"
@@ -49,11 +49,29 @@
     </warp10-dashboard-color-palette>  
     
     <template is="dom-if" if="{{_resultIsABoolean}}">
-      <warp10-display-boolean 
-        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}" 
-        data="{{_response.data}}" label="{{_response.label}}"
-        description="{{_response.description}}" >
-    </warp10-display-boolean>
+      <template is="dom-if" if="[[!controller]]">
+        <warp10-display-boolean 
+            tile="[[_response.tile]]" 
+            bg-color="[[_response.bgColor]]" 
+            fg-color="[[_response.fgColor]]"
+            icon-for-true="[[iconForTrue]]"
+            icon-for-false="[[iconForFalse]]"
+            data="[[_response.data]]" 
+            label="[[_response.label]]"
+            description="[[_response.description]]" ></warp10-display-boolean>
+      </template>
+      <template is="dom-if" if="[[controller]]">
+        <warp10-switch-boolean 
+            tile="[[_response.tile]]" 
+            bg-color="[[_response.bgColor]]" 
+            fg-color="[[_response.fgColor]]" 
+            icon-for-true="[[iconForTrue]]"
+            icon-for-false="[[iconForFalse]]"
+            data="[[_response.data]]" 
+            label="[[_response.label]]"
+            description="[[_response.description]]" 
+            url="[[controllerUrl]]"></warp10-switch-boolean>
+      </template>
     </template>
     
     <template is="dom-if" if="{{_resultIsANumber}}">
@@ -154,7 +172,21 @@
           type: Array,
           value: function() { return []; }
         },
-        
+
+        /**
+         * If true, and if the element exists, uses the controller version of the element
+         */
+        controller: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The URL of the service called by the controller
+         */
+        controllerUrl: {
+          type: String,
+          value: ""
+        },
         _dimensionsReady: {
           type: Boolean,
           value: false,

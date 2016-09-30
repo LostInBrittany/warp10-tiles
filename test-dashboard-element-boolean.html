@@ -23,22 +23,41 @@
 
   <p>Results are polled every two seconds</p>
 
-  <template is="dom-bind" id="template">
+  <template is="dom-bind" id="template1">
     <warp10-dashboard-element 
       warpscript-script="[[warpscript]]"
       warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
       warpscript-reload="[[reload]]"></warp10-dashboard-element>
   </template>
+  <template is="dom-bind" id="template2">
+    <warp10-dashboard-element 
+      warpscript-script="[[warpscript]]"
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      warpscript-reload="[[reload]]"
+      controller-url="[[url]]" 
+      controller></warp10-dashboard-element>
+  </template>
   <script>
-      var template = document.querySelector('#template');
+      var template1 = document.querySelector('#template1');
 
-      template.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
-      template.reload = "2";
-      template.label = "A changing boolean";
-      template.tile = "normal";
-      template.fgColor = "white";
-      template.bgColor = "ortange";
-      template.description = "This is an example of changing boolean";
+      template1.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      template1.reload = "2";
+      template1.label = "A changing boolean";
+      template1.tile = "normal";
+      template1.fgColor = "white";
+      template1.bgColor = "orange";
+      template1.description = "This is an example of changing boolean";
+
+      var template2 = document.querySelector('#template2');
+
+      template2.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      template2.reload = "2";
+      template2.label = "A changing boolean";
+      template2.tile = "normal";
+      template2.fgColor = "white";
+      template2.bgColor = "orange";
+      template2.description = "This is an example of changing boolean";
+      template2.url = "./service"
 
   </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
