@@ -158,7 +158,7 @@
       // **********************************************************************
       _callService: function(evt) {
         evt.stopPropagation();
-        this.$.service.body = '{"value":"' + this.$.switch.active + '"}';
+        this.$.service.body = '{"value":' + this.$.switch.active + '}';
         this.$.service.generateRequest();
       },
 
