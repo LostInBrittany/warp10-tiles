@@ -70,6 +70,7 @@
               <iron-icon icon="{{iconForFalse}}"></iron-icon>
               <paper-toggle-button
                   id="switch"
+                  disabled="{{_disabled}}"
                   on-change="_callService"></paper-toggle-button>
               <iron-icon icon="{{iconForTrue}}"></iron-icon>
             </div>
@@ -95,7 +96,7 @@
          */
         data: {
           type: Boolean,
-          value: false
+          value: false,
         },
         
         /**
@@ -136,7 +137,32 @@
           type: String,
           computed: "_getIconName(data, _isReady)"
         },
+        /** 
+         * 
+         */
+        _sendingMode: {
+          type: Boolean,
+          value: false
+        },
+        /** 
+         * 
+         */
+        _waitingForResultMode: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * 
+         */
+        _disabled: {
+          type: Boolean,
+          computed: "_isDisabled(_sendingMode,_waitingForResultMode)"
+        }
       },
+
+      observers: [
+        "_onValueChange(data,_sendingMode,_waitingForResultMode)"
+      ],
 
       // Livecycle
       ready: function() {
@@ -153,11 +179,31 @@
         }
       },
 
+      
+      // **********************************************************************
+      // Observers
+      // **********************************************************************
+      _onValueChange: function() {
+        if (!this._disabled) {
+          this.$.switch.checked = this.data;
+          return;
+        }
+        if (this._waitingForResultMode) {
+          if (this.$.switch.checked == this.data) {
+            this._waitingForResultMode = false;
+          }
+        } 
+      },
+      _isDisabled: function() {
+        return (this._sendingMode || this._waitingForResultMode);
+      },
+
       // **********************************************************************
       // Action listener
       // **********************************************************************
       _callService: function(evt) {
         evt.stopPropagation();
+        this._sendingMode = true;
         this.$.service.body = '{"value":' + this.$.switch.active + '}';
         this.$.service.generateRequest();
       },
@@ -167,11 +213,15 @@
       // **********************************************************************
       _handleServiceResponse: function(evt, request) {
         evt.stopPropagation();
+        this._waitingForResultMode = true; 
+        this._sendingMode = false;
         console.debug("[warp10-switch-boolean] _handleServiceResponse", request.response);
         this.fire('service-response', response);        
       },
       _handleServiceError: function(evt, error) {
         evt.stopPropagation();
+        this._waitingForResultMode = false; 
+        this._sendingMode = false;
         console.debug("[warp10-switch-boolean] _handleServiceError", error);
         this.fire('service-error', error);
       },
