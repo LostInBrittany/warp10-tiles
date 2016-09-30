@@ -1,0 +1,203 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href=" ../polymer/polymer.html">
+<link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+
+<dom-module name="warp10-img" >
+  <template>
+    <style>
+      :host {
+      }
+      img {
+        width:var(--width, auto);
+        height:var(--height, auto);
+      }
+    </style>
+
+    <img src={{img}}></img>
+
+    <warp10-warpscript-caller
+      id="warpscript-caller"
+      base-url="{{baseURL}}" warpscript="{{warpscriptScript}}"
+      data="{{data}}"  reload="{{reload}}"
+      block-calls="{{blockCalls}}" call="{{call}}"
+      loading="{{loading}}">
+    </warp10-warpscript-caller>
+
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: "warp10-img",
+    /********************************
+     * Properties
+     ********************************/
+    properties: {
+      width: {
+        type: Number,
+        value: -1
+      },
+      height: {
+        type: Number,
+        value: -1
+      },
+      host: {
+        type: String,
+        value: ""
+      },
+      baseURL: {
+        type: String,
+        computed: "getBaseUrl(host,oldPath)"
+      },
+      content: {
+        type: String,
+        observer: 'contentChanged'
+      },
+      warpscript: {
+        type: String,
+        observer: 'warpscriptChanged'
+      },
+      data: {
+        type: Object,
+        notify: true,
+        observer: 'dataChanged'
+      },
+      reload: {
+        type: Number,
+        value: -1
+      },
+      blockCalls: {
+        type: Number,
+        value: 0
+      },
+      call: {
+        type: Number,
+        value: 0
+      },
+      oldPath: {
+        type: String,
+        value: ""
+      }
+    },
+
+    /********************************
+     * Computed properties
+     ********************************/
+    getBaseUrl: function() {
+      return this.host + "/exec" + this.oldPath;
+    },
+
+    /********************************
+     * Observers
+     ********************************/
+    contentChanged: function() {
+      this.generateWarpScript();
+    },
+    warpscriptChanged: function() {
+      this.generateWarpScript();
+    },
+    dataChanged: function() {
+      if (this.data != null) {
+        this.getImageContent()
+        // console.debug("[warp10-img] dataChanged - Image:\n", this.img);
+      }
+    },
+
+    /********************************
+     * Livecycle functions
+     ********************************/
+    attached: function() {
+      // console.debug("[warp10-img] attached");
+      this.generateWarpScript();
+      // Setting img styles
+      if (this.width > 0) {
+        this.customStyle['--width'] = this.width.toString()+"px";
+      }
+      if (this.height > 0) {
+        this.customStyle['--height'] = this.height.toString()+"px";
+      }
+      this.updateStyles();
+
+      this.call = 1;
+
+    },
+
+    /********************************
+     * Generate warpscript script
+     ********************************/
+    generateWarpScript: function() {
+      // If we have warpscript code in attribute, it's prioritary
+      // else we try to get it from content
+      // else we look for it using innerHTML
+      if (this.warpscript !== undefined && this.warpscript.length > 0) {
+        this.warpscriptScript = this.warpscript.trim()
+      } else {
+        if (this.content !== undefined && this.content.length > 0) {
+          this.warpscriptScript = this.content.trim();
+        } else {
+          this.warpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+        }
+      }
+
+      // WarpScript
+      var inputWarpScriptVariables = ""
+      if (this.width > 0) {
+        inputWarpScriptVariables += this.width +" 'width' STORE ";
+      }
+      if (this.height > 0) {
+        inputWarpScriptVariables += this.height +" 'height' STORE ";
+      }
+      this.warpscriptScript = inputWarpScriptVariables+this.warpscriptScript;
+
+      // console.debug("[warp10-img] generateWarpScript - WarpScript script:\n",this.warpscriptScript);
+      if (this.warpscriptScript.length > 0) {
+        return true;
+      }
+      return false;
+    },
+
+    /********************************
+     * Extract image from answer
+     ********************************/
+    getImageContent: function() {
+
+      if (!this.isArray(this.data)) {
+        return
+      }
+      var response = this.data[0];
+      // console.debug("[warp10-img] getImageContent \n", response);
+      if (/^data:image/.test(response)) {
+        this.img = response
+      }
+    },
+
+    /********************************
+     * [DEPRECATED]
+     * [Helper function] Set spinner
+     * height and width
+     ********************************/
+    setSpinnerDimensions: function() {
+      if (this.height < 0) {
+        this.spinnerHeight = "100px"
+      } else {
+        this.spinnerHeight = this.height+"px"
+      }
+      if (this.width < 0) {
+        this.spinnerWidth = "100px"
+      } else {
+        this.spinnerWidth = this.width+"px"
+      }
+    },
+    /********************************
+     * [Helper function] rerturn true if is Array
+     ********************************/
+    isArray: function(value) {
+      return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
+        && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
+    }
+  });
+</script>

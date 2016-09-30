@@ -1,0 +1,212 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-map-elems">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+
+      .container {
+        display: flex;
+        height: 100%;
+        flex-direction: vertical;
+        flex-wrap: wrap;
+      }
+
+
+      .child {
+        display: flex;
+        align-items: baseline;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 120px; 
+        margin: auto; 
+      }
+
+      .key {
+        font-size: 1.2em;
+      }
+
+      .value-bounds {
+        position: absolute;
+        bottom: 0; 
+        left: 0;
+        width: 100%;
+        background-color: rgba(128,128,128,0.8);
+      }
+      .value-bounds[hidden] {
+        display: none;
+      }
+      .value-bounds-close {
+        float:right;
+        padding: 5px;        
+      }
+      .value-bounds-close::before {
+        content: " "
+      }
+      .value-bounds-content {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-around;
+        padding: 5px;
+      } 
+
+    </style>
+    <warp10-dashboard-tile 
+      tile="{{tile}}"  width="{{width}}" height="{{height}}"
+      bg-color="{{bgColor}}" fg-color="{{fgColor}}"
+    >
+      <div class="card-content">
+        <div class="main-content">  
+        <div class="container">  
+        <template is="dom-repeat" items="{{_displayedData}}">    
+          <div 
+            class="child"
+            on-mouseenter="_mouseEnter" 
+            on-mouseleave="_mouseLeave"
+            >
+            <div class="key">
+            {{item.0}}
+            </div>
+            <div class="value">{{item.1}}</div>
+          </div>
+        </template>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+
+    <div class="value-bounds" hidden="{{_hideValueBounds}}">
+        <div class="value-bounds-close" on-click="_closeValueBounds"></div>
+        <div class="value-bounds-content">
+          <div>
+           {{_currentValue}}
+          </div> 
+        </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-map-elems",
+
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {
+        
+        
+       /**
+         * The data to display
+         */
+        data: {
+          type: Array,
+          value: function() { return []; }
+        },
+
+        _size: {
+          type: Number,
+          computed: "_getSize(tile, data)"
+        },
+        
+        _displayedData: {
+          type: Array,
+          computed: "_filterDisplayedData(data,_size)"
+        },
+
+        _currentValue: {
+          type: String,
+          value: 'No data',
+        },
+        _hideValueBounds: {
+          type: Boolean,
+          value: true
+        },
+      },
+      
+      // Lifecycle methods
+      attached: function() {     
+        // console.debug('[warp10-display-map-elems] attached', this._displayedData)
+        this._isAttached = true;       
+      },
+
+      _filterDisplayedData: function() {
+        var displayedData = [];
+        for (var i=0; i< this._size; i++) {
+          displayedData[i] = this.data[i];
+        }      
+        //console.debug('[warp10-display-map-elems] filter', displayedData)
+        return displayedData;
+      },
+      
+      _getSize: function() {
+        var size;
+        switch(this.tile) {
+            case "tall":
+                size = 6;
+                break;
+            case "wide":
+                size = 6;
+                break;
+            case "large":
+                size = 12;
+                break;
+            default:
+                size = 3;
+        }
+        size = Math.min(size, Object.keys(this.data).length);
+        return size;
+      },
+
+      _mouseEnter: function(e) {
+        this._currentValue = e.model.item[2];
+        if (this._hideValueBounds) {
+          this._initOpenValueBounds();
+        } else {
+          this._cancelCloseValueBounds();
+        }
+      },
+      _mouseLeave: function() {
+        if (this._hideValueBounds) {
+          this._cancelOpenValueBounds();
+        } else {
+          this._initCloseValueBounds();
+        }        
+      },
+      
+      _openValueBounds: function() {
+        // console.debug("[warp10-display-map-elems] _openValueBounds");
+        this._hideValueBounds = false;
+      },
+      _initOpenValueBounds: function(){        
+        // console.debug("[warp10-display-map-elems] _initOpenValueBounds");
+        this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
+      },
+      _cancelOpenValueBounds: function(){
+        // console.debug("[warp10-display-map-elems] _cancelOpenValueBounds");
+        clearTimeout(this.openTimeout);
+      },
+
+      _closeValueBounds: function() {
+        // console.debug("[warp10-display-map-elems] _closeValueBounds");
+        this._hideValueBounds = true;
+      },       
+      _initCloseValueBounds: function(){
+        this.closeTimeout = setTimeout(this._closeValueBounds.bind(this), this._hoverDelay);
+      },   
+      _cancelCloseValueBounds: function(){
+        clearTimeout(this.closeTimeout);
+      },
+      
+    });
+  </script>
+</dom-module>

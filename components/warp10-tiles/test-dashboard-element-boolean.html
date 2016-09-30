@@ -1,0 +1,58 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Boolean dashboard element</title>
+
+<style>
+
+</style>
+<script src=" ../webcomponentsjs/webcomponents-lite.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+
+<link   rel="import" href=" ../warp10-tiles/warp10-dashboard-element.html">
+</head>
+<body>
+
+  <h2>Warp10 Dashboard - Boolean dashboard element</h2>
+
+  <p>Results are polled every two seconds</p>
+
+  <template is="dom-bind" id="template1">
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      icon-for-true="./img/ventilator.gif"
+      icon-for-false="./img/ventilator-off.gif"
+      use-external-images=true
+      warpscript-reload="2"></warp10-dashboard-element>
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      icon-for-true="./img/ventilator.gif"
+      icon-for-false="./img/ventilator-off.gif"
+      use-external-images=true
+      controller-url="./service" 
+      controller></warp10-dashboard-element>
+
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      warpscript-reload="2"></warp10-dashboard-element>
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      controller-url="./service" 
+      controller></warp10-dashboard-element>
+  </template>
+  <script>
+
+  </script>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Display num test</title>
+
+<style>
+
+</style>
+<script src=" ../webcomponentsjs/webcomponents-lite.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+
+<link   rel="import" href=" ../warp10-tiles/warp10-display-num.html">
+</head>
+<body>
+
+<template is="dom-bind" id="template">
+  <warp10-display-num 
+    data="[[data]]" 
+    label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
+    description="[[description]]"></warp10-display-num>
+</template>
+<script>
+      var template = document.querySelector('#template');
+
+      template.data = 42;
+
+      template.label = "A nice num";
+      template.tile = "normal";
+      template.fgColor = "white";
+      template.bgColor = "orange";
+      template.description = "This is an example num";
+</script>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-validator-behavior/iron-validator-behavior.html">
+
+<script>
+  Polymer({
+    is: 'warp10-backend-validator',
+    properties: {
+
+    },
+    behaviors: [
+      Polymer.IronValidatorBehavior
+    ],
+    validateObject: function(obj) {
+      var backendPattern= /^https?:\/\/.+$/
+      var valid = true;
+      for (key in obj) {
+        if (obj[key].search(backendPattern) < 0) {
+          valid = false;
+          break;
+        }
+      }
+      return valid;
+    },
+    validate: function(values) {
+      console.debug("[warp10-backend-validator] validate called", values)
+      var backendPattern= /^https?:\/\/.+$/
+      if (typeof values === 'object') {
+        return this.validateObject(values);
+      } else {
+        var value = Array.isArray(values) ? values.join('') : values;
+        return (value.search(backendPattern) >= 0);
+      }
+    }
+  });
+</script>

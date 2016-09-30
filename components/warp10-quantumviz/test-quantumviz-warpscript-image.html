@@ -1,0 +1,79 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>quantumviz-warpscript-image demo</title>
+
+<style>
+  body {
+    background-color: #eeeeee;
+  }
+  .current-value {
+    padding-left:100px;
+  }
+  .box {
+    display: inline-block;
+    border: 1px solid #444;
+    padding:10px;
+    border-radius: 10px;
+    margin: 20px;
+  }
+
+</style>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+<script src=" ../webcomponentsjs/webcomponents.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+<link   rel="import" href=" ../warp10-quantumviz/quantumviz-warpscript-image.html">
+<!--
+<script src="https://warp.cityzendata.net/quantumviz/webcomponentsjs/webcomponents.js"></script>
+<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/polymer/polymer.html">
+<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/czd-quantumviz/quantumviz-warpscript-image.html">
+-->
+<body>
+
+  <div class="container">
+    <h1>Quantumviz</h1>
+
+    <div class="box">
+      <template is="dom-bind">
+
+        <!--
+        <czd-img
+          width="300" height="300" reload="0"
+          host="https://warp.cityzendata.net/dist" einstein ="{{einstein}}">
+        </czd-img>
+        -->
+        <warp10-img
+          width="300" height="300" reload="0" old-path="/einstein"
+          host="https://warp.cityzendata.net/dist/api/v0">
+          {{w}} 'width' CSTORE 200 'height' CSTORE $width $height '2D' PGraphics Ppixels <% DROP DROP RAND 0xFFFFFFFF * TOLONG %> LMAP PupdatePixels Pencode
+        </warp10-img>
+
+      </template>
+
+      </div>
+  </div>
+
+<script>
+  var template = document.querySelector('template[is="dom-bind"]');
+
+  template.einstein = "200 'width' CSTORE 200 'height' CSTORE $width $height '2D' PGraphics Ppixels <% DROP DROP RAND 0xFFFFFFFF * TOLONG %> LMAP PupdatePixels Pencode";
+  template.w = 200
+</script>
+
+
+
+
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<script>
+  Warp10DashboardElementPropertiesBehavior = {
+    
+    // Properties
+    properties: {
+      
+      /**
+       * The label to display
+       */
+      label: {
+        type: String,
+        value: ''
+      },
+      
+       /**
+       * The description 
+       */
+      description: {
+        type: String,
+        value: ''          
+      },
+
+      /**
+       * The tile type. 
+       * Allowed values are listed on `_tilePalette`
+       */
+      tile: {
+        type: String,
+        value: ''          
+      },
+      
+      /**
+       * The background color. Allowed colors are listed in `_colorPalette` 
+       */
+      bgColor: {
+        type: String,
+        value: "black",
+        observer: "_bgColorChanged"            
+      },
+          
+      /**
+       * The foreground color. Allowed colors are listed in `_colorPalette` 
+       */
+      fgColor: {          
+        type: String,
+        value: "white",
+        observer: "_fgColorChanged"     
+      },
+      
+      /**
+       * The current width of the tile
+       */
+      width: {
+        type: Number,
+        notify: true
+      },
+      
+      /**
+       * The current height of the tile
+       */
+      height: {
+        type: Number,
+        notify: true
+      },
+      /**
+       * The useful width of the tile
+       * @read-only
+       */
+      usefulWidth: {
+        type: Number,
+        computed: "_getUsefulWidth(width)",
+        notify: true
+      },     
+      /**
+       * The useful height of the tile
+       * @read-only
+       */
+      usefulHeight: {
+        type: Number,
+        computed: "_getUsefulHeight(height)",
+        notify: true
+      },         
+      _colorPalette: {
+        type: Array,
+        // Singleton
+        value: [
+          'black', 'white', 'lime', 'green', 'emerald', 'blue', 'teal', 'cyan', 'cobalt', 'indigo', 'violet', 'pink', 'magenta', 'crimson', 'red', 'orange', 'amber', 'yellow', 'brown', 'olive', 'steel', 'mauve', 'taupe', 'dark', 'darkBrown', 'darkCrimson', 'darkMagenta', 'darkIndigo', 'darkCyan', 'darkCobalt', 'darkTeal', 'darkEmerald', 'darkGreen', 'darkOrange', 'darkRed', 'darkPink', 'darkViolet', 'darkBlue', 'lightBlue', 'lighterBlue', 'lightTeal', 'lightOlive', 'lightOrange', 'lightPink', 'lightRed', 'lightGreen', 'lightCyan', 'grayed', 'grayDarker', 'grayDark', 'gray', 'grayLight', 'grayLighter', 'lightGray', 'lighterGray', 'darkGray', 'darkerGray', 'darker'
+          ]
+      },        
+      
+      _tilePalette: {
+        type: Array,
+        // Singleton
+        value: [
+          'small', '', 'normal', 'square', 'wide', 'tall', 'large', 'big', 'super' 
+        ]
+      },
+      
+      _bgColor: {
+        type: String,
+        computed: "_getBgColor(bgColor)"
+      },
+      
+      _fgColor: {
+        type: String,
+        computed: "_getFgColor(fgColor)"
+      },
+            
+    },    
+    
+          
+    // Lifecycle methods
+    ready: function() {   
+      console.debug("[warp10-dashboard-element-properties-behavior] ready");  
+      this._isReady = true;
+      this._initialize();           
+    },
+      
+      
+    // Observers
+    _bgColorChanged: function() {
+      if (!this.isAttached) {
+        return;
+      }        
+      if (this._colorPalette.indexOf(this.bgColor) < 0) {
+        this.bgColor = this._colorPalette[0];
+      }    
+    },
+    
+    _fgColorChanged: function() {
+      if (!this.isAttached) {
+        return;
+      }        
+      if (this._colorPalette.indexOf(this.fgColor) < 0) {
+        this.fgColor = this._colorPalette[0];
+      }
+    },
+  
+
+    // Computed properties' methods
+    _getBgColor: function() {
+      return 'bg-'+this.bgColor;
+    },
+    _getFgColor: function() {
+      return 'fg-'+this.fgColor;
+    },     
+    _getUsefulWidth: function() {
+      return this.width - 20;
+    },
+    
+    _getUsefulHeight: function() {
+      return this.height - 35;
+    },    
+    
+  
+    // Other methods
+    _initialize: function(){
+      this._bgColorChanged();
+      this._fgColorChanged();
+    },             
+  }
+</script>

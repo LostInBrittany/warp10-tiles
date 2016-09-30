@@ -1,0 +1,408 @@
+<script>
+  (function() {
+    var gtsTools = {};
+
+    /**
+     * Returns true if @value is an Array
+     */
+    gtsTools.isArray = function(value) {
+      return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
+        && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
+    };
+
+    /**
+     * Returns true if @data is a valid response object
+     */
+    gtsTools.isValidResponse = function(data) {
+
+      var response;
+
+      try {
+        response = JSON.parse(data);
+        //console.debug(response)
+      } catch(e){
+        console.error("Response non JSON compliant",data);
+        return false;
+      }
+
+      if (!gtsTools.isArray(response)) {
+        console.error("Response isn't an Array",response);
+        return false;
+      }
+
+      return true;
+    };
+
+    /**
+     * Returns true if @item is a valid gts
+     */
+    gtsTools.isGts = function(item) {
+      if ( item == null || item.c == null || item.l == null || item.a == null || item.v == null || !gtsTools.isArray(item.v) ){
+        return false;
+      }
+      return true;
+    }
+
+    /**
+     * Returns true if @gts is a valid gts to plot
+     */
+    gtsTools.isGtsToPlot = function(gts) {
+      if ( !gtsTools.isGts(gts) || gts.v.length == 0) {
+        // console.debug("warp10-gts-tools isGtsToPlot false", {isGts: gtsTools.isGts(gts), gts_v_length: gts.v?gts.v.length:0 } );
+        return false;
+      }
+      // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
+      // if it's a number it's a GTS to plot
+      for (var i = 0; i<gts.v.length; i++) {
+        if (gts.v[i][gts.v[i].length-1] !== null) {
+          
+          console.debug("[warp10-gts-tools] isGtsToPlot - First value", gts.v[i][gts.v[i].length-1] );
+          if  ( typeof(gts.v[i][gts.v[i].length-1]) === 'number' )  {
+
+            return true;
+          }
+          break;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Returns true if @gts is a valid gts to annotate
+     */
+    gtsTools.isGtsToAnnotate = function(gts) {
+      if ( !gtsTools.isGts(gts) || gts.v.length == 0) {
+        return false;
+      }
+
+      // We look at the first non-null value, if it's a String or Boolean it's an annotation GTS,
+      // if it's a number it's a GTS to plot
+
+      for (var i = 0; i<gts.v.length; i++) {
+        if (gts.v[i][gts.v[i].length-1] !== null) {
+          if  ( typeof(gts.v[i][gts.v[i].length-1]) !== 'number' )  {
+            return true;
+          }
+          break;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Returns true if @item is an embedded image
+     *
+     * Embedded image format:
+     *
+     * data:imagepng;base64,dj544fcksdf9DSA234...
+     */
+    gtsTools.isEmbeddedImage = function(item) {
+      if (typeof item === !'string' || !/^data:image/.test(item)) {
+        return false;
+      }
+      return true;
+    };
+
+    /**
+     * Returns true if @item is an object with an embedded Image
+     *
+     * Embedded image object format:
+     * { "image": "data:image/base64,png;dj544fcksdf9DSA234...", "caption": "A caption for the image" }
+     */
+    gtsTools.isEmbeddedImageObject = function(item) {
+      if ((item == null) || (item.image == null) || (item.caption == null) || !gtsTools.isEmbeddedImage(item.image)) {
+        return false;
+      }
+      return true;
+    };
+
+    /**
+     * Returns true if @item is an array of positions
+     *
+     * Array of postions format
+     * { "positions": [[42.27,2.38],[41.34,2.81],...], "render": 'marker', "key": "fuel" }
+     * `key` must be chosen from https://www.mapbox.com/maki/
+     */
+    gtsTools.isPositionArray = function(item) {
+      if ((item == null) || (item.positions == null)) {
+        return false;
+      }
+      if (gtsTools.isPositionsArrayWithValues(item) || gtsTools.isPositionsArrayWithTwoValues(item)) {
+        return true;
+      }
+      for (var i in item.positions) {
+        if (item.positions[i].length < 2 || item.positions[i].length > 3) {
+          return false;
+        }
+        for (var j in item.positions[i]) {
+          if (typeof item.positions[i][j] != 'number') {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    /**
+     * Returns true if @item is an array of positions with values
+     *
+     * Array of postions with values format
+     * { "positions": [[42.27,2.38, 42],[41.34,2.81, 21],...], "render": 'marker', "key": "fuel" }
+     * `key` must be chosen from https://www.mapbox.com/maki/
+     */
+    gtsTools.isPositionsArrayWithValues = function(item) {
+      if ((item == null) || (item.positions == null)) {
+        return false;
+      }
+      for (var i in item.positions) {
+        if (item.positions[i].length != 3) {
+          return false;
+        }
+        for (var j in item.positions[i]) {
+          if (typeof item.positions[i][j] != 'number') {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    /**
+     * Returns true if @item is an array of positions with two values
+     *
+     * Array of postions with values format
+     * { "positions": [[42.27,2.38, 42, 25],[41.34,2.81, 21, 50],...], "render": 'marker', "key": "fuel" }
+     * `key` must be chosen from https://www.mapbox.com/maki/
+     */
+    gtsTools.isPositionsArrayWithTwoValues = function(item) {
+      if ((item == null) || (item.positions == null)) {
+        return false;
+      }
+      for (var i in item.positions) {
+        if (item.positions[i].length != 4) {
+          return false;
+        }
+        for (var j in item.positions[i]) {
+          if (typeof item.positions[i][j] != 'number') {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+
+    /**
+     * Generates a GTS datapoint from a datapoint of received JSON
+     */
+    gtsTools.metricFromJSON = function(json) {
+      var metric;
+      metric = {        
+        ts: json[0]
+      };
+      switch (json.length) {
+        case 2:
+          metric.value = json[1];
+          break;
+        case 3:
+          metric.alt = json[1];
+          metric.value = json[2];
+          break;
+        case 4:
+          metric.lat = json[1];
+          metric.lon = json[2];
+          metric.value = json[3];
+          break;
+        case 5:
+          metric.lat = json[1];
+          metric.lon = json[2];
+          metric.alt = json[3];
+          metric.value = json[4];
+      }
+      return metric;
+    };
+
+    /**
+     * Generates a GTS stack item from an item of received JSON
+     */
+    gtsTools.gtsFromJSON = function(json, id) {
+      var gts, j, len, metric;
+      gts = {
+        c: json.c,
+        l: json.l,
+        a: json.a,
+        v: [],
+        id: id
+      };
+      
+      gts.v = json.v;
+      /*            
+      for (j = 0; j < json.v.length; j++) {
+        metric = json.v[j];
+        gts.v.push(gtsTools.metricFromJSON(metric));
+      }
+      */
+      return {
+        gts: gts
+      };
+    };
+
+
+    /**
+     * Generates a GTS stack from the received JSON
+     */
+    gtsTools.gtsFromJSONList = function(jsonList, prefixId) {
+      console.debug("[czd-gts-tools] gtsFromJSONList, jsonList", {list: jsonList});
+      var gts, gtsList, i, id;
+      gtsList = [];
+      for (i = 0;  i < jsonList.length; i++) {
+        gts = jsonList[i];
+        if ((prefixId !== undefined) && (prefixId !== "")) {
+          id = prefixId + "-" + i;
+        } else {
+          id = "" + i;
+        }
+
+        if (gtsTools.isArray(gts)) {
+          gtsList.push(gtsTools.gtsFromJSONList(gts, id));
+        }
+        if (gtsTools.isGts(gts)) {
+          gtsList.push(gtsTools.gtsFromJSON(gts, id));
+        }
+        if (gtsTools.isEmbeddedImage(gts)) {
+          gtsList.push({
+            image: gts,
+            caption: "Image",
+            id: id
+          });
+        }
+        if (gtsTools.isEmbeddedImageObject(gts)) {
+          gtsList.push({
+            image: gts.image,
+            caption: gts.caption,
+            id: id
+          });
+        }
+        console.debug("[czd-gts-tools] gtsFromJSONList, gtsList ", gtsList);
+
+      }
+      return {
+        content: gtsList
+      };
+    };
+
+    /**
+     * Flatten a GTS array
+     */
+    gtsTools.flattenGtsIdArray = function(a, r) {
+      var elem, j ;
+
+      if (!r) {
+        r = [];
+      }
+      for (j = 0; j < a.content.length; j++) {
+        elem = a.content[j];
+        if (elem.content != null) {
+          this.flattenGtsIdArray(elem, r);
+        } else {
+          if (elem.gts !== undefined) {
+            r.push(elem.gts);
+          }
+        }
+      }
+      return r;
+    };
+
+    /**
+     * Generated a serialized version of GTS metadata
+     */
+    gtsTools.serializeGtsMetadata = function(gts) {
+      var key, ref, serializedGtsMetadata, value;
+      serializedGtsMetadata = gts.id + " " + gts.c + "{";
+      ref = gts.l;
+      for (key in ref) {
+        value = ref[key];
+        serializedGtsMetadata += key + "=" + value + ",";
+      }
+      serializedGtsMetadata.slice(0, -1);
+      return serializedGtsMetadata += "}";
+    };
+
+    /**
+     * DEPRECATED
+     */
+    gtsTools.isGtsStack = function(gtsStack) {
+
+      if (!gtsTools.isArray(gtsStack)) {
+        console.debug("[gtsTools] isGtsStack false - not an Array", gtsStack);
+        return false;
+      }
+      for (var i=0; i<gtsStack.length; i++) {
+        var line = gtsStack[i];
+        if ((!gtsTools.isArray(line)) && (!gtsTools.isGts(line))) {
+          console.debug("[gtsTools] isGtsStack false - line " + i + " is neither an Array nor a gts", line);
+          return false;
+        }
+        for (var j=0; j<line.length; j++) {
+          var item = line[j];
+          if (!gtsTools.isGts(item)) {
+            console.debug("[gtsTools] isGtsStack false - item "+i+"-"+j+" isn't GTS", item);
+            return false;
+          }
+        }
+      }
+      return true;
+    };
+
+
+    /**
+     * Tranform a gts @gts into path
+     */
+    gtsTools.gtsToPath = function(gts) {
+      var path = [];
+
+      // Sort values
+      gts.v = gts.v.sort(function(a, b) { return a[0] - b[0];});
+
+      for (var i = 0; i < gts.v.length; i++) {
+        var metric = gts.v[i];
+
+        if (metric.length == 2) {
+            // timestamp, value
+        }
+        if (metric.length == 3) {
+            // timestamp, elevation, value
+        }
+        if (metric.length == 4) {
+            // timestamp, lat, lon, value
+            path.push({ ts: Math.floor(metric[0]/1000), lat: metric[1], lon: metric[2], val: metric[3]});
+        }
+        if (metric.length == 5) {
+            // timestamp, lat, lon, elevation, value
+            path.push({ ts: Math.floor(metric[0]/1000), lat: metric[1], lon: metric[2], elev: metric[3], val: metric[4]});
+        }
+      }
+      return path;
+    };
+
+    gtsTools.equalMetadata = function (a,b) {
+      if (a.c === undefined || b.c === undefined || a.l === undefined || b.l === undefined || !(a.l instanceof Object) || !(b.l instanceof Object) ) {
+        console.error("[warp10-gts-tools] equalMetadata - Error in GTS, metadata is not well formed");
+        return false;
+      }
+      if (a.c != b.c) {
+        return false;
+      }
+      for ( var p in a.l ) {
+        if ( ! b.l.hasOwnProperty(p) ) return false;
+        if ( a.l[p] != b.l[p] ) return false;
+      }
+      for ( var p in b.l ) {
+        if ( ! a.l.hasOwnProperty(p) ) return false;
+      }
+      return true;
+    }
+
+    window.gtsTools = gtsTools;
+  }).call(this);
+</script>

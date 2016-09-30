@@ -1,0 +1,509 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href=" ../polymer/polymer.html">
+
+<link rel="import" href="../warp10-quantumviz/warp10-display-behavior.html">
+
+
+<script src="../d3/d3.min.js"></script>
+<script src="../c3/c3.min.js"></script>
+
+<dom-module name="warp10-display-chart">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      #chart {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .chart-tooltip {
+          position: absolute;
+          width: var(--tooltip-width, 400px);
+          height: auto;
+          padding: 10px;
+          background-color: rgba(255, 255, 255, 0.85);
+          border-radius: 10px;
+          box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+          pointer-events: none;
+          z-index: 1000;
+          font-family: sans-serif;
+          line-height: 20px;
+      }
+      .chart-tooltip.hidden {
+          display: none;
+      }
+
+      .tr.highlight,
+      :host ::content .tr.highlight {
+        background-color: #ffffa4;
+      }
+      .gts-classname,
+      :host ::content .gts-classname{
+        color: #0074D9;
+      }
+      .gts-labelname,
+      :host ::content .gts-labelname {
+        color: #3d9970;
+      }
+      .gts-separator,
+      :host ::content .gts-separator {
+        color: #bbbbbb;
+      }
+      .gts-labelvalue,
+      :host ::content .gts-labelvalue {
+        color: #AAAAAA;
+        font-style: italic;
+      }
+      .legend-color-guide .tr,
+      :host ::content .legend-color-guide .tr {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .legend-color-guide div,
+      :host ::content .legend-color-guide div {
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+        margin-top: 5px;
+      }
+      .chart-tooltip .table,
+      :host ::content .chart-tooltip .table {
+        display: table;
+        width: 100%;
+        white-space: normal;
+        font-size: 10pt !important;
+      }
+      .chart-tooltip .tr,
+      :host ::content .chart-tooltip .tr {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+      .chart-tooltip .key,
+      :host ::content .chart-tooltip .key {
+        text-align: left;
+        padding-right: 10px;
+        word-wrap: break-word;
+        word-break: break-word;
+        width: calc( var(--tooltip-width, 400px) - 50px);
+      }
+      .chart-tooltip .value,
+      :host ::content .chart-tooltip .value, {
+        text-align: right;
+      }
+
+      .c3 svg{font:10px sans-serif;-webkit-tap-highlight-color:transparent}.c3 line,.c3 path{fill:none;stroke:#000}.c3 text{-webkit-user-select:none;-moz-user-select:none;user-select:none}.c3-bars path,.c3-event-rect,.c3-legend-item-tile,.c3-xgrid-focus,.c3-ygrid{shape-rendering:crispEdges}.c3-chart-arc path{stroke:#fff}.c3-chart-arc text{fill:#fff;font-size:13px}.c3-grid line{stroke:#aaa}.c3-grid text{fill:#aaa}.c3-xgrid,.c3-ygrid{stroke-dasharray:3 3}.c3-text.c3-empty{fill:gray;font-size:2em}.c3-line{stroke-width:1px}.c3-circle._expanded_{stroke-width:1px;stroke:#fff}.c3-selected-circle{fill:#fff;stroke-width:2px}.c3-bar{stroke-width:0}.c3-bar._expanded_{fill-opacity:.75}.c3-target.c3-focused{opacity:1}.c3-target.c3-focused path.c3-line,.c3-target.c3-focused path.c3-step{stroke-width:2px}.c3-target.c3-defocused{opacity:.3!important}.c3-region{fill:#4682b4;fill-opacity:.1}.c3-brush .extent{fill-opacity:.1}.c3-legend-item{font-size:12px}.c3-legend-item-hidden{opacity:.15}.c3-legend-background{opacity:.75;fill:#fff;stroke:#d3d3d3;stroke-width:1}.c3-title{font:14px sans-serif}.c3-tooltip-container{z-index:10}.c3-tooltip{border-collapse:collapse;border-spacing:0;background-color:#fff;empty-cells:show;-webkit-box-shadow:7px 7px 12px -9px #777;-moz-box-shadow:7px 7px 12px -9px #777;box-shadow:7px 7px 12px -9px #777;opacity:.9}.c3-tooltip tr{border:1px solid #CCC}.c3-tooltip th{background-color:#aaa;font-size:14px;padding:2px 5px;text-align:left;color:#FFF}.c3-tooltip td{font-size:13px;padding:3px 6px;background-color:#fff;border-left:1px dotted #999}.c3-tooltip td>span{display:inline-block;width:10px;height:10px;margin-right:6px}.c3-tooltip td.value{text-align:right}.c3-area{stroke-width:0;opacity:.2}.c3-chart-arcs-title{dominant-baseline:middle;font-size:1.3em}.c3-chart-arcs .c3-chart-arcs-background{fill:#e0e0e0;stroke:none}.c3-chart-arcs .c3-chart-arcs-gauge-unit{fill:#000;font-size:16px}.c3-chart-arcs .c3-chart-arcs-gauge-max,.c3-chart-arcs .c3-chart-arcs-gauge-min{fill:#777}.c3-chart-arc .c3-gauge-value{fill:#000}    
+      .c3-tooltip-container{ position: static !important;}
+    </style>
+
+
+    <div class$="chart-tooltip {{_isTooltipHidden(tooltip)}}"></div>
+    <div id="chart"></div>
+
+  </template>
+</dom-module>
+
+
+<script>
+  // element registration
+  Polymer({
+    is: "warp10-display-chart",
+
+    behaviors: [
+      Warp10DisplayBehavior
+    ],
+
+    ready: function() {
+       this.scopeSubtree(this.$.chart, true);
+    },
+
+    currentValuesChanged: function() {
+      if (null != this.isReady) {
+        // console.debug("[warp10-display-chart] currentValuesChanged() - currentValues", this.currentValues);
+        this._tooltipContent();
+      }
+    },
+    tooltipChanged: function(oldValue, newValue) {
+      // console.debug("[warp10-display-chart] tooltipChanged - oldValue", oldValue);
+      // console.debug("[warp10-display-chart] tooltipChanged - newValue", newValue);
+
+      if (null == this.tooltip || "" == this.tooltip) {
+        // this.$$(".chart-tooltip").innerHTML = this.tooltip;
+      } else {
+        // console.debug("[warp10-display-chart] tooltipChanged", this.tooltip);
+        this.$$(".chart-tooltip").innerHTML = this.tooltip;
+      }
+
+    },
+
+    _isTooltipHidden: function(tooltip) {
+
+      if (null == this.tooltip || "" == this.tooltip) {
+          // console.debug("[warp10-display-chart] _isTooltipHidden - true");
+        return "hidden";
+      } else {
+          // console.debug("[warp10-display-chart] _isTooltipHidden - false");
+        return "";
+      }
+    },
+
+    _tooltipContent: function() {
+
+      if (this.hideTooltip) {
+        return;
+      }
+
+      // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
+      var d = this.currentValues;
+
+      var timestamps = this.timestamps;
+
+      if (d === null) {
+        this.tooltip = null;
+        return;
+      }
+
+      var headerEnabled = true;
+      //Format function for the tooltip values column
+      var valueFormatter = function(d,i) {
+        return "<span class='gts-value'>"+ (+d.toFixed(4))+"</span>";
+      };
+
+      //Format function for the tooltip header value.
+      var headerFormatter = function(d) {
+        // console.debug("[warp10-display-chart] headerFormatter - timestamps", timestamps)
+        if (!timestamps) {
+            return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
+        }
+        return d;
+      };
+
+      var keyFormatter = function(d, i) {
+
+        var splitted = d.split(/[{}]/);
+        var classname = splitted[0];
+        var html = "<span class='gts-classname'>"+classname+"</span>"
+        if (splitted.length > 1) {
+          html += "<span class='gts-separator'>{</span>";
+
+          var labels = []
+          splitted[1].split(',').forEach(function(it) {
+            var item = it.split('=');
+            labels.push("<span class='gts-labelname'>"+item[0]+"</span><span class='gts-separator'>=</span>"
+                  + "<span class='gts-labelvalue'>"+item[1]+"</span>");
+          })
+          html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>";
+        }
+        return html;
+      };
+
+
+      var table = d3.select(document.createElement("div"));
+      table.classed("table");
+
+      if (headerEnabled) {
+        var theadEnter = table.selectAll("div.thead")
+          .data([d])
+          .enter().append("div").classed("thead", true);
+        theadEnter.append("div").classed("tr",true)
+          .append("div").classed("td", true)
+          .attr("colspan", 3)
+          .append("strong")
+          .classed("x-value", true)
+          .html(headerFormatter(d.xValue));
+
+      }
+
+      var tbodyEnter = table.selectAll("div.tbody")
+        .data([d])
+        .enter().append("div").classed("tbody", true);
+
+      var trowEnter = tbodyEnter.selectAll("div.tr")
+        .data(d.yValues)
+        .enter()
+        .append("div").classed("tr", true)
+        .classed("highlight", function(p) {
+          // console.debug("[warp10-display-chart] hightlight", p);
+          return p.highlight
+        });
+
+      trowEnter.append("div").classed("td", true)
+        .classed("legend-color-guide",true)
+        .append("div")
+        .style("background-color", function(p) { return p.color });
+
+      trowEnter.append("div").classed("td", true)
+        .classed("key",true)
+        .html(function(p, i) { return keyFormatter(p.name, i) });
+
+      trowEnter.append("div").classed("td", true)
+        .classed("value",true)
+        .html(function(p, i) { return valueFormatter(p.yval, i) });
+
+
+      trowEnter.selectAll("div.td").each(function(p) {
+        if (p.highlight) {
+          var opacityScale = d3.scale.linear().domain([0,1]).range(["#fff",p.color]);
+          var opacity = 0.6;
+          d3.select(this)
+            .style("border-bottom-color", opacityScale(opacity))
+            .style("border-top-color", opacityScale(opacity))
+        }
+      });
+
+      var html = table.node().outerHTML;
+      if (d.footer !== undefined)
+          html += "<div class='footer'>" + d.footer + "</div>";
+
+
+      //console.debug("[warp10-display-chart] _tooltipContent - window.innerWidth",  window.innerWidth);
+      //console.debug("[warp10-display-chart] _tooltipContent - chart width",  this.$$("#chart").style.width);
+      // console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect().width);
+      // console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect());
+      // console.debug("[warp10-display-chart] _tooltipContent - chart-tooltip getBoundingClientRect()",  this.$$(".chart-tooltip").getBoundingClientRect().width);
+
+
+
+      var windowWidth = window.innerWidth;
+      var chartLeftOffset = this.$.chart.getBoundingClientRect().left;
+      var chartWidth = this.$.chart.getBoundingClientRect().width;
+      var xCoord = this.currentValues.xCoord;
+      var yCoord = this.currentValues.yCoord;
+      var tooltipWidth = this.$$(".chart-tooltip").getBoundingClientRect().width
+
+
+
+      // Left, right or centerer
+      if ( chartLeftOffset + xCoord + tooltipWidth +20 > windowWidth ) {
+          if ( chartLeftOffset + xCoord - tooltipWidth -20 < 0 ) {
+            // Tooltip centered
+            this.$$(".chart-tooltip").style.left = (xCoord - tooltipWidth/2)+"px";
+            this.$$(".chart-tooltip").style.right = "auto";
+            this.$$(".chart-tooltip").style.top = (yCoord + 50)+"px";
+
+
+            var deb = {
+              innerWidth : window.innerWidth ,
+              tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+              xCoord: this.currentValues.xCoord,
+              yCoord: this.currentValues.yCoord,
+              sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width +20,
+              left: this.$$(".chart-tooltip").style.left,
+              right: this.$$(".chart-tooltip").style.right,
+              top:   this.$$(".chart-tooltip").style.top
+            }
+
+            // console.debug("[warp10-display-chart] _tooltipContent - tooltip to center", deb);
+
+          } else {
+            // Tooltip to the left
+
+            this.$$(".chart-tooltip").style.left = "auto";
+            this.$$(".chart-tooltip").style.right = ( chartWidth - xCoord + 20)+"px";
+            this.$$(".chart-tooltip").style.top = (yCoord - 50)+"px";
+
+
+            var deb = {
+              innerWidth : window.innerWidth ,
+              tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+              xCoord: this.currentValues.xCoord,
+              yCoord: this.currentValues.yCoord,
+              sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width +20,
+              left: this.$$(".chart-tooltip").style.left,
+              right: this.$$(".chart-tooltip").style.right,
+              top:   this.$$(".chart-tooltip").style.top
+            }
+
+            // console.debug("[warp10-display-chart] _tooltipContent - tooltip to the left", deb);
+          }
+      } else {
+        // Tooltip to the right
+        //this.$$(".chart-tooltip").style.right = "auto";
+        this.$$(".chart-tooltip").style.left = (xCoord +20)+"px";
+        this.$$(".chart-tooltip").style.top =  (yCoord - 50)+"px";
+
+        var deb = {
+          innerWidth : window.innerWidth ,
+          tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+          xCoord: this.currentValues.xCoord,
+          yCoord: this.currentValues.yCoord,
+          sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width +20,
+          left: this.$$(".chart-tooltip").style.left,
+          right: this.$$(".chart-tooltip").style.right,
+          top:   this.$$(".chart-tooltip").style.top,
+          width:   tooltipWidth,
+        }
+
+        // console.debug("[warp10-display-chart] _tooltipContent - tooltip to the right", deb);
+
+      }
+
+      this.tooltip = html;
+      // console.debug("[warp10-display-chart] _tooltipContent", html);
+
+    },
+
+    _gtsToC3Data: function(gtsList) {
+      var data = {
+        xs: {},
+        types: {},
+        names: {},
+        colors: {},
+        columns: [],        
+      };
+      for (var i in gtsList) {
+        var x = [ 'X'+i ];
+        var y = [ 'Y'+i ];
+        for (var j in gtsList[i].v) {
+          var ts = gtsList[i].v[j][0];
+          var value = gtsList[i].v[j][gtsList[i].v[j].length -1]
+          if (!this.timestamp) {
+            ts = Math.round(ts / 1000);
+          }
+          x.push(ts);
+          y.push(value)
+        }
+        data.xs['Y'+i] = 'X'+i;
+        switch(this._params.interpolate[i]) {
+          case 'linear':
+            this._params.interpolate[i] = 'line';
+            break;
+          case 'step-before':
+          case 'step-after':
+            this._params.interpolate[i] = 'step';
+            break;
+          case 'cardinal':
+            this._params.interpolate[i] = 'spline';
+            break;            
+        }
+        data.types['Y'+i] = this._params.interpolate[i];
+        data.names['Y'+i] = this._params.labels[i];
+        data.colors['Y'+i] =  this._params.colors[i];
+        data.columns.push(x);
+        data.columns.push(y);
+      }
+
+      console.debug("[warp10-display-chart] _gtsToC3Data", data);
+      return data;
+    },
+
+    _dataToChartLib: function(filteredResponse) {
+      var data = this._gtsToC3Data(filteredResponse.gts);
+      console.debug("[warp10-display-chart] _dataToChart - data", data);
+
+      var point = {
+        r: 0.5,
+        focus: {
+          expand: {
+            enabled: true,
+            r: 4,
+          }
+        }
+      }
+
+      var line = {
+        step: {
+          type: 'step-before'
+        }
+      };
+      var axis = {
+        x: {
+          tick: {}
+        },
+        y: {},
+      };
+      if (this.hideAxis) {
+        axis.x.show = false;
+        axis.y.show = false;
+
+      } else {        
+        axis.x.show = true;
+        axis.y.show = true
+
+        axis.x.tick = {
+          centered: true,
+          count: 5,        
+          outer: false,  
+          fit: true,
+        }
+        if (this.timestamps) {
+          axis.x.type = 'indexed';  
+          
+          axis.x.format = function(y) {
+            var value = y.toFixed(5);
+            var splittedValue = value.split('.');
+            var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+            var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
+            if (formattedDecimalPart.length == 0) {
+              return formattedIntPart;
+            }
+            return formattedIntPart+'.'+formattedDecimalPart;
+          }        
+        } else {
+          axis.x.type = 'timeseries';
+          axis.x.tick.format = '%Y-%m-%d %H:%M:%S'
+        }        
+        axis.y.tick = {
+          centered: true,  
+          outer: false,  
+          fit: true,
+          format: function(y) {
+            var value = y.toFixed(5);
+            var splittedValue = value.split('.');
+            var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+            var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
+            if (formattedDecimalPart.length == 0) {
+              return formattedIntPart;
+            }
+            return formattedIntPart+'.'+formattedDecimalPart;
+          }
+        };
+      }
+      var legend = {
+        hide: true,
+      };
+      var padding = {
+        right: 30
+      };
+      var tooltip = {
+        grouped: false // Default true
+      }
+      var grid = {
+        x: {
+          show: true
+        },
+        y: {
+          show: true
+        },         
+      };
+
+     var c3Data = {       
+        data: data,
+        axis: axis,
+        legend: legend,
+        point: point,
+        padding:padding,
+        line: line,
+        tooltip: tooltip,
+        grid: grid,
+      }
+      console.debug("[warp10-display-chart] _dataToChart - c3Data", JSON.stringify(c3Data));
+      c3Data.bindto= this.$.chart;
+      this.chart = c3.generate(c3Data);
+    }
+
+  });
+
+
+
+</script>

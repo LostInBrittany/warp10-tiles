@@ -1,0 +1,21 @@
+{
+  "name": "font-roboto-condensed",
+  "description": "An HTML import for Roboto Condensed",
+  "authors":  [
+    "Horacio Gonzalez <horacio.gonzalez@gmail.com>"
+  ],
+  "keywords": [
+    "font",
+    "roboto"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LostInBrittany/font-roboto-condensed.git"
+  },
+  "main": "roboto-condensed.html",
+  "license": "MIT",
+  "homepage": "https:/github.com/LostInBrittany/font-roboto-condensed/",
+  "ignore": [
+    "/.*"
+  ]
+}

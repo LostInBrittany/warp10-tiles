@@ -1,0 +1,41 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
+
+
+<dom-module is="warp10-dashboard-tile-container">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+      }
+      warp10-dashboard-element {
+        float:left;
+      }
+    </style>
+    <div class="tile-container">
+      <content></content>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-dashboard-tile-container",
+      
+      // Properties
+      properties: {
+      },
+      
+      // Lifecycle methods
+      attached: function() {      
+      }
+    });
+  </script>
+</dom-module>
+    
+      
+       

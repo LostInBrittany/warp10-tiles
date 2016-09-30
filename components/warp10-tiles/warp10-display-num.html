@@ -1,0 +1,80 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+
+<dom-module is="warp10-display-num">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <warp10-dashboard-tile 
+        tile="{{tile}}" description="[[description]]"
+        width="{{width}}" height="{{height}}"
+        bg-color="{{bgColor}}" fg-color="{{fgColor}}">
+      <div class="card-content">
+        <div class="main-content">        
+          <div id="value" class="value">[[_stringValue]]</div>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>  
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-display-num",
+      
+      behaviors: [ Warp10DisplayBehavior ],
+      
+      // Properties
+      properties: {        
+          
+            
+        /**
+         * The data to display
+         */
+        data: {
+          type: Number,
+          value: 0
+        },
+        
+        /**
+         *
+         */
+        _stringValue: {
+          type: String,
+          computed: "_getValueString(data)",
+          observer: "_textWidth"
+        },
+
+        _valueFontSize: {
+          type: Number,
+          value: 1
+        }
+      },
+      
+      // Computed properties' methods
+      _getValueString: function() {
+          return this.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      },
+
+      _textWidth: function() {
+        if ( this.$.value.clientWidth >= this.width) {
+          var currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
+          var newFontSize = currentFontSize * 0.9 + "px";
+          this.$.value.style.fontSize = newFontSize;
+          console.debug("[warp10-display-num] _textWidth - value.style", newFontSize);
+          this._textWidth();
+        }
+      }
+      
+    });
+  </script>
+</dom-module>

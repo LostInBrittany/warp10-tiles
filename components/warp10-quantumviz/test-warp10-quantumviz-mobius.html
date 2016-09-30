@@ -1,0 +1,117 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 - Quantumviz-Mobius demo</title>
+
+<style>
+  body {
+    background-color: #eeeeee;
+  }
+  .current-value {
+    padding-left:100px;
+  }
+  .container {
+    display: inline-block;
+    border: 1px solid #444;
+    padding:10px;
+    border-radius: 10px;
+    margin: 20px;
+  }
+
+
+</style>
+<script src=" ../webcomponentsjs/webcomponents-lite.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+    <link   rel="import" href=" ../warp10-quantumviz/warp10-display-alt-chart.html">
+
+<body>
+
+  <h1>Quantumviz</h1>
+
+<div class="container">
+  <template is="dom-bind" id="template">
+    <warp10-display-chart
+      width="800"
+      height="600"
+      data="[[data]]" ></warp10-display-chart>
+  </template>
+</div>  
+
+
+<script>
+      var template = document.querySelector('#template');
+  
+      var warpscript = `
+        NOW 'now' STORE       
+        NEWGTS
+        $now  2000000 - NaN NaN NaN $now  2000000 - 1000000 / 100  % ADDVALUE
+        $now  4000000 - NaN NaN NaN $now  4000000 - 1000000 / 100  % ADDVALUE
+        $now  6000000 - NaN NaN NaN $now  6000000 - 1000000 / 100  % ADDVALUE
+        $now  8000000 - NaN NaN NaN $now  8000000 - 1000000 / 100  % ADDVALUE
+        $now 10000000 - NaN NaN NaN $now 10000000 - 1000000 / 100  % ADDVALUE
+        $now 12000000 - NaN NaN NaN $now 12000000 - 1000000 / 100  % ADDVALUE
+
+
+        NEWGTS
+        $now  2000000 - NaN NaN NaN $now  2000000 - 2000000 / 10 % 2 **  ADDVALUE
+        $now  4000000 - NaN NaN NaN $now  4000000 - 2000000 / 10 % 2 **  ADDVALUE
+        $now  6000000 - NaN NaN NaN $now  6000000 - 2000000 / 10 % 2 **  ADDVALUE
+        $now  8000000 - NaN NaN NaN $now  8000000 - 2000000 / 10 % 2 **  ADDVALUE
+        $now 10000000 - NaN NaN NaN $now 10000000 - 2000000 / 10 % 2 **  ADDVALUE
+        $now 12000000 - NaN NaN NaN $now 12000000 - 2000000 / 10 % 2 **  ADDVALUE
+
+
+        2 ->LIST
+        'gts' STORE
+
+        'color' '#ff1010'
+        'key' 'Heartrate'
+        4 ->MAP
+        'color' '#1010ff'
+        'key' 'Speed'
+        4 ->MAP
+        2 ->LIST
+        'params' STORE
+
+        'interpolate' 'cardinal'
+        2 ->MAP
+        'globalParams' STORE
+
+        'gts' $gts
+        'params' $params
+        'globalParams' $globalParams
+        6 ->MAP
+      `;      
+
+      var ws = new WebSocket("wss://warp.cityzendata.net/dist/api/v0/mobius");
+
+      ws.onopen = function(evt) {
+        console.debug("WebSocket opened", evt);
+        ws.send(`<% ${warpscript} %> 2000 EVERY`);
+
+      }
+
+      ws.onmessage = function(evt) {
+        console.debug("WS message received", evt.data);
+        template.data = evt.data
+      }
+
+      ws.onerror = function(evt) {
+        console.debug("WS error", evt);
+      }
+
+      ws.onclose = function(evt) {
+        console.debug("WS closed", evt);
+      }
+
+
+</script>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

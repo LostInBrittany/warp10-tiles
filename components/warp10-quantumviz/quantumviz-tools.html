@@ -1,0 +1,306 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href="../warp10-iron/warp10-gts-tools.html">
+<link rel="import" href="../warp10-iron/warp10-color-tools.html">
+<link rel="import" href="../warp10-iron/warp10-looseJSON.html">
+
+<script>
+(function() {
+  var quantumvizGts = {};
+
+  /***********************************************************************************
+  * Quantumviw response format
+  *
+  *  {
+  *    gts: [ `gts_list` ],          // a LIST of GTS to plot
+  *    params: [ `parameter` ],      // a LIST of visualisation parameters for each GTS to plot
+  *    globalParams                  // (optional)  a MAP of global visualisations parameters
+  *  }
+  *
+  *  where each `parameter` in `params` or `annotationsParams` is:
+  *  {
+  *    key,                          // the legend to associate to the GTS
+  *    color                         // (optional) the color of the line,
+  *                                  //  as an CSS compliant color STRING (e.g.: #cc0505)
+  *  }
+  * and `globalParams` is :
+  *  {
+  *    interpolate                   // the interpolating function used. Default mode is
+  *                                  // `step-before`, other usual modes are `linear`, `basis`
+  *                                  // and `cardinal`
+  *  }
+  ***********************************************************************************/
+
+  /***********************************************************************************
+  * Constants
+  ***********************************************************************************/
+  quantumvizGts.MIN_TS = 0;
+  quantumvizGts.MAX_TS = Math.pow(2, 53) - 1;
+
+  /***********************************************************************************
+  * Transforms quantumviz response object into nvd3 graphs objects
+  ***********************************************************************************/
+  quantumvizGts.toNvd3Graph = function(data) {
+
+    if (!quantumvizGts.isValidResponse(data)) {
+      return false;
+    }
+
+    var response = {};
+    if (quantumvizGts.isValidGtsListResponse(data)) {
+      response.gts = data[0];
+      response.params = Array.apply(null, Array(data[0].length));
+      response.globalParams = {};
+    } else {
+      response = data[0];
+    }
+
+    var chartData = {}
+
+    var sparklines = [];
+    for (var i=0; i< response.gts.length; i++) {
+      // Let's verify if it's a GTS to plot
+      if (gtsTools.isGtsToPlot(response.gts[i])) {
+        var sl = quantumvizGts.gtsToNvd3(response.gts[i]);
+        if (response.params[i].key !== undefined) {
+          sl.key = response.params[i].key;
+        }
+        if (response.params[i].color !== undefined) {
+          sl.color = response.params[i].color;
+        }
+        sl.area = false;
+        if (response.params[i].interpolate !== undefined) {
+          sl.interpolate = response.params[i].interpolate;
+        } else if (response.globalParams.interpolate !== undefined){
+          sl.interpolate = response.globalParams.interpolate;
+        } else {
+          sl.interpolate = "linear";
+        }
+        sparklines.push(sl);
+      }
+    }
+
+    var tickFormat = function(d) {
+      var dx = sparklines[0].values[d] && sparklines[0].values[d].x || 0;
+      return dx ? d3.time.format('%x')(new Date(dx)) : '';
+    }
+
+    var globalParams = {}
+
+    if (response.globalParams !== undefined) {
+      if (response.globalParams.interpolate !== undefined) {
+        globalParams.interpolate = response.globalParams.interpolate;
+      } else {
+        globalParams.interpolate = "linear";
+      }
+      if (response.globalParams.dateFormat !== undefined) {
+        globalParams.dateFormat = response.globalParams.dateFormat;
+      } else {
+        globalParams.dateFormat = '%Y-%m-%dT%H:%M:%SZ';
+      }
+    }
+
+
+    chartData.sparklines = sparklines;
+    chartData.globalParams = globalParams;
+    chartData.tickFormat = tickFormat;
+
+    //console.debug("nvd3 data", chartData);
+    //console.debug(JSON.stringify(chartData))
+
+    return chartData;
+  };
+
+
+  /***********************************************************************************
+  * Transforms quantumviz response object into annotation objects
+  * If `timestamps` is true, timestamps shouldn't be converted to ms
+  ***********************************************************************************/
+  quantumvizGts.getAnnotations = function(data, timestamps) {    
+
+
+    console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
+    
+    if (!quantumvizGts.isValidResponse(data)) {
+      return [];
+    }
+    
+    
+    var response = {};
+    if (quantumvizGts.isValidGtsListResponse(data)) {
+      response.gts = data;
+      response.params = [];
+      for (var i in response.gts) {
+        response.params[i] = {}
+      }
+      response.globalParams = {};
+    } else {
+      response = data[0];
+    }
+
+    if (!gtsTools.isArray(response.gts)) {
+      return []
+    }
+        
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - response", response);
+
+    var annotations = [];
+
+    for (var i=0; i< response.gts.length; i++) {
+      // Let's verify if it's a GTS to plot
+      
+      if (gtsTools.isGtsToAnnotate(response.gts[i])) {
+        var annotation = quantumvizGts.gtsToNvd3(response.gts[i], timestamps);
+        if ((response.params !== undefined)
+            && (response.params[i].key !== undefined)) {
+          annotation.key = response.params[i].key;
+        } else {
+          annotation.key = annotation.c;
+        }
+        if ((response.params !== undefined)
+            && (response.params[i].color !== undefined)) {
+          annotation.color = response.params[i].color;
+        } else {
+          annotation.color = warp10ColorTools.getColor(i);
+        }
+        annotations.push(annotation);
+      }
+    }
+
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - annotations",annotations);
+    return annotations;
+  };
+
+  /***********************************************************************************
+  * Get time bounds for Nvd3 formatted GTS
+  ***********************************************************************************/
+  quantumvizGts.getTimeBounds = function(ndv3SeriesList) {
+
+    var bounds = {}
+
+    if (!gtsTools.isArray(ndv3SeriesList)) {
+      // console.error("[quantumvizGts.getTimeBounds] ndv3SeriesList isn't array",ndv3SeriesList);
+      return bounds;
+    }
+
+    bounds.min = quantumvizGts.MAX_TS;
+    bounds.max = quantumvizGts.MIN_TS;
+
+    ndv3SeriesList.forEach(function(ndv3Series) {
+      // console.debug("[quantumvizGts.getTimeBounds] Min:",ndv3Series.values[0].x)
+      // console.debug("[quantumvizGts.getTimeBounds] Max: ", ndv3Series.values[ndv3Series.values.length - 1].x);
+      if (bounds.min > ndv3Series.values[0].x) {
+        bounds.min = ndv3Series.values[0].x;
+      }
+      if (bounds.max < ndv3Series.values[ndv3Series.values.length - 1].x) {
+        bounds.max = ndv3Series.values[ndv3Series.values.length - 1].x;
+      }
+    });
+
+    // console.debug("[quantumvizGts.getTimeBounds] bounds...", bounds);
+    return bounds;
+  }
+
+  /***********************************************************************************
+  * Tranform a gts @gts into nvd3 format
+  * If `timestamps` is true, timestamps shouldn't be converted to ms
+  ***********************************************************************************/
+  quantumvizGts.gtsToNvd3 = function(gts, timestamps) {
+    var ndv3Series = {
+      key: "",
+      values: [],
+      c: "",
+      l: "",
+      id: ""
+    };
+    ndv3Series.c = gts.c;
+    ndv3Series.l = gts.l;
+    ndv3Series.id = gts.id;
+    ndv3Series.key = " " + gts.id + " - " + gts.c;
+    if (gts.l != null) {
+      ndv3Series.key += " - " + (JSON.stringify(gts.l));
+    }
+
+    if (gts.v !== undefined) {
+
+      // Sort values
+      gts.v = gts.v.sort(function(a, b) { return a[0] - b[0];});
+
+      //console.debug(gts)
+      for (var i = 0; i < gts.v.length; i++) {
+        var metric = gts.v[i];
+        var xVal = metric[0];
+        if (!timestamps) {
+          xVal = Math.round(xVal / 1000);
+        }
+        ndv3Series.values.push({x: xVal, y: metric[metric.length-1]});
+      }
+    }
+    return ndv3Series;
+  };
+
+  /***********************************************************************************
+  * Returns true if @data is a valid quantumviz response object
+  ***********************************************************************************/
+  quantumvizGts.isValidResponse = function(response) {
+    if (quantumvizGts.isValidDetailedResponse(response)) {
+      return true;
+    }
+    if (quantumvizGts.isValidGtsListResponse(response)) {
+      return true;
+    }
+    return false;
+
+  }
+
+  /***********************************************************************************
+  * Returns true if @data is a valid GTS list response object
+  ***********************************************************************************/
+  quantumvizGts.isValidGtsListResponse = function(response) {
+    if (!gtsTools.isArray(response) || response.length == 0) {
+      // console.debug("[warp10-quantumviz-tools] isValidGtsListResponse false - Response isn't an Array: ",response);
+      return false;
+    }
+    for (var i in response) {
+      if (!gtsTools.isGts(response[i])) {
+        // console.debug("[warp10-quantumviz-tools] isValidGtsListResponse false - Invalid GTS: ",response[i]);
+        return false;
+      }
+    }    
+    return  true;
+  }
+  /***********************************************************************************
+  * Returns true if @data is a valid detailed quantumviz response object
+  ***********************************************************************************/
+  quantumvizGts.isValidDetailedResponse = function(response) {
+    console.debug("[warp10-quantumviz-tools] isValidDetailedResponse", response);
+    if (!gtsTools.isArray(response) || (response.length != 1)) {
+     console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response isn't an Array or it has more than 1 element: ",response);
+      return false;
+    }
+    response = response[0];
+
+    if ((response.gts === undefined) || (response.params == undefined)) {
+      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response hasn't gts and/or params components",response);
+      return false;
+    }
+
+    if (!gtsTools.isArray(response.gts) || !gtsTools.isArray(response.params)) {
+      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and/or params components aren't arrays",response);
+      return false;
+    }
+
+    if (response.gts.length != response.params.length) {
+      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and params components haven't the same length",response);
+      return false;
+    }
+
+    return true;
+  };
+
+  window.quantumvizGts = quantumvizGts;
+}).call(this);
+</script>

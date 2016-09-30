@@ -1,0 +1,337 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<link rel="import" href=" ../polymer/polymer.html">
+<link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+
+<link rel="import" href="../warp10-quantumviz/warp10-display-alt-chart.html">
+<link rel="import" href="../warp10-quantumviz/quantumviz-tools.html">
+<link rel="import" href="../warp10-quantumviz/quantumviz-annotations.html">
+
+
+<!--
+<script src="./nv.d3.dev.js"></script>
+-->
+
+<!--
+Viz-only version of Quantum widget
+#### Example
+    <warp10-quantumviz>
+      NOW
+      1 2 +
+    </warp10-quantumviz>
+#### Options
+@homepage https://cityzendata.com
+-->
+
+<dom-module name="warp10-quantumviz" >
+  <template>
+    <style>
+      :host {
+      }
+      .widget {
+        position: relative;
+      }
+      #content {
+        display: none;
+      }
+      #vertGuide {
+        width:0px;
+        height: 100%;
+        border: solid 1px #aaaaaa;
+        z-index: 500;
+        position: absolute;
+        left: 250px;
+        display: none;
+      }
+
+    </style>
+    <div class="widget">
+
+      <spinner-widget id="spinner" active={{loading}} hover size="50" line-width="10px" container-height="{{height}}"></spinner-widget>
+
+      <div id="vertGuide"></div>
+
+      <quantumviz-annotations
+        time-bounds={{timeBounds}}
+        chart-area={{chartArea}}
+        data={{data}}
+        vert-guide={{vertGuide}}
+        width="{{width}}"
+        selected-timestamp="{{annotationsSelectedTimestamp}}"
+        >
+      </quantumviz-annotations>
+
+      <warp10-display-chart
+        id="warp10-display-chart"
+        width={{width}}
+        height={{height}}
+        data={{data}}
+        current-values={{currentValues}}
+        line-width={{lineWidth}}
+        hide-axis={{hideAxis}}
+        hide-tooltip={{hideTooltip}}
+        show-legend={{showLegend}}
+        time-bounds={{timeBounds}}
+        chart-area={{chartArea}}
+        ></warp10-display-chart>
+
+      <warp10-warpscript-caller
+        id="warpscriptcaller"
+        url="{{_baseUrl}}" warpscript="{{warpscriptScript}}"
+        on-response="_handleResponse"  on-error="_handleError"
+        loading="{{loading}}" reload="{{reload}}">
+      </warp10-warpscript-caller>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  // element registration
+  Polymer({
+    is: "warp10-quantumviz",
+    properties: {
+      /**
+       * The chart width, in pixels
+       */
+      width: {
+        type: Number,
+        value: -1
+      },
+      /**
+       * The chart height, in pixels
+       */
+      height: {
+        type: Number,
+        value: -1
+      },
+      /**
+       * The Warp 10 instance
+       */
+      host: {
+        type: String,
+        value: "",
+        observer: '_paramsChanged'
+      },
+      /**
+       * The data of the chart
+       */
+      data: {
+        type: Array,
+        notify: true
+      },
+      /**
+       * The values of the lines on the chart at the mouseover postion
+       */
+      currentValues: {
+        type: Object,
+        notify: true
+      },
+      /**
+      * The width of the lines on the chart
+      * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+      */
+      lineWidth: {
+        type: Number,
+        value: 1.75
+      },
+      /**
+       * If true, axis aren't shown
+       */
+      hideAxis: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * If true, tooltip isn't shown
+       */
+      hideTooltip: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * If true, legend is shown
+       */
+      showLegend: {
+        type: Boolean,
+        value: false
+      },
+      reload: {
+        type: Number,
+        value: -1
+      },
+      content: {
+        type: String,
+        observer: '_paramsChanged'
+      },
+      timeBounds: {
+        type: Object,
+        notify: true
+      },
+      vertGuide: {
+        type: Number,
+        observer: 'vertGuideChanged'
+      },
+      warpscript: {
+        type: String,
+        observer: '_paramsChanged'
+      },
+      _baseUrl: {
+        type: String,
+        computed: "get_baseUrl(host,oldPath)"
+      },
+      oldPath: {
+        type: String,
+        value: ""
+      },
+      loading: {
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      annotationsSelectedTimestamp: {
+        type: Number,
+        notify: true,
+        observer: "_annotationsSelectedTimestampChanged",
+        value: -1
+      },
+      /**
+       * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
+       */
+      noAuto: {
+        type: Boolean,
+        value: false
+      },
+      _readyToCall: {
+        type: Boolean,
+        computed: "_isReadyToCall(host, _rawWarpscriptScript, noAuto)"
+      },
+      _rawWarpscriptScript: {
+        type: String,
+        value: ""
+      },
+    },
+    ready: function() {
+    },
+    attached: function() {
+      // console.debug("[warp10-quantumviz] attached - calling configure()", this.blockCalls);
+      this.isAttached = true;
+      this.configure();
+      this.generateWarpScript();
+      if (this._readyToCall) {
+        this.generateRequest();
+      }
+    },
+    detached: function() {
+      // console.debug("[warp10-quantumviz] detached");
+      this.isAttached = false;
+    },
+    generateRequest: function() {
+      // console.debug("[warp10-quantumviz] generateRequest");
+      this.$.warpscriptcaller.generateRequest();  
+    },
+    _isReadyToCall: function() {
+      // console.debug("[warp10-quantumviz] _isReadyToCall ",(this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
+      return ( (! this.noAuto) && (this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
+    },
+    _annotationsSelectedTimestampChanged: function() {
+      // console.debug("[warp10-quantumviz] _annotationsSelectedTimestampChanged", this.annotationsSelectedTimestamp);
+    },
+    configure: function() {
+
+      // Dimensions
+      if (this.width <0) {
+        this.$$(".widget").style.width = "100%";
+      } else {
+        this.$$(".widget").style.width = (parseInt(this.width))+"px";
+      }
+      // console.debug("[test-quantumviz] configure - end");
+    },
+    get_baseUrl: function() {
+      return this.host + "/exec"+this.oldPath;
+    },
+
+    generateWarpScript: function() {
+      // console.debug("[warp10-quantumviz] generateWarpScript", this.warpscript);
+      this._rawWarpscriptScript;
+      if (this.warpscript !== undefined && this.warpscript.length > 0) {
+        // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript found", this.warpscript);
+        this._rawWarpscriptScript = this.warpscript.trim()
+      } else {
+        // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript not found");
+        if (this.content !== undefined && this.content.length > 0) {
+          // console.debug("[warp10-quantumviz] generateWarpScript - using content for WarpScript", this.content);
+          this._rawWarpscriptScript = this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
+        } else {
+          // console.debug("[warp10-quantumviz] generateWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
+          this._rawWarpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+        }
+      }
+      // WarpScript
+      //this.inputWarpScriptVariables = ""+this.width<0?"100%":this.width+" 'width' STORE ";
+      var inputWarpScriptVariables = ""+Math.floor(this.$$('warp10-display-chart').getBoundingClientRect().width)+" 'width' STORE ";
+      
+      // console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
+
+      this.warpscriptScript = inputWarpScriptVariables+this._rawWarpscriptScript;
+      
+      // console.debug("[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript", this._rawWarpscriptScript);
+
+    },
+    _paramsChanged: function() {
+      if (!this.isAttached) {
+        return;
+      }
+      this.generateWarpScript();
+      
+      console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
+      
+      if ( this._readyToCall) {
+        this.generateRequest();
+      }
+    },
+    vertGuideChanged: function(event) {
+      if (this.vertGuide >0) {
+        this.$.vertGuide.style.display = "inline-block";
+        this.$.vertGuide.style.left = this.vertGuide+"px";
+      } else {
+        this.$.vertGuide.style.display = "none";
+      }
+    },
+    _handleResponse: function(event, response) {    
+        
+        // console.debug("[warp10-quantumviz] _handleResponse", response);  
+        if (!response.stack ||
+          !response.stack instanceof Array ) {
+          this.data = null;
+          return;
+        }        
+        this.elapsed = response.options.elapsed;
+        this.data = response.stack;  
+        this._hasAResponse = true;
+        this._hasAnError = false;
+        
+        
+        // console.debug("[warp10-quantumviz] _handleResponse - parsed - dataChanged", this.data);
+    },    
+    _handleError: function(event, error) {        
+        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1]; 
+        } else {
+          this.errorMsg =  error.request.statusText;
+        }
+        
+        // console.debug("[warp10-quantumviz] _handleError", { error: error, errorMsg: this.errorMsg });
+        
+        this.elapsed = error.elapsed;
+        this._hasAResponse = false;
+        this._hasAnError = true;       
+        
+        // console.debug("[warp10-quantumviz] _handleError - _hasAResponse", this._hasAResponse);
+    },    
+
+  }
+);
+</script>

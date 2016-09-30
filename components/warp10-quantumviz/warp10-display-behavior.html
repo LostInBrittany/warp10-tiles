@@ -1,0 +1,299 @@
+
+<link rel="import" href="../warp10-iron/warp10-color-tools.html">
+
+<link rel="import" href="../warp10-quantumviz/quantumviz-tools.html">
+
+<script>
+
+  Warp10DisplayBehavior = {
+    // Properties
+    properties: {
+      /**
+       * The data of the chart
+       */
+      data: {
+        type: Object,
+        notify: true,
+        observer: 'dataChanged'
+      },
+      /**
+       * The values of the lines at the mouseover postion
+       */
+      currentValues: {
+        type: Object,
+        notify: true,
+        observer: "currentValuesChanged"
+      },
+      /**
+       * The width of the lines on the chart
+       * It must be a number between _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+       */
+      lineWidth: {
+        type: Number,
+        value: 1.75
+      },
+      /**
+       * If true, axis aren't shown
+       */
+      hideAxis: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * If true, tooltip isn't shown
+       */
+      hideTooltip: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * If true, legend isn't shown
+       */
+      showLegend: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * Displayed data time bounds
+       */
+      timeBounds: {
+        type: Object,
+        notify: true
+      },
+      /**
+       * Displayed data value bounds
+       */
+      valueBounds: {
+        type: Object,
+        notify: true
+      },
+      /**
+        * The chart area
+        */
+      chartArea: {
+        type: Array,
+        notify: true
+      },
+
+      /**
+        * The tooltip
+        */
+      tooltip: {
+        type: String,
+        observer: "tooltipChanged",
+        notify: true,
+        value: ""
+      },
+
+      /**
+       * If true, X scale will be in timestamp
+        */
+      timestamps: {
+        type: Boolean,
+        value: false
+      },
+
+      // Constants
+      _MIN_LINE_WIDTH: 1,
+      _MAX_LINE_WIDTH: 20,
+
+      _params: {
+        type: Object,
+        value: function() {
+          return {};
+        },
+      },
+    },   
+    observers: [
+      'dataChanged(data.*, timestamps)'
+    ],
+
+    //*************************************************************************
+    // Lifecycle methods
+    //*************************************************************************    
+    created: function(){
+      // console.debug("[warp10-display-behavior] created");
+    },
+    ready: function() {
+      // console.debug("[warp10-display-behavior] ready - begin", {width: this.width, height: this.height});
+      this.configure();
+      this.isReady = true;
+      if (this.data != null) {
+        this.dataChanged()
+      }
+      // tooltip key width
+      this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
+      this.updateStyles();
+      // console.debug("[warp10-display-behavior] ready - end");
+    },
+    attached: function(){
+    },
+
+
+    //*************************************************************************
+    // Observers
+    //*************************************************************************
+
+    /**
+     * Refresh chart when data changes
+     */
+    dataChanged: function() {
+      if (!this.isReady) {
+        // Component not ready yet
+        return;
+      }
+      this.debounce('dataChanged', function() {
+        // console.debug("[warp10-display-behavior] dataChanged() - ", this.data);
+        this._dataToChart()
+      }, 100);
+    },
+
+
+         
+    //*************************************************************************
+    // Instance methods
+    //*************************************************************************
+    /**
+     * Initial settings
+     */
+    configure: function() {
+      // console.debug("[warp10-display-behavior] configure");
+      // Line width
+      if (this.lineWidth < this._MIN_LINE_WIDTH || this.lineWidth > this._MAX_LINE_WIDTH) {
+          this.lineWidth = 1.5;
+      }
+      // console.debug("[warp10-display-behavior] configure -lineWidth", this.lineWidth);
+    },  
+    /**
+     * Remove chart when no data is present
+     */
+    _removeChartData: function() {
+      // console.debug("[warp10-display-behavior] _removeChartData");
+      if (this.chart) {
+        this.chart.destroy();
+        this.chart = null;
+      }
+    },
+    /**
+     * Parses data and put it in chart format
+     */
+    _dataToChart: function() {
+
+      var context = this;
+
+      // console.debug("[warp10-display-behavior] _dataToChart", {data: data});
+
+      // If no data, we remove the chart
+      if (!this.data) {
+        console.debug("[warp10-display-behavior] No data");
+        this._removeChartData();
+        return;
+      }
+
+      // If data is an string, we parse it
+      if (typeof this.data  === 'string') {
+        this.data = looseJSON.parse(this.data)[0];
+        console.debug("[warp10-display-behavior] _dataToChart - Data from String", this.data);
+      }
+
+      if (!quantumvizGts.isValidResponse(this.data)) {
+        console.error("[warp10-display-behavior] Received invalid data", this.data);
+        this._removeChartData();
+        return;
+      }
+
+      var response = {};
+      
+      if (quantumvizGts.isValidGtsListResponse(this.data)) {
+        // If data is a GTS list, we craft a quantumviz response object for it 
+        response.gts = this.data;
+        response.params = [];
+        for (var i in response.gts) {
+          response.params[i] = {}
+        }
+        response.globalParams = {};
+      } else {
+        // else we assume that data is a quantumviz response object
+        response = this.data[0];
+      }
+
+      // console.debug("[warp10-display-behavior] _dataToChart - Data to plot", response);
+
+      var filteredResponse = {
+        gts:[],
+        params:[],
+        globalParams:response.globalParams
+      };
+      // We filter to keep only the plottable gts
+      for (var i=0; i<response.gts.length;i++){
+        if (gtsTools.isGtsToPlot(response.gts[i])) {
+          filteredResponse.gts.push(response.gts[i]);
+          filteredResponse.params.push(response.params[i]);
+        }
+      }
+
+      console.debug("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse);
+
+      if (filteredResponse.gts.length == 0) {
+        // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
+        this._removeChartData();
+        return;
+      }
+      this._getParamsFromData(filteredResponse);
+      this._dataToChartLib(filteredResponse);
+    },
+
+    _getParamsFromData: function(quantumvizObj) {      
+      var labels = []; 
+      var colors = [];
+      var interpolate = [];
+      var strokeWidth = [];
+      for (var i=0; i< quantumvizObj.params.length; i++) {
+
+        // console.debug("[warp10-display-chart]  quantumvizObj.gts", quantumvizObj.gts[i]);
+        // console.debug("[warp10-display-chart]  quantumvizObj.params", quantumvizObj.params[i]);
+        if (quantumvizObj.params[i].key !== undefined) {
+          labels[i] = quantumvizObj.params[i].key;
+        } else {
+          // console.debug("[warp10-display-chart] _dataToChart -  key", quantumvizObj.gts[i]);
+          labels[i] = gtsTools.serializeGtsMetadata(quantumvizObj.gts[i]);
+        }
+        if (quantumvizObj.params[i].color !== undefined) {
+          colors[i] = quantumvizObj.params[i].color;
+        } else {
+          colors[i] = warp10ColorTools.getColor(i);
+        }
+
+        if (quantumvizObj.params[i].interpolate !== undefined) {
+          interpolate[i] = quantumvizObj.params[i].interpolate;
+        } else if (quantumvizObj.globalParams.interpolate !== undefined){
+          interpolate[i] = quantumvizObj.globalParams.interpolate;
+        } else {
+          interpolate[i] = "line";
+        }
+
+        if (quantumvizObj.params[i].strokeWidth !== undefined) {
+          strokeWidth[i] = quantumvizObj.params[i].strokeWidth;
+        } else if (quantumvizObj.globalParams.lineWidth !== undefined){
+          strokeWidth[i] = quantumvizObj.globalParams.strokeWidth;
+        } else {
+          strokeWidth[i] = this.lineWidth;
+        }
+      }
+
+      this._params = {
+        labels: labels,
+        colors: colors,
+        interpolate: interpolate,
+        strokeWidth: strokeWidth
+      }
+      if (quantumvizObj.globalParams.timestamps) {
+        this.timestamps = true;
+      }
+      var xlabel = quantumvizObj.globalParams.xLabel;
+      var ylabel = quantumvizObj.globalParams.yLabel;    
+    }
+
+  }
+
+</script>  
