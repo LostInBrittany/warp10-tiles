@@ -25,39 +25,32 @@
 
   <template is="dom-bind" id="template1">
     <warp10-dashboard-element 
-      warpscript-script="[[warpscript]]"
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
       warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
-      warpscript-reload="[[reload]]"></warp10-dashboard-element>
-  </template>
-  <template is="dom-bind" id="template2">
+      icon-for-true="./img/ventilator.gif"
+      icon-for-false="./img/ventilator-off.gif"
+      use-external-images=true
+      warpscript-reload="2"></warp10-dashboard-element>
     <warp10-dashboard-element 
-      warpscript-script="[[warpscript]]"
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
       warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
-      warpscript-reload="[[reload]]"
-      controller-url="[[url]]" 
+      icon-for-true="./img/ventilator.gif"
+      icon-for-false="./img/ventilator-off.gif"
+      use-external-images=true
+      controller-url="./service" 
+      controller></warp10-dashboard-element>
+
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      warpscript-reload="2"></warp10-dashboard-element>
+    <warp10-dashboard-element 
+      warpscript-script="  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
+      warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+      controller-url="./service" 
       controller></warp10-dashboard-element>
   </template>
   <script>
-      var template1 = document.querySelector('#template1');
-
-      template1.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
-      template1.reload = "2";
-      template1.label = "A changing boolean";
-      template1.tile = "normal";
-      template1.fgColor = "white";
-      template1.bgColor = "orange";
-      template1.description = "This is an example of changing boolean";
-
-      var template2 = document.querySelector('#template2');
-
-      template2.warpscript = "  NOW 2 % TOBOOLEAN 'data' STORE  <% $data false == %> <% 'red' 'bgColor' STORE %>  <% 'orange' 'bgColor' STORE %> IFTE 'boolean' 'type' STORE { 'tile' '' 'fgColor' 'white' 'bgColor' $bgColor 'label' '' 'data' $data } 'params' STORE { 'type' $type 'params' $params } "
-      template2.reload = "2";
-      template2.label = "A changing boolean";
-      template2.tile = "normal";
-      template2.fgColor = "white";
-      template2.bgColor = "orange";
-      template2.description = "This is an example of changing boolean";
-      template2.url = "./service"
 
   </script>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>

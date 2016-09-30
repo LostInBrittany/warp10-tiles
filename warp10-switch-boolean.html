@@ -4,6 +4,8 @@
 @license Apache 2.0
 -->
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
+
 
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
@@ -33,6 +35,10 @@
       #booleanIcon {
         --iron-icon-height: 64px;
         --iron-icon-width: 64px;
+      }
+      #imageIcon {
+        width: 64px;
+        height: 64px;
       }
       .switchbar iron-icon {
         --iron-icon-height: 18px;
@@ -64,15 +70,24 @@
         <div class="main-content">        
           <div class="vertical">
             <div id="value" class="value">
-              <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+              <template is="dom-if" if="{{!useExternalImages}}">
+                <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+              </template> 
+              <template is="dom-if" if="{{useExternalImages}}">
+                <iron-image id="imageIcon" src="{{_iconName}}" sizing="contain"></iron-image>
+              </template>
             </div>
             <div class="horizontal switchbar">
-              <iron-icon icon="{{iconForFalse}}"></iron-icon>
+              <template is="dom-if" if="{{!useExternalImages}}">
+                <iron-icon icon="{{iconForFalse}}"></iron-icon>
+              </template>
               <paper-toggle-button
                   id="switch"
                   disabled="{{_disabled}}"
                   on-change="_callService"></paper-toggle-button>
-              <iron-icon icon="{{iconForTrue}}"></iron-icon>
+              <template is="dom-if" if="{{!useExternalImages}}">
+                <iron-icon icon="{{iconForTrue}}"></iron-icon>
+              </template>
             </div>
           </div>
         </div>
@@ -114,6 +129,10 @@
           value: "clear"
         },
 
+        useExternalImages:{
+          type: Boolean,
+          value: false
+        },
 
         /**
          * Switch service url

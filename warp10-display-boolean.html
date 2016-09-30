@@ -4,6 +4,7 @@
 @license Apache 2.0
 -->
 <link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
 
 <link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
@@ -19,6 +20,10 @@
         --iron-icon-height: 64px;
         --iron-icon-width: 64px;
       }
+      #imageIcon {
+        width: 64px;
+        height: 64px;
+      }
     </style>
     <warp10-dashboard-tile 
         tile="{{tile}}" description="[[description]]"
@@ -27,7 +32,12 @@
       <div class="card-content">
         <div class="main-content">        
           <div id="value" class="value">
-            <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+            <template is="dom-if" if="{{!useExternalImages}}">
+              <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+            </template> 
+            <template is="dom-if" if="{{useExternalImages}}">
+              <iron-image id="imageIcon" src="{{_iconName}}" sizing="contain"></iron-image>
+            </template>
           </div>
         </div>
         <div class="label">[[label]]</div>
@@ -53,21 +63,24 @@
         },
         
         /**
-         * Icon to show when the value est true
+         * Icon to show when the value is true
          */
         iconForTrue: {
           type: String,
           value: "check"
         },
         /**
-         * Icon to show when the value est true
+         * Icon to show when the value is true
          */
         iconForFalse: {
           type: String,
           value: "clear"
         },
 
-
+        useExternalImages:{
+          type: Boolean,
+          value: false
+        },
         /**
          *
          */

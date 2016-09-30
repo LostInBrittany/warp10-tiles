@@ -26,6 +26,7 @@
     "polymer": "^1.6.0",
     "iron-ajax": "PolymerElements/iron-ajax#^1.4.3",
     "iron-icons": "PolymerElements/iron-icons#^1.1.3",
+    "iron-image": "PolymerElements/iron-image#^1.2.5",
     "iron-meta": "PolymerElements/iron-meta#^1.1.1",
     "paper-progress": "PolymerElements/paper-progress#^1.0.9",
     "font-roboto": "PolymerElements/font-roboto#^1.0.1",
