@@ -44,28 +44,60 @@
           type: Number,
           value: 0
         },
-        
+        /**
+         * The number of decimal digits to show, default all
+         */
+        precision: {
+          type: Number,
+          value: -1
+        },
         /**
          *
          */
         _stringValue: {
           type: String,
-          computed: "_getValueString(data)",
+          computed: "_getValueString(data, precision)",
           observer: "_textWidth"
         },
 
         _valueFontSize: {
           type: Number,
           value: 1
-        }
+        }, 
+
+        _isAttached: {
+          type: Boolean,
+          value: false
+        },
+      },
+      observers: [
+        "_textWidth(_stringValue, width, _isAttached)"
+      ],
+
+      // Lifecycle
+      attached: function() {
+        this._isAttached = true;
       },
       
       // Computed properties' methods
       _getValueString: function() {
-          return this.data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        var data = this.data;
+        if (this.precision >= 0) {
+          data = Math.floor(data*Math.pow(10,this.precision))/Math.pow(10,this.precision);
+        } 
+        var dataString = data.toString().split('.');
+        var result = dataString[0].replace(/(\d)+(\d{3})+/g, "$1 $2");
+        if (dataString.length >0) {
+          result += "."+ dataString[1];
+        }
+        return result;
       },
 
       _textWidth: function() {
+        if (!this.width ||!this._isAttached) {
+          return;
+        }
+        console.debug("[warp10-display-num] _textWidth",  this.$.value.clientWidth, this.width);
         if ( this.$.value.clientWidth >= this.width) {
           var currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
           var newFontSize = currentFontSize * 0.9 + "px";

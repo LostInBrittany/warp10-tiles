@@ -27,11 +27,27 @@
     fg-color="[[fgColor]]"
     bg-color="[[bgColor]]"
     description="[[description]]"></warp10-display-num>
+  <warp10-display-num 
+    data="[[data]]" 
+    label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
+    precision="1"
+    description="[[description]]"></warp10-display-num>
+  <warp10-display-num 
+    data="[[data]]" 
+    label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
+    precision="2"
+    description="[[description]]"></warp10-display-num>
 </template>
 <script>
       var template = document.querySelector('#template');
 
-      template.data = 42;
+      template.data = 4242.123456;
 
       template.label = "A nice num";
       template.tile = "normal";
