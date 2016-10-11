@@ -13,7 +13,7 @@
     }
   ],    
   "company":"Cityzen Data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "lessDashboardTileCSS": "./node_modules/.bin/lessc ./less/warp10-dashboard-styles.less ./css/warp10-dashboard-styles.css",
     "less": "npm-run-all lessDashboardTileCSS",

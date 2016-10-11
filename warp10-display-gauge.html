@@ -16,22 +16,26 @@
       }
 
       paper-progress {
-      --paper-progress-active-color: var(--color);
-      --paper-progress-secondary-color: var(--sndcolor);
-      --paper-progress-height: var(--height);
-      width: var(--width);
-      height: var(--height);
-    }
-
-    .value {
-      font-size: 1.5em;
-      /*
-      margin-top: var(--margin);
-      margin-bottom: var(--margin);
-      margin-left: 10px;
-      margin-right: 10px;
-      */
-    }
+        --paper-progress-active-color: var(--color);
+        --paper-progress-secondary-color: var(--sndcolor);
+        --paper-progress-height: var(--height);
+        width: var(--width);
+        height: var(--height);
+      }
+      paper-progress.outside_bounds {
+        -webkit-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+        -moz-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+        box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+      }
+      .value {
+        font-size: 1.5em;
+        /*
+        margin-top: var(--margin);
+        margin-bottom: var(--margin);
+        margin-left: 10px;
+        margin-right: 10px;
+        */
+      }
 
 
     </style>
@@ -44,8 +48,8 @@
 
           <div class="value" id="content">{{_stringValue}}</div>
 
-          <paper-progress id="progress" value="{{data.value}}" secondary-progress="{{data.secondaryValue}}" 
-              min="{{data.min}}" max="{{data.max}}">
+          <paper-progress id="progress" value="[[data.value]]" secondary-progress="{{data.secondaryValue}}" 
+              min="{{data.min}}" max="{{data.max}}" class$="[[_outsideBounds]]">
           </paper-progress>
         </div>
         <div class="label">[[label]]</div>
@@ -92,7 +96,12 @@
         _isAttached: {
           type: Boolean,
           value: false
-        },       
+        }, 
+
+        _outsideBounds: {
+          type: String,
+          computed: "_isOutsideBounds(data)"
+        }      
 
       },
       
@@ -124,6 +133,13 @@
 
       _getValueString: function() {
           return this.data.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+       },
+       _isOutsideBounds: function() {
+         //console.debug("[warp10-display-gauge] _isOutsideBounds ",this.data.value, this.data.max, this.data.min)
+        if (this.data.value > this.data.max || this.data.value < this.data.min) {
+          return "outside_bounds";
+        }
+        return "";
        },
       
       // Other methods
