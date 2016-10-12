@@ -7,7 +7,7 @@
 
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
-<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+<link rel="import" href="../warp10-tiles/warp10-tile-behavior.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-tile-dimensions.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-color-palette.html">
@@ -129,7 +129,7 @@
       // Element identity
       is:"warp10-dashboard-element",
       
-      behaviors: [ Warp10DisplayBehavior ],
+      behaviors: [ Warp10TileBehavior ],
       
       // Properties
       properties: {        
@@ -283,7 +283,7 @@
         
         console.debug("[warp10-dashboard-element] _paramsChanged called",  {tile:this.tile, width: this.width, height: this.height,  usefulWidth: this.usefulWidth, usefulHeight: this.usefulHeight, _dimensionsReady: this._dimensionsReady, warpscriptScript: this.warpscriptScript});  
         if (this._dimensionsReady ) {
-          // console.debug("[warp10-dashboard-element] _paramsChanged generateRequest"); 
+          console.debug("[warp10-dashboard-element] _paramsChanged generateRequest"); 
           this.$.warpscriptcaller.generateRequest();          
         }
         
@@ -355,6 +355,7 @@
       
       // Computed properties' methods
       _areDimensionsReady: function() {
+        console.debug("[warp10-dashboard-element] _areDimensionsReady",this.width, this.height )
         if (this.width === undefined || this.height === undefined 
             || this.width == 0 || this.height == 0  
             || this.usefulWidth === undefined || this.usefulHeight === undefined 

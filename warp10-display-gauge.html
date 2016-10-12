@@ -6,7 +6,7 @@
 <link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
-<link rel="import" href="../warp10-tiles/warp10-display-numeric-behavior.html">
+<link rel="import" href="../warp10-tiles/warp10-tile-num-behavior.html">
 
 <dom-module is="warp10-display-gauge">
   <template>    
@@ -61,7 +61,7 @@
       // Element identity
       is:"warp10-display-gauge",
       
-      behaviors: [ Warp10DisplayNumericBehavior ],
+      behaviors: [ Warp10TileNumericBehavior ],
 
       // Properties
       properties: {
