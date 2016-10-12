@@ -1,0 +1,29 @@
+<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+
+<script>
+  Warp10DisplayNumericBehaviorImpl = {
+    properties: {
+      /**
+        * The number of decimal digits to show, default all
+        */
+      precision: {
+        type: Number,
+        value: -1
+      },
+
+    },
+    _getDisplayValue: function(data) {
+     if (this.precision >= 0) {
+          data = Math.floor(data*Math.pow(10,this.precision))/Math.pow(10,this.precision);
+        } 
+        var dataElements = data.toString().split('.');
+        var dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$1 $2");
+        if (dataElements.length >1) {
+          dataAsString += "."+ dataElements[1];
+        }
+        return dataAsString; 
+    }
+  }
+
+  Warp10DisplayNumericBehavior = [ Warp10DisplayBehavior, Warp10DisplayNumericBehaviorImpl ];
+</script>

@@ -6,7 +6,7 @@
 <link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
 <link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
-<link rel="import" href="../warp10-tiles/warp10-display-behavior.html">
+<link rel="import" href="../warp10-tiles/warp10-display-numeric-behavior.html">
 
 <dom-module is="warp10-display-gauge">
   <template>    
@@ -46,7 +46,7 @@
       <div class="card-content">
         <div class="main-content">  
 
-          <div class="value" id="content">{{_stringValue}}</div>
+          <div class="value" id="content">{{_getDisplayValue(data.value)}}</div>
 
           <paper-progress id="progress" value="[[data.value]]" secondary-progress="{{data.secondaryValue}}" 
               min="{{data.min}}" max="{{data.max}}" class$="[[_outsideBounds]]">
@@ -61,7 +61,7 @@
       // Element identity
       is:"warp10-display-gauge",
       
-      behaviors: [ Warp10DisplayBehavior ],
+      behaviors: [ Warp10DisplayNumericBehavior ],
 
       // Properties
       properties: {
@@ -81,13 +81,6 @@
               secondaryColor: "#B7E1CD"
             };
           }
-        },
-      /**
-         *
-      */
-        _stringValue: {
-          type: String,
-          computed: "_getValueString(data.value)"
         },
 
         /**
@@ -130,10 +123,6 @@
         }         
         this.customStyle['--sndcolor'] = this.sndGaugeColor;
       },
-
-      _getValueString: function() {
-          return this.data.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-       },
        _isOutsideBounds: function() {
          //console.debug("[warp10-display-gauge] _isOutsideBounds ",this.data.value, this.data.max, this.data.min)
         if (this.data.value > this.data.max || this.data.value < this.data.min) {
