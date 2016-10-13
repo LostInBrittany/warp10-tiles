@@ -29,11 +29,12 @@
     "iron-image": "PolymerElements/iron-image#^1.2.5",
     "iron-meta": "PolymerElements/iron-meta#^1.1.1",
     "paper-progress": "PolymerElements/paper-progress#^1.0.9",
+    "paper-slider": "PolymerElements/paper-slider#^1.0.11",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.0",
     "font-roboto": "PolymerElements/font-roboto#^1.0.1",
     "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
-    "warp10-iron": "cityzendata/warp10-iron#^1.1.3",
-    "warp10-quantumviz": "cityzendata/warp10-quantumviz#^1.3.0",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.0"
+    "warp10-iron": "cityzendata/warp10-iron#^1.1.5",
+    "warp10-quantumviz": "cityzendata/warp10-quantumviz#^1.3.10"
   },
   "resolutions": {
     "polymer": "^1.6.0"
