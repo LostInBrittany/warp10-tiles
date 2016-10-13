@@ -231,7 +231,7 @@
         this._waitingForResultMode = true; 
         this._sendingMode = false;
         console.debug("[warp10-switch-boolean] _handleServiceResponse", request.response);
-        this.fire('service-response', response);        
+        this.fire('service-response', request.response);        
       },
       _handleServiceError: function(evt, error) {
         evt.stopPropagation();
