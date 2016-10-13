@@ -16,6 +16,7 @@
 <link   rel="import" href=" ../polymer/polymer.html">
 
 <link   rel="import" href=" ../warp10-tiles/warp10-display-gauge.html">
+<link   rel="import" href=" ../warp10-tiles/warp10-switch-gauge.html">
 </head>
 <body>
 
@@ -27,12 +28,19 @@
     fg-color="[[fgColor]]"
     bg-color="[[bgColor]]"
     description="[[description]]"></warp10-display-gauge>
+  <warp10-switch-gauge 
+    data="[[data]]" 
+    label="[[label]]"
+    tile="[[tile]]"
+    fg-color="[[fgColor]]"
+    bg-color="[[bgColor]]"
+    description="[[description]]"></warp10-switch-gauge>
 </template>
 <script>
       var template = document.querySelector('#template');
 
       template.data = {
-        value: 142.39,
+        value:42,
         secondaryValue: 0,
         max: 100,
         min: 0,

@@ -19,6 +19,7 @@
 <link rel="import" href="../warp10-tiles/warp10-display-num.html">
 <link rel="import" href="../warp10-tiles/warp10-display-sparkline.html">
 <link rel="import" href="../warp10-tiles/warp10-switch-boolean.html">
+<link rel="import" href="../warp10-tiles/warp10-switch-gauge.html">
 
 <dom-module is="warp10-dashboard-element">
   <template>    
@@ -85,11 +86,25 @@
     </template>
 
     <template is="dom-if" if="{{_resultIsAGauge}}">
-      <warp10-display-gauge
-        tile="{{_response.tile}}" bg-color="{{_response.bgColor}}" fg-color="{{_response.fgColor}}"
-        data="{{ _response.data}}" label="{{_response.label}}"
-        description="{{_response.description}}" >
-    </warp10-display-gauge>
+      <template is="dom-if" if="[[!controller]]">
+        <warp10-display-gauge
+            tile="{{_response.tile}}" 
+            bg-color="{{_response.bgColor}}" 
+            fg-color="{{_response.fgColor}}"
+            data="{{ _response.data}}" 
+            label="{{_response.label}}"
+            description="{{_response.description}}" ></warp10-display-gauge>
+      </template>
+      <template is="dom-if" if="[[controller]]">
+        <warp10-switch-gauge
+            tile="{{_response.tile}}" 
+            bg-color="{{_response.bgColor}}" 
+            fg-color="{{_response.fgColor}}"
+            data="{{ _response.data}}" 
+            label="{{_response.label}}"
+            description="{{_response.description}}" 
+            url="[[controllerUrl]]"></warp10-switch-gauge>
+      </template>
     </template>
 
     <template is="dom-if" if="{{_resultIsAMap}}">

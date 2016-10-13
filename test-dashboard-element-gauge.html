@@ -1,0 +1,43 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Display sparkline test</title>
+
+<style>
+
+</style>
+<script src=" ../webcomponentsjs/webcomponents-lite.js"></script>
+<link   rel="import" href=" ../polymer/polymer.html">
+
+<link   rel="import" href=" ../warp10-tiles/warp10-dashboard-element.html">
+</head>
+<body>
+
+<template is="dom-bind" id="template">
+  <warp10-dashboard-element 
+    warpscript-script="[[warpscript]]"
+    warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+    warpscript-reload="[[reload]]"></warp10-dashboard-element>
+
+  <warp10-dashboard-element 
+    warpscript-script="[[warpscriptWithController]]"
+    warpscript-base-url="https://home.cityzendata.net/api/v0/exec"
+    warpscript-reload="[[reload]]" controller></warp10-dashboard-element>
+</template>
+<script>
+      var template = document.querySelector('#template');
+
+      template.warpscript = " '{\"type\":\"gauge\",\"params\":{\"label\":\"A gauge\",\"tile\":\"large\",\"fgColor\":\"white\",\"hexFgColor\":\"#ffffff\",\"bgColor\":\"orange\",\"description\":\"This is a gauge\",\"data\":{ \"value\":42, \"min\": 0, \"max\": 100 }}}' JSON->"
+      template.warpscriptWithController = " '{\"type\":\"gauge\",\"params\":{\"label\":\"A gauge\",\"tile\":\"large\",\"fgColor\":\"white\",\"hexFgColor\":\"#ffffff\",\"bgColor\":\"orange\",\"description\":\"This is a gauge\",\"data\":{ \"value\":42, \"min\": 0, \"max\": 100 }}}' JSON->"
+      template.reload = "5";
+
+</script>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</body>
+</html>

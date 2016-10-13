@@ -1,0 +1,245 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../paper-slider/paper-slider.html">
+
+<link rel="import" href="../warp10-tiles/warp10-dashboard-styles.html">
+<link rel="import" href="../warp10-tiles/warp10-dashboard-tile.html">
+<link rel="import" href="../warp10-tiles/warp10-tile-num-behavior.html">
+
+<dom-module is="warp10-switch-gauge">
+  <template>    
+    <style include="warp10-dashboard-styles">
+      :host {
+        display: inline-block;
+      }
+      .vertical {
+        height: 100%;
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        @apply(--layout-around-justified);
+      }
+      paper-slider {
+        width: 80%;
+        --paper-slider-knob-start-color: var(--google-blue-700);
+        --paper-slider-pin-start-color: var(--google-blue-700);
+        --paper-slider-knob-start-border-color: var(--google-blue-700);
+      }
+      paper-slider.outside_bounds {
+        -webkit-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+        -moz-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+        box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
+      }
+
+
+    </style>
+
+    <iron-ajax 
+        id="service"
+        url="{{url}}"
+        handle-as="json"
+        method='POST'
+        on-response="_handleServiceResponse"
+        on-error="_handleServiceError"
+        debounce-duration="300"></iron-ajax>
+
+    <warp10-dashboard-tile id='tile'
+        tile="{{tile}}" description="[[description]]"
+        width="{{width}}" height="{{height}}"
+        bg-color="{{bgColor}}" fg-color="{{fgColor}}">
+
+      <div class="card-content">
+        <div class="main-content">      
+          <div class="vertical">
+            <div class="value" id="content">{{_getDisplayValue(data.value)}}</div>
+
+            <paper-slider 
+                id="slider" 
+                value="{{sliderValue}}"  
+                min="{{data.min}}" 
+                max="{{data.max}}" 
+                class$="[[_outsideBounds]]"
+                on-change="_callService"
+                disabled="{{_disabled}}"></paper-disabled>
+        </div>
+        <div class="label">[[label]]</div>
+      </div>     
+    </warp10-dashboard-tile>      
+  </template>
+  <script>
+    Polymer({
+      // Element identity
+      is:"warp10-switch-gauge",
+      
+      behaviors: [ Warp10TileNumericBehavior ],
+
+      // Properties
+      properties: {
+        
+        /**
+         * The value to display
+         */
+        data: {
+          type: Object,
+          value: function(){
+            return {
+              value: 0,
+              secondaryValue: 0,
+              max: 100,
+              min: 0,
+              color: "#0F9D58",
+              secondaryColor: "#B7E1CD"
+            };
+          },
+        },
+
+        /**
+         * Switch service url
+         */
+        url: {
+          type: String,
+          value: "./service"
+        },
+
+        /**
+        *
+        */
+        _isAttached: {
+          type: Boolean,
+          value: false
+        }, 
+
+        _outsideBounds: {
+          type: String,
+          computed: "_isOutsideBounds(data)"
+        },
+        /** 
+         * 
+         */
+        _sendingMode: {
+          type: Boolean,
+          value: false
+        },
+        /** 
+         * 
+         */
+        _waitingForResultMode: {
+          type: Boolean,
+          value: false
+        },        
+        /**
+         * 
+         */
+        _disabled: {
+          type: Boolean,
+          computed: "_isDisabled(_sendingMode,_waitingForResultMode)"
+        },      
+
+      },
+      
+      // Observers
+      observers: [
+        '_colorChanged(data.color)',
+        '_secondaryColorChanged(data.secondaryColor)',
+        "_onValueChange(data,_sendingMode,_waitingForResultMode)",
+      ],
+      
+      // **********************************************************************
+      // Lifecycle methods
+      // **********************************************************************
+      attached: function() {     
+        this._isAttached = true;  
+        this._initializeTile();
+      },
+
+      
+      // **********************************************************************
+      // Observers
+      // **********************************************************************
+
+      _onValueChange: function() {
+        console.debug("[warp10-switch-gauge] _onValueChange", this.data,this._sendingMode,this._waitingForResultMode,this._disabled)
+        if (!this._disabled) {
+          this.sliderValue = this.data.value;
+          return;
+        }
+        if (this._waitingForResultMode) {
+          if (this.sliderValue == this.data.value) {
+            this._waitingForResultMode = false;
+          }
+        } 
+      },
+      _isDisabled: function() {
+        console.debug("[warp10-switch-gauge] _isDisabled", this._sendingMode,  this._waitingForResultMode);
+        return (this._sendingMode || this._waitingForResultMode);
+      },
+      _colorChanged: function() {
+        if (!this.isAttached) {
+          return;
+        }        
+        this.customStyle['--color'] = this.gaugeColor;   
+      },
+      _secondaryColorChanged: function() {
+        if (!this.isAttached) {
+          return;
+        }         
+        this.customStyle['--sndcolor'] = this.sndGaugeColor;
+      },
+       _isOutsideBounds: function() {
+         //console.debug("[warp10-switch-gauge] _isOutsideBounds ",this.data.value, this.data.max, this.data.min)
+        if (this.data.value > this.data.max || this.data.value < this.data.min) {
+          return "outside_bounds";
+        }
+        return "";
+       },
+      
+      // **********************************************************************
+      // Other methods
+      // **********************************************************************
+      _initializeTile: function(){
+        progressWidth = 120;
+        progressHeight = 8;
+        this.customStyle['--color'] = this.gaugeColor;
+        this.customStyle['--sndcolor'] = this.sndGaugeColor;
+        this.updateStyles();
+      },
+      
+      // **********************************************************************
+      // Action listener
+      // **********************************************************************
+      _callService: function(evt) {
+        evt.stopPropagation();
+        this._sendingMode = true;
+        this.$.service.body = '{"value":' + this.sliderValue + '}';
+        this.$.service.generateRequest();
+        console.debug("[warp10-switch-gauge] _callService", this._sendingMode,  this._waitingForResultMode);
+      },
+
+      // **********************************************************************
+      // Event Handlers
+      // **********************************************************************
+      _handleServiceResponse: function(evt, request) {
+        evt.stopPropagation();
+        this._waitingForResultMode = true; 
+        this._sendingMode = false;
+        console.debug("[warp10-switch-boolean] _handleServiceResponse", request.response);
+        this.fire('service-response', response);        
+      },
+      _handleServiceError: function(evt, error) {
+        evt.stopPropagation();
+        this._waitingForResultMode = false; 
+        this._sendingMode = false;
+        console.debug("[warp10-switch-boolean] _handleServiceError", error);
+        this.fire('service-error', error);
+      },
+      
+    });
+  </script>
+</dom-module>
