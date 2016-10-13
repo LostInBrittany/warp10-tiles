@@ -31,6 +31,7 @@
         --paper-slider-knob-start-color: var(--google-blue-700);
         --paper-slider-pin-start-color: var(--google-blue-700);
         --paper-slider-knob-start-border-color: var(--google-blue-700);
+        --paper-slider-height: var(--sliderHeight);
       }
       paper-slider.outside_bounds {
         -webkit-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
@@ -38,7 +39,9 @@
         box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
       }
 
-
+      #value {
+        font-size: 5em;
+      }
     </style>
 
     <iron-ajax 
@@ -58,7 +61,7 @@
       <div class="card-content">
         <div class="main-content">      
           <div class="vertical">
-            <div class="value" id="content">{{_getDisplayValue(data.value)}}</div>
+            <div class="value" id="value">{{_getDisplayValue(data.value)}}</div>
 
             <paper-slider 
                 id="slider" 
@@ -167,6 +170,7 @@
 
       _onValueChange: function() {
         console.debug("[warp10-switch-gauge] _onValueChange", this.data,this._sendingMode,this._waitingForResultMode,this._disabled)
+        this._textWidth();
         if (!this._disabled) {
           this.sliderValue = this.data.value;
           return;
@@ -205,11 +209,44 @@
       // Other methods
       // **********************************************************************
       _initializeTile: function(){
-        progressWidth = 120;
-        progressHeight = 8;
+        var sliderWidth = 120;
+        var sliderHeight = 2;
         this.customStyle['--color'] = this.gaugeColor;
         this.customStyle['--sndcolor'] = this.sndGaugeColor;
+        
+        // console.debug("[warp10-switch-gauge] _initialize - width: "+ this.width+" and usefulWidth: "+ this.usefulWidth);
+        // console.debug("[warp10-switch-gauge] _initialize - height: "+ this.height+" and usefulHeight: "+ this.usefulHeight);
+        
+        if(this.usefulWidth > 200 || this.usefulHeight > 200) {
+          sliderHeight = 6;
+        }
+
+        if(this.usefulWidth > 260) {
+          sliderWidth = this.usefulWidth - 40;
+        }
+
+        if(this.usefulWidth > 260 && this.usefulHeight > 260) {
+          sliderHeight = 12;
+        }
+
+        this.customStyle['--sliderHeight'] = sliderHeight.toString() + "px";
+        this.customStyle['--sliderWidth'] = sliderWidth.toString() + "px";
+
         this.updateStyles();
+        this.updateStyles();
+      },
+      _textWidth: function() {
+        if (!this.width ||!this._isAttached) {
+          return;
+        }
+        console.debug("[warp10-switch-gauge] _textWidth",  this.$.value.clientWidth, this.width);
+        if ( this.$.value.clientWidth >= this.width) {
+          var currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
+          var newFontSize = currentFontSize * 0.9 + "px";
+          this.$.value.style.fontSize = newFontSize;
+          console.debug("[warp10-switch-gauge] _textWidth - value.style", newFontSize);
+          this._textWidth();
+        }
       },
       
       // **********************************************************************
