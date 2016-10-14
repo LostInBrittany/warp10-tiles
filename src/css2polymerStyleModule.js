@@ -26,7 +26,7 @@ var getHeader = function(filename) {
 @license Apache 2.0
 -->
 
-<link rel="import" href="../font-roboto-local/roboto.html">
+<link rel="import" href="../font-roboto/roboto.html">
 <dom-module is="${elementName(filename)}">
 <template>
 <style>
