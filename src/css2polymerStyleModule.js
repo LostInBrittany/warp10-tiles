@@ -20,7 +20,17 @@ var elementName = function(filename) {
 
 var getHeader = function(filename) {
   
-  return `<dom-module is="${elementName(filename)}"><template><style>\n`;
+  return `<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2016 Cityzen Data
+@license Apache 2.0
+-->
+
+<link rel="import" href="../font-roboto-local/roboto.html">
+<dom-module is="${elementName(filename)}">
+<template>
+<style>
+`;
 }
 var getFooter = function() {
   return `\n</style></template></dom-module>`;
