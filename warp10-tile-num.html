@@ -13,6 +13,7 @@
 
 <!-- Import elements -->
 <link rel="import" href="./warp10-tile-engine.html">
+<link rel="import" href="./warp10-tile-style.html">
 
 
 <dom-module id="warp10-tile-num">
@@ -20,6 +21,9 @@
   <template>
 
     <style include="warp10-tile-style">
+      :host {
+        display: inline-block;
+      }
     </style>
     
     <warp10-tile-engine 

@@ -1,0 +1,131 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Import mixins -->
+<link rel="import" href="./warp10-tile-mixin.html">
+
+<!-- Import elements -->
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-image/iron-image.html">
+
+<link rel="import" href="./warp10-tile-engine.html">
+<link rel="import" href="./warp10-tile-style.html">
+
+
+<dom-module id="warp10-tile-boolean">
+
+  <template>
+
+    <style include="warp10-tile-style">
+      :host {
+        display: inline-block;
+      }
+      #booleanIcon {
+        --iron-icon-height: 64px;
+        --iron-icon-width: 64px;
+      }
+      #imageIcon {
+        width: 64px;
+        height: 64px;
+      }
+    </style>
+
+  
+    <warp10-tile-engine 
+        tile-type="[[tileType]]"  
+        fg-color="[[fgColor]]"
+        bg-color="[[bgColor]]"
+        label="[[label]]"
+        description="[[description]]"
+        debug="[[debug]]">  
+      <div id="value" slot="value">
+        <dom-if if="{{!useExternalImages}}">
+          <template>
+            <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+          </template> 
+        </dom-if>
+        <dom-if if="{{useExternalImages}}">
+          <template>
+            <iron-image id="imageIcon" src="{{_iconName}}" sizing="contain"></iron-image>
+          </template>
+        </dom-if>
+    </warp10-tile-engine>
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TileBoolean extends Warp10TileMixin(Polymer.Element) {    
+
+      static get is() { return 'warp10-tile-boolean' }
+
+      static get properties() {
+        return {           
+          /**
+          * The data to display
+          */
+          data: {
+            type: Number,
+            value: 0
+          },
+        
+          /**
+           * Icon to show when the value is true
+           */
+          iconForTrue: {
+            type: String,
+            value: "check"
+          },
+          /**
+           * Icon to show when the value is true
+           */
+          iconForFalse: {
+            type: String,
+            value: "clear"
+          },
+          /**
+           * If true, it tries to use external images for the state icons
+           */
+          useExternalImages:{
+            type: Boolean,
+            value: false
+          },
+          _iconName: {
+            type: String,
+            computed: "_getIconName(data, _isAttached)"
+          },
+          _isAttached: {
+            type: Boolean,
+            value: false
+          },          
+        }
+      }
+  
+      connectedCallback() {
+        super.connectedCallback();
+        this._isAttached = true;
+        if (this.debug) { console.log("[warp10-tile-boolean] connectedCallback"); }
+      }    
+
+
+      // Computed properties' methods
+      _getIconName() {        
+        if (this.debug) { console.log("[warp10-tile-boolean]  _getIconName", this.data, this.iconForTrue, this.iconForFalse); }
+        if (this.data) {
+          return this.iconForTrue;
+        } else {
+          return this.iconForFalse;
+        }
+      }
+
+    }
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TileBoolean.is, Warp10TileBoolean);    
+  </script>       
