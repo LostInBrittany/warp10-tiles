@@ -1,0 +1,54 @@
+
+<!--
+@license Apache 2.0
+@copyright Cityzen Data 2017
+@author Horacio Gonzalez <horacio.gonzalez@gmail.com>
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  // Mixing grouping features common to all Warp 10 Tiles
+  const Warp10TileNumMixin = superclass => class extends superclass {
+
+    static get properties() {
+      return {      
+        /**
+          * The number of decimal digits to show, default all
+          */
+        precision: {
+          type: Number,
+          value: -1
+        },        
+        /**
+        * If true, print logs
+        */
+        debug: {
+          type: Boolean,
+          value: false          
+        },      
+      }
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      if (this.debug) { console.log("[warp10-tile] connectedCallback"); }
+    }
+
+
+    _getDisplayValue(data) {
+      if (this.precision >= 0) {
+        data = Math.floor(data*Math.pow(10,this.precision))/Math.pow(10,this.precision);
+      } 
+      let dataElements = data.toString().split('.');
+      let dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$1 $2");
+      if (dataElements.length >1) {
+        dataAsString += "."+ dataElements[1];
+      }
+      if (this.debug) { console.log("[warp10-tile] _getDisplayValue", dataAsString); }
+      return dataAsString; 
+    }
+
+  }
+</script>

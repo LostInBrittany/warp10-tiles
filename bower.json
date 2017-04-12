@@ -1,0 +1,30 @@
+{
+  "name": "warp10-tiles-v2",
+  "authors": [
+    "Horacio Gonzalez <horacio.gonzalez@cityzendata.com>",
+    "Aurélien Hébert <aurelien.hebert@cityzendata.com>"
+  ],
+  "description": "Rewrite of Warp 10's metric displaying tiles",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "template"
+  ],
+  "main": "warp10-tiles.html",
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "homepage": "https://www.warp10.io",
+  "ignore": [
+    "/.*"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0-rc.3",
+    "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
+    "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0"
+  }
+}

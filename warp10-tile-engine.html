@@ -1,0 +1,320 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Import shared styles -->
+<link rel="import" href="./warp10-tile-styles.html">
+
+
+<dom-module id="warp10-tile-engine">
+
+  <template>
+
+    <style include="warp10-tile-styles">
+      :host {
+        display: inline-block;
+      }
+      .tile {
+        width: var(--tile-width, 150px);
+        height: var(--tile-width, 150px);
+        color: var(--fg-color, white);   
+        background-color: var(--bg-color, grey);        
+        display: block;
+        position: relative;
+        margin: 5px;
+        box-shadow: inset 0 0 1px #FFFFCC;
+        cursor: pointer;
+        overflow: hidden;
+      }
+      .tile:hover {
+        filter: brightness(80%);
+      }
+      .tile-main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: inherit;
+        overflow: hidden;
+        display: none;
+      }
+      .tile-main:first-child {
+        display: block;
+      }	
+      .tile-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;           
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-between;
+        align-items: center;
+        align-content: space-between;
+      }      
+      .description {
+        position: absolute;
+        top: 0; 
+        left: 0;
+        width: 100%;  
+        height: 100%;
+        background-color: rgba(128,128,128,0.8);   
+        display: flex;
+        flex-flow: column;
+        justify-content: space-around;
+      }
+
+      .main-content {        
+        width: 100%;
+        height: 100%;       
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+        align-content: space-between;
+      }
+      slot[name='value']::slotted(*) {
+        font-size: 2.5em;
+      }
+      slot[name='label']::slotted(*) {
+        width: 100%;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        flex-basis: content;
+        text-align: center;
+        font-size: 1em;
+      }
+
+      .description[hidden] {
+        display: none;
+      }
+      .description-text {         
+        text-align: center;    
+      }
+      .description-open, 
+      .description-close {
+        position: absolute;
+        top:0;
+        right:0;
+        height: 17px;
+        padding: 5px;   
+        font-weight: bolder;  
+        z-index:2;   
+      } 
+      .description-open::before {
+        content: " ";
+      }      
+      .description-open.mouse_in::before {
+        content: "?";
+      }
+      .description-close::before {
+        content: "X";        
+      }
+    </style>
+
+
+    <div id='tile' class="tile" on-mouseenter="_mouseEntered" on-mouseleave="_mouseLeft" >
+      
+      <div class="tile-main">
+        <div 
+            class$="description-open [[_mouseIn]]" 
+            on-click="_openDescription"  
+            on-mouseenter="_initOpenDescription" 
+            on-mouseleave="_cancelOpenDescription"></div>
+        <div class="tile-content">
+          <div class="main-content">        
+            <slot name='value'></slot>
+          </div>
+          <div class='label'>[[label]]</div>
+        </div>    
+      </div>
+      <div 
+          class="description" 
+          hidden="[[_hideDescription]]" 
+          on-mouseleave="_initCloseDescription" 
+          on-mouseenter="_cancelCloseDescription" >
+        <div class="description-close" on-click="_closeDescription"></div>
+        <div class="description-text">
+          [[description]]
+        </div>
+      </div>
+    </div>    
+
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TileEngine extends Polymer.Element {
+
+      static get is() { return 'warp10-tile-engine' }
+
+      static get properties() {
+        return {  
+          /**
+           * The tile type
+           */ 
+          tileType:{
+            type: String,
+            value: '',
+          },       
+          /**
+          * The label to display
+          */
+          label: {
+            type: String,
+            value: ''
+          },
+          
+          /**
+          * The description 
+          */
+          description: {
+            type: String,
+            value: ''          
+          },
+          /**
+          * The background color
+          */
+          bgColor: {
+            type: String,
+            observer: "_onBgColorChanged"            
+          },       
+          /**
+          * The foreground color
+          */
+          fgColor: {          
+            type: String,
+            observer: "_onFgColorChanged"     
+        },
+          dimensions: {
+            type: Object,
+            computed: "_getDimensions(tileType)",
+            observer: "_onDimensionsChange"
+          },
+          /**
+           * The palette of tile sizes
+           */ 
+          _palette: {
+            type: Object,
+            value: { 
+              'small':  { width: 70,  height: 70  }, 
+              '':       { width: 150, height: 150 }, 
+              'normal': { width: 150, height: 150 },
+              'square': { width: 150, height: 150 },
+              'wide':   { width: 310, height: 150 },
+              'tall':   { width: 150, height: 310 },
+              'large':  { width: 310, height: 310 },
+              'big':    { width: 470, height: 470 },
+              'super':  { width: 470, height: 470 }             
+            },
+          },        
+          _hideDescription: {
+            type: Boolean,
+            value: true     
+          },   
+          _hoverDelay:{
+            type: Number,
+            value: 500
+          },
+          _mouseIn: {
+            type: String,
+            value: ''
+          }             
+        }
+      }
+
+
+      static get observers() {
+        return [           
+        ]
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this._isAttached = true;
+        if (this.debug) { console.log("[warp10-tile-engine] connectedCallback"); }
+      }
+
+      // --------------------------------------------------------------------------------------------
+      // Computed properties
+      // --------------------------------------------------------------------------------------------    
+
+      _getDimensions(tileType) {
+        if (! tileType in Object.keys(this._palette) ) {
+          tileType = '';
+        }
+        if (this.debug) { console.log("[warp10-tile-engine] _getDimensions", this._palette[tileType]); }
+        this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[tileType]}));
+        return this._palette[tileType];
+      }
+
+      // --------------------------------------------------------------------------------------------
+      // Observers
+      // --------------------------------------------------------------------------------------------    
+
+      _onBgColorChanged() {
+        this.updateStyles({ '--bg-color': this.bgColor });
+      }
+      _onFgColorChanged() {
+        this.updateStyles({ '--fg-color': this.fgColor });
+      }
+      _onDimensionsChange(dimensions) {
+        this.updateStyles({
+          '--tile-width': dimensions.width+"px",
+          '--tile-height': dimensions.height+"px",
+        });
+      }
+
+
+      // --------------------------------------------------------------------------------------------
+      // Event listeners
+      // --------------------------------------------------------------------------------------------  
+
+      _mouseEntered() {
+        if (this.debug) { console.log("[warp10-tile-engine] _mouseEntered");}
+        this._mouseIn = 'mouse_in';
+      }
+      _mouseLeft() {
+        this._mouseIn = '';
+      }
+
+      _openDescription() {
+        if (this.debug) { console.logconsole.debug("[warp10-tile-engine] _openDescription"); }
+        this._hideDescription = false;
+      }
+      _initOpenDescription(){
+        if (this.debug) { console.debug("[warp10-tile-engine] _initOpenDescription"); }
+        this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
+      }
+      _cancelOpenDescription(){
+        this._mouseIn = '';
+        if (this.debug) { console.debug("[warp10-tile-engine] _cancelOpenDescription"); }
+        clearTimeout(this.openTimeout);
+      }     
+
+      _closeDescription() {
+        if (this.debug) { console.debug("[warp10-tile-engine] _closeDescription"); }
+        this._hideDescription = true;
+      }  
+      _initCloseDescription(){
+        this.closeTimeout = setTimeout(this._closeDescription.bind(this), this._hoverDelay);
+      }   
+      _cancelCloseDescription(){
+        clearTimeout(this.closeTimeout);
+      }
+      
+    }
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TileEngine.is, Warp10TileEngine);    
+  </script>  
+
+</dom-module>  
+  

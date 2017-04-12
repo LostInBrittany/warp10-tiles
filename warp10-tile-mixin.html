@@ -1,0 +1,75 @@
+
+<!--
+@license Apache 2.0
+@copyright Cityzen Data 2017
+@author Horacio Gonzalez @lostinbrittany
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Import shared styles -->
+<link rel="import" href="./warp10-tile-styles.html">
+
+
+<script>
+  // Mixing grouping features common to all Warp 10 Tiles
+  const Warp10TileMixin = superclass => class extends superclass {
+
+    static get properties() {
+      return {    
+        /**
+         * The tile type
+         */ 
+        tileType:{
+          type: String,
+          value: '',
+        },       
+        /**
+        * The label to display
+        */
+        label: {
+          type: String,
+          value: ''
+        },
+        
+        /**
+        * The description 
+        */
+        description: {
+          type: String,
+          value: ''          
+        },
+        /**
+        * The background color
+        */
+        bgColor: {
+          type: String,        
+        },       
+        /**
+        * The foreground color
+        */
+        fgColor: {          
+          type: String,
+        },
+        /**
+        * If true, print logs
+        */
+        debug: {
+          type: Boolean,
+          value: false          
+        },    
+
+ 
+      }
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      if (this.debug) { console.log("[warp10-tile] connectedCallback"); }
+    }
+
+
+
+  }
+</script>

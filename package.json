@@ -1,0 +1,42 @@
+{
+  "name": "warp10-tiles-v2",
+  "description": "Rewrite of Warp 10's metric displaying tiles",
+  "repository": "none",
+  "author": { 
+    "name": "Horacio Gonzalez",
+    "email": "horacio.gonzalez@cityzendata.com"
+  },
+  "contributors": [
+    {
+      "name": "Aurélien Hébert",
+      "email": "aurelien.hebert@cityzendata.com"
+    }
+  ],    
+  "company":"Cityzen Data",
+  "version": "0.1.1",
+  "scripts": {
+    "lessDashboardTileCSS": "./node_modules/.bin/lessc ./less/warp10-tile-styles.less ./css/warp10-tile-styles.css",
+    "less": "npm-run-all lessDashboardTileCSS",
+    "wrapDashboardTileElement": "node src/css2polymerStyleModule.js ./css/warp10-tile-styles.css .",
+    "wrapElements": "npm-run-all wrapDashboardTileElement",
+    "generateElements": "npm-run-all --sequential less wrapElements",
+    "tsc": "./node_modules/.bin/tsc",
+    "tsc:w": "./node_modules/.bin/tsc -w",
+    "serve": "./node_modules/.bin/live-server --host=localhost --port=8080 .",
+    "go": "concurrent \"npm run tsc:w\" \"npm run serve\" "
+  },
+  "license": "MIT",
+  "dependencies": {
+    "es6-promise": "4.1.0",
+    "es6-shim": "0.35.3",
+    "systemjs": "0.20.12"
+  },
+  "devDependencies": {
+    "npm-run-all": "4.0.2",
+    "concurrently": "3.4.0",
+    "live-server": "1.2.0",
+    "less": "2.7.2",    
+    "typescript": "2.2.2",
+    "fs-extra": "^2.1.2"
+  }
+}
