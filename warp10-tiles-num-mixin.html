@@ -27,27 +27,61 @@
         debug: {
           type: Boolean,
           value: false          
-        },      
+        },    
+        _displayValue: {
+          type: String,
+          computed: "_getDisplayValue(data, precision)",
+        },  
       }
     }
 
-    connectedCallback() {
-      super.connectedCallback();
-      if (this.debug) { console.log("[warp10-tile] connectedCallback"); }
+    static get observers() {
+      return [ 
+        "_textWidth(_displayValue, _isAttached, _dimensions)"
+      ]
     }
 
 
-    _getDisplayValue(data) {
-      if (this.precision >= 0) {
-        data = Math.floor(data*Math.pow(10,this.precision))/Math.pow(10,this.precision);
+    connectedCallback() {
+      super.connectedCallback();
+      if (this.debug) { console.log("[warp10-tiles-num-mixin] connectedCallback"); }
+    }
+
+
+    // --------------------------------------------------------------------------------------------
+    // Computed properties
+    // --------------------------------------------------------------------------------------------  
+
+    _getDisplayValue(data, precision) {
+      if (precision >= 0) {
+        data = Math.floor(data*Math.pow(10,precision))/Math.pow(10,precision);
       } 
       let dataElements = data.toString().split('.');
       let dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$2");
       if (dataElements.length >1) {
         dataAsString += "."+ dataElements[1];
       }
-      if (this.debug) { console.log("[warp10-tile] _getDisplayValue", dataAsString); }
+      if (this.debug) { console.log("[warp10-tiles-num-mixin] _getDisplayValue", dataAsString); }
       return dataAsString; 
+    }
+
+
+    // --------------------------------------------------------------------------------------------
+    // Observers
+    // --------------------------------------------------------------------------------------------  
+
+    _textWidth() {
+      if (!this._isAttached) {
+        return;
+      }
+      if (this.debug) { console.debug("[warp10-tiles-num-mixin] _textWidth",  this.$.value.clientWidth, this._dimensions); }
+      if ( this.$.value.clientWidth >= this._dimensions.width) {
+        let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
+        let newFontSize = currentFontSize * 0.9 + "px";
+        this.$.value.style.fontSize = newFontSize;
+        if (this.debug)  { console.debug("[warp10-tiles-num-mixin] _textWidth - value.style", newFontSize); }
+        this._textWidth();
+      }
     }
 
   }

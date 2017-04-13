@@ -37,7 +37,7 @@
         description="[[description]]"
         on-dimensions-changed="_onDimensionsChange"
         debug="[[debug]]">  
-      <div id="value" slot="value">[[_stringValue]]</div>
+      <div id="value" slot="value">[[_displayValue]]</div>
     </warp10-tiles-engine>
   </template>
 
@@ -60,10 +60,6 @@
           _dimensions: {
             type: Object,
           },
-          _stringValue: {
-            type: String,
-            computed: "_getValueString(data, precision)",
-          },
           _valueFontSize: {
             type: Number,
             value: 1
@@ -73,13 +69,6 @@
             value: false
           },
         }
-      }
-
-
-      static get observers() {
-        return [ 
-          "_textWidth(_stringValue, _isAttached, _dimensions)"
-        ]
       }
 
       connectedCallback() {
@@ -94,26 +83,6 @@
 
       _onDimensionsChange(evt) {
         this._dimensions = evt.detail;
-      }
-
-      
-      // Computed properties' methods
-      _getValueString() {
-        return this._getDisplayValue(this.data);
-      }
-
-      _textWidth() {
-        if (!this._isAttached) {
-          return;
-        }
-        if (this.debug) { console.debug("[warp10-tiles-display-num] _textWidth",  this.$.value.clientWidth, this._dimensions); }
-        if ( this.$.value.clientWidth >= this._dimensions.width) {
-          let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
-          let newFontSize = currentFontSize * 0.9 + "px";
-          this.$.value.style.fontSize = newFontSize;
-          if (this.debug)  { console.debug("[warp10-display-num] _textWidth - value.style", newFontSize); }
-          this._textWidth();
-        }
       }
 
     }
