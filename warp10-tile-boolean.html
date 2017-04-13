@@ -45,16 +45,17 @@
         description="[[description]]"
         debug="[[debug]]">  
       <div id="value" slot="value">
-        <dom-if if="{{!useExternalImages}}">
+        <dom-if if="[[!useExternalImages]]">
           <template>
-            <iron-icon id="booleanIcon" icon="{{_iconName}}"></iron-icon>  
+            <iron-icon id="booleanIcon" icon="[[_iconName]]"></iron-icon>  
           </template> 
         </dom-if>
-        <dom-if if="{{useExternalImages}}">
+        <dom-if if="[[useExternalImages]]">
           <template>
-            <iron-image id="imageIcon" src="{{_iconName}}" sizing="contain"></iron-image>
+            <iron-image id="imageIcon" src="[[_iconName]]" sizing="contain"></iron-image>
           </template>
         </dom-if>
+      </div>
     </warp10-tile-engine>
   </template>
 
