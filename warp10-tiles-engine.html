@@ -8,14 +8,14 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!-- Import shared styles -->
-<link rel="import" href="./warp10-tile-styles.html">
+<link rel="import" href="./warp10-tiles-styles.html">
 
 
-<dom-module id="warp10-tile-engine">
+<dom-module id="warp10-tiles-engine">
 
   <template>
 
-    <style include="warp10-tile-styles">
+    <style include="warp10-tiles-styles">
       :host {
         display: inline-block;
       }
@@ -154,9 +154,9 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TileEngine extends Polymer.Element {
+    class Warp10TilesEngine extends Polymer.Element {
 
-      static get is() { return 'warp10-tile-engine' }
+      static get is() { return 'warp10-tiles-engine' }
 
       static get properties() {
         return {  
@@ -242,7 +242,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tile-engine] connectedCallback"); }
+        if (this.debug) { console.log("[warp10-tiles-engine] connectedCallback"); }
       }
 
       // --------------------------------------------------------------------------------------------
@@ -253,7 +253,7 @@
         if (! tileType in Object.keys(this._palette) ) {
           tileType = '';
         }
-        if (this.debug) { console.log("[warp10-tile-engine] _getDimensions", this._palette[tileType]); }
+        if (this.debug) { console.log("[warp10-tiles-engine] _getDimensions", this._palette[tileType]); }
         this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[tileType]}));
         return this._palette[tileType];
       }
@@ -281,7 +281,7 @@
       // --------------------------------------------------------------------------------------------  
 
       _mouseEntered() {
-        if (this.debug) { console.log("[warp10-tile-engine] _mouseEntered");}
+        if (this.debug) { console.log("[warp10-tiles-engine] _mouseEntered");}
         this._mouseIn = 'mouse_in';
       }
       _mouseLeft() {
@@ -289,21 +289,21 @@
       }
 
       _openDescription() {
-        if (this.debug) { console.logconsole.debug("[warp10-tile-engine] _openDescription"); }
+        if (this.debug) { console.logconsole.debug("[warp10-tiles-engine] _openDescription"); }
         this._hideDescription = false;
       }
       _initOpenDescription(){
-        if (this.debug) { console.debug("[warp10-tile-engine] _initOpenDescription"); }
+        if (this.debug) { console.debug("[warp10-tiles-engine] _initOpenDescription"); }
         this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
       }
       _cancelOpenDescription(){
         this._mouseIn = '';
-        if (this.debug) { console.debug("[warp10-tile-engine] _cancelOpenDescription"); }
+        if (this.debug) { console.debug("[warp10-tiles-engine] _cancelOpenDescription"); }
         clearTimeout(this.openTimeout);
       }     
 
       _closeDescription() {
-        if (this.debug) { console.debug("[warp10-tile-engine] _closeDescription"); }
+        if (this.debug) { console.debug("[warp10-tiles-engine] _closeDescription"); }
         this._hideDescription = true;
       }  
       _initCloseDescription(){
@@ -316,7 +316,7 @@
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TileEngine.is, Warp10TileEngine);    
+    customElements.define(Warp10TilesEngine.is, Warp10TilesEngine);    
   </script>  
 
 </dom-module>  

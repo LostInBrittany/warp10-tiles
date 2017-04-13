@@ -10,7 +10,7 @@
 
 <script>
   // Mixing grouping features common to all Warp 10 Tiles
-  const Warp10TileNumMixin = superclass => class extends superclass {
+  const Warp10TilesNumMixin = superclass => class extends superclass {
 
     static get properties() {
       return {      
@@ -42,7 +42,7 @@
         data = Math.floor(data*Math.pow(10,this.precision))/Math.pow(10,this.precision);
       } 
       let dataElements = data.toString().split('.');
-      let dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$1 $2");
+      let dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$2");
       if (dataElements.length >1) {
         dataAsString += "."+ dataElements[1];
       }

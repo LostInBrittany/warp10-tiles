@@ -8,25 +8,25 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <!-- Import mixins -->
-<link rel="import" href="./warp10-tile-mixin.html">
-<link rel="import" href="./warp10-tile-num-mixin.html">
+<link rel="import" href="./warp10-tiles-mixin.html">
+<link rel="import" href="./warp10-tiles-num-mixin.html">
 
 <!-- Import elements -->
-<link rel="import" href="./warp10-tile-engine.html">
-<link rel="import" href="./warp10-tile-style.html">
+<link rel="import" href="./warp10-tiles-engine.html">
+<link rel="import" href="./warp10-tiles-style.html">
 
 
-<dom-module id="warp10-tile-num">
+<dom-module id="warp10-tiles-display-num">
 
   <template>
 
-    <style include="warp10-tile-style">
+    <style include="warp10-tiles-style">
       :host {
         display: inline-block;
       }
     </style>
     
-    <warp10-tile-engine 
+    <warp10-tiles-engine 
         tile-type="[[tileType]]"  
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
@@ -35,15 +35,15 @@
         on-dimensions-changed="_onDimensionsChange"
         debug="[[debug]]">  
       <div id="value" slot="value">[[_stringValue]]</div>
-    </warp10-tile-engine>
+    </warp10-tiles-engine>
   </template>
 
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TileNum extends Warp10TileNumMixin(Warp10TileMixin(Polymer.Element)) {
+    class Warp10TilesDisplayNum extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
 
-      static get is() { return 'warp10-tile-num' }
+      static get is() { return 'warp10-tiles-display-num' }
 
       static get properties() {
         return {           
@@ -82,7 +82,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tile-num] connectedCallback"); }
+        if (this.debug) { console.log("[warp10-tiles-display-num] connectedCallback"); }
       }
 
       // --------------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@
         if (!this._isAttached) {
           return;
         }
-        if (this.debug) { console.debug("[warp10-tile-num] _textWidth",  this.$.value.clientWidth, this._dimensions); }
+        if (this.debug) { console.debug("[warp10-tiles-display-num] _textWidth",  this.$.value.clientWidth, this._dimensions); }
         if ( this.$.value.clientWidth >= this._dimensions.width) {
           let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
           let newFontSize = currentFontSize * 0.9 + "px";
@@ -116,7 +116,7 @@
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TileNum.is, Warp10TileNum);    
+    customElements.define(Warp10TilesDisplayNum.is, Warp10TilesDisplayNum);    
   </script>  
 
 </dom-module>  
