@@ -1,0 +1,91 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Import mixins -->
+<link rel="import" href="./warp10-tile-mixin.html">
+
+<!-- Import elements -->
+<link rel="import" href="../iron-image/iron-image.html">
+
+<link rel="import" href="./warp10-tile-engine.html">
+<link rel="import" href="./warp10-tile-style.html">
+
+<dom-module id="warp10-tile-image">
+
+  <template>
+
+    <style include="warp10-tile-style">
+      :host {
+        display: inline-block;
+      }
+      iron-image {
+        width: var(--image-width, 64px);
+        height: var(--image-height, 64px);
+      }
+    </style>
+
+  
+    <warp10-tile-engine 
+        tile-type="[[tileType]]"  
+        fg-color="[[fgColor]]"
+        bg-color="[[bgColor]]"
+        label="[[label]]"
+        description="[[description]]"
+        on-dimensions-changed="_onDimensionsChange"
+        debug="[[debug]]">  
+      <div id="value" slot="value">
+        <iron-image id="imageIcon" src="[[data]]" sizing="contain"></iron-image>
+      </div>
+    </warp10-tile-engine>
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TileImage extends Warp10TileMixin(Polymer.Element) {    
+
+      static get is() { return 'warp10-tile-image' }    
+
+      static get properties() {
+        return {   
+          /**
+          * The src of the image to be displayed
+          */
+          data: {
+            type: String,
+            value: ""
+          },  
+        }
+      }    
+
+      connectedCallback() {
+        super.connectedCallback();
+        this._isAttached = true;
+        if (this.debug) { console.log("[warp10-tile-image] connectedCallback"); }
+      }   
+
+
+      // --------------------------------------------------------------------------------------------
+      // Event listeners
+      // --------------------------------------------------------------------------------------------  
+
+      _onDimensionsChange(evt) {
+        this.updateStyles({ 
+          '--image-width': `${evt.detail.width - 20}px`,
+          '--image-height': `${evt.detail.height - 40}px`
+        });
+        if (this.debug) { console.log("[warp10-tile-image] _onDimensionsChange", `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
+      }
+         
+
+    }
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TileImage.is, Warp10TileImage);    
+  </script>       
