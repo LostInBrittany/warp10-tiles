@@ -13,7 +13,14 @@
   const Warp10TilesNumMixin = superclass => class extends superclass {
 
     static get properties() {
-      return {      
+      return {                
+        /**
+        * The value to display
+        */
+        data: {
+          type: Number,
+          value: 0
+        },
         /**
           * The number of decimal digits to show, default all
           */
@@ -32,6 +39,13 @@
           type: String,
           computed: "_getDisplayValue(data, precision)",
         },  
+        _dimensions: {
+          type: Object,
+        },    
+        _isAttached: {
+          type: Boolean,
+          value: false
+        },
       }
     }
 
@@ -44,6 +58,7 @@
 
     connectedCallback() {
       super.connectedCallback();
+      this._isAttached = true;
       if (this.debug) { console.log("[warp10-tiles-num-mixin] connectedCallback"); }
     }
 
@@ -83,6 +98,14 @@
         this._textWidth();
       }
     }
+
+    // --------------------------------------------------------------------------------------------
+    // Event listeners
+    // --------------------------------------------------------------------------------------------  
+
+    _onDimensionsChange(evt) {
+      this._dimensions = evt.detail;
+    }    
 
   }
 </script>

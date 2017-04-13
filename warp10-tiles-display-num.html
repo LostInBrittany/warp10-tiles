@@ -49,40 +49,13 @@
       static get is() { return 'warp10-tiles-display-num' }
 
       static get properties() {
-        return {           
-          /**
-          * The data to display
-          */
-          data: {
-            type: Number,
-            value: 0
-          },
-          _dimensions: {
-            type: Object,
-          },
-          _valueFontSize: {
-            type: Number,
-            value: 1
-          }, 
-          _isAttached: {
-            type: Boolean,
-            value: false
-          },
+        return {  
         }
       }
 
       connectedCallback() {
         super.connectedCallback();
-        this._isAttached = true;
         if (this.debug) { console.log("[warp10-tiles-display-num] connectedCallback"); }
-      }
-
-      // --------------------------------------------------------------------------------------------
-      // Event listeners
-      // --------------------------------------------------------------------------------------------  
-
-      _onDimensionsChange(evt) {
-        this._dimensions = evt.detail;
       }
 
     }
