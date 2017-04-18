@@ -165,7 +165,7 @@
           /**
            * The tile type
            */ 
-          tileType:{
+          size:{
             type: String,
             value: '',
           },       
@@ -200,7 +200,7 @@
         },
           dimensions: {
             type: Object,
-            computed: "_getDimensions(tileType)",
+            computed: "_getDimensions(size)",
             observer: "_onDimensionsChange"
           },
           /**
@@ -251,13 +251,13 @@
       // Computed properties
       // --------------------------------------------------------------------------------------------    
 
-      _getDimensions(tileType) {
-        if (! tileType in Object.keys(this._palette) ) {
-          tileType = '';
+      _getDimensions(size) {
+        if (! size in Object.keys(this._palette) ) {
+          size = '';
         }
-        if (this.debug) { console.log("[warp10-tiles-engine] _getDimensions", this._palette[tileType]); }
-        this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[tileType]}));
-        return this._palette[tileType];
+        if (this.debug) { console.log("[warp10-tiles-engine] _getDimensions", this._palette[size]); }
+        this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[size]}));
+        return this._palette[size];
       }
 
       // --------------------------------------------------------------------------------------------
