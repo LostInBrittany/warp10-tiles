@@ -1,0 +1,92 @@
+
+<!--
+@license Apache 2.0
+@copyright Cityzen Data 2017
+@author Horacio Gonzalez <horacio.gonzalez@gmail.com>
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  // Mixing grouping features common to all Warp 10 Tiles
+  const Warp10TilesSizesMixin = superclass => class extends superclass {
+
+    static get properties() {
+      return {      
+        /**
+          * The tile size
+          */ 
+        size:{
+          type: String,
+          value: '',
+        }, 
+        /**
+         * the tile dimensions
+         */            
+        dimensions: {
+          type: Object,
+          computed: "_getDimensions(size)",
+          observer: "_onDimensionsChange"
+        },         
+        /**
+          * The palette of tile sizes
+          */ 
+        _palette: {
+          type: Object,
+          value: { 
+            'small':  { width: 70,  height: 70  }, 
+            '':       { width: 150, height: 150 }, 
+            'normal': { width: 150, height: 150 },
+            'square': { width: 150, height: 150 },
+            'wide':   { width: 310, height: 150 },
+            'tall':   { width: 150, height: 310 },
+            'large':  { width: 310, height: 310 },
+            'big':    { width: 470, height: 470 },
+            'super':  { width: 470, height: 470 }             
+          },
+
+
+        },              
+        /**
+        * If true, print logs
+        */
+        debug: {
+          type: Boolean,
+          value: false          
+        },   
+      }
+    }
+
+    static get observers() {
+      return [      
+      ]
+    }    
+
+    connectedCallback() {
+      super.connectedCallback();
+      this._isAttached = true;
+      if (this.debug) { console.log('[warp10-tiles-size-mixin] connectedCallback'); }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Computed properties
+    // --------------------------------------------------------------------------------------------    
+
+    _getDimensions(size) {
+      if (! size in Object.keys(this._palette) ) {
+        size = '';
+      }
+      if (this.debug) { console.log('[warp10-tiles-size-mixin] _getDimensions', this._palette[size]); }
+      this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[size]}));
+      return this._palette[size];
+    }
+    
+    // --------------------------------------------------------------------------------------------
+    // Observers
+    // --------------------------------------------------------------------------------------------    
+
+    _onDimensionsChange(dimensions) {
+    }
+}
+</script>

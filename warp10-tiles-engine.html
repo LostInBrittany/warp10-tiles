@@ -7,6 +7,10 @@
 <!-- Load the Polymer.Element base class -->
 <link rel="import" href="../polymer/polymer.html">
 
+
+<!-- Import Mixins -->
+<link rel="import" href="./warp10-tiles-sizes-mixin.html">
+
 <!-- Import shared styles -->
 <link rel="import" href="./warp10-tiles-style.html">
 
@@ -156,19 +160,12 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesEngine extends Polymer.Element {
+    class Warp10TilesEngine extends Warp10TilesSizesMixin(Polymer.Element) {
 
       static get is() { return 'warp10-tiles-engine' }
 
       static get properties() {
-        return {  
-          /**
-           * The tile type
-           */ 
-          size:{
-            type: String,
-            value: '',
-          },       
+        return {   
           /**
           * The label to display
           */
@@ -197,29 +194,7 @@
           fgColor: {          
             type: String,
             observer: "_onFgColorChanged"     
-        },
-          dimensions: {
-            type: Object,
-            computed: "_getDimensions(size)",
-            observer: "_onDimensionsChange"
           },
-          /**
-           * The palette of tile sizes
-           */ 
-          _palette: {
-            type: Object,
-            value: { 
-              'small':  { width: 70,  height: 70  }, 
-              '':       { width: 150, height: 150 }, 
-              'normal': { width: 150, height: 150 },
-              'square': { width: 150, height: 150 },
-              'wide':   { width: 310, height: 150 },
-              'tall':   { width: 150, height: 310 },
-              'large':  { width: 310, height: 310 },
-              'big':    { width: 470, height: 470 },
-              'super':  { width: 470, height: 470 }             
-            },
-          },        
           _hideDescription: {
             type: Boolean,
             value: true     
@@ -247,18 +222,7 @@
         if (this.debug) { console.log('[warp10-tiles-engine] connectedCallback'); }
       }
 
-      // --------------------------------------------------------------------------------------------
-      // Computed properties
-      // --------------------------------------------------------------------------------------------    
 
-      _getDimensions(size) {
-        if (! size in Object.keys(this._palette) ) {
-          size = '';
-        }
-        if (this.debug) { console.log('[warp10-tiles-engine] _getDimensions', this._palette[size]); }
-        this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[size]}));
-        return this._palette[size];
-      }
 
       // --------------------------------------------------------------------------------------------
       // Observers
