@@ -164,7 +164,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tiles-display-sparkline] connectedCallback"); }
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] connectedCallback'); }
       }
 
 
@@ -175,14 +175,14 @@
 
 
       _hasNLines(currentValues, n) {
-        if (this.debug) { console.log("[warp10-tiles-display-sparkline] _hasNLines", currentValues) };
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues) };
         if (!currentValues || !currentValues.yValues) {
           return false;
         }
         return (currentValues.yValues.length == n);
       }
       _hasMoreThanNLines(currentValues, n) {
-        if (this.debug) { console.log("[warp10-tiles-display-sparkline] _hasMoreThanNLines", currentValues) };
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues) };
         if (!currentValues || !currentValues.yValues) { 
           return false;
         }
@@ -230,7 +230,7 @@
         if (!label) {
           label = "Line "+i;
         }
-        if (this.debug) { console.log("[warp10-tiles-display-sparkline] _getName", label) };
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getName', label) };
         return label;
       }
 
@@ -264,20 +264,20 @@
       }
       
       _openValueBounds() {
-        if (this.debug){ console.log("[warp10-tiles-display-sparkline] _openValueBounds") };
+        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _openValueBounds') };
         this._hideValueBounds = false;
       }
       _initOpenValueBounds(){        
-        if (this.debug){ console.log("[warp10-tiles-display-sparkline] _initOpenValueBounds") };
+        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds') };
         this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
       }
       _cancelOpenValueBounds(){
-        if (this.debug){ console.log("[warp10-tiles-display-sparkline] _cancelOpenValueBounds") };
+        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds') };
         clearTimeout(this.openTimeout);
       }
 
       _closeValueBounds() {
-        if (this.debug){ console.log("[warp10-tiles-display-sparkline] _closeValueBounds") };
+        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _closeValueBounds') };
         this._hideValueBounds = true;
       }   
       _initCloseValueBounds(){
@@ -289,7 +289,7 @@
 
 
       _onCurrentValuesChange(currentValues){
-        if (this.debug){ console.log("[warp10-tiles-display-sparkline] _onCurrentValuesChange",currentValues) };    
+        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _onCurrentValuesChange',currentValues) };    
       }
 
     }

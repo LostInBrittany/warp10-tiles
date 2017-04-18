@@ -111,13 +111,13 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tiles-display-boolean] connectedCallback"); }
+        if (this.debug) { console.log('[warp10-tiles-display-boolean] connectedCallback'); }
       }    
 
 
       // Computed properties' methods
       _getIconName() {        
-        if (this.debug) { console.log("[warp10-tiles-display-boolean]  _getIconName", this.data, this.iconForTrue, this.iconForFalse); }
+        if (this.debug) { console.log('[warp10-tiles-display-boolean]  _getIconName', this.data, this.iconForTrue, this.iconForFalse); }
         if (this.data) {
           return this.iconForTrue;
         } else {

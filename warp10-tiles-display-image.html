@@ -67,7 +67,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tiles-display-image] connectedCallback"); }
+        if (this.debug) { console.log('[warp10-tiles-display-image] connectedCallback'); }
       }   
 
 
@@ -80,7 +80,7 @@
           '--image-width': `${evt.detail.width - 20}px`,
           '--image-height': `${evt.detail.height - 40}px`
         });
-        if (this.debug) { console.log("[warp10-tiles-display-image] _onDimensionsChange", `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
+        if (this.debug) { console.log('[warp10-tiles-display-image] _onDimensionsChange', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
       }
          
 

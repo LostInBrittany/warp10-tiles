@@ -244,7 +244,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log("[warp10-tiles-engine] connectedCallback"); }
+        if (this.debug) { console.log('[warp10-tiles-engine] connectedCallback'); }
       }
 
       // --------------------------------------------------------------------------------------------
@@ -255,7 +255,7 @@
         if (! size in Object.keys(this._palette) ) {
           size = '';
         }
-        if (this.debug) { console.log("[warp10-tiles-engine] _getDimensions", this._palette[size]); }
+        if (this.debug) { console.log('[warp10-tiles-engine] _getDimensions', this._palette[size]); }
         this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[size]}));
         return this._palette[size];
       }
@@ -283,7 +283,7 @@
       // --------------------------------------------------------------------------------------------  
 
       _mouseEntered() {
-        if (this.debug) { console.log("[warp10-tiles-engine] _mouseEntered");}
+        if (this.debug) { console.log('[warp10-tiles-engine] _mouseEntered');}
         this._mouseIn = 'mouse_in';
       }
       _mouseLeft() {
