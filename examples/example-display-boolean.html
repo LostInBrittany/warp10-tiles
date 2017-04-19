@@ -10,7 +10,10 @@
 <title>Warp10 Dashboard - Display num test</title>
 
 <style>
-
+  .container {
+    display: flex;
+    flex-flow: row wrap;
+  }
 </style>
 <script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
 <link   rel="import" href=" ../../polymer/polymer.html">
@@ -20,30 +23,31 @@
 </head>
 <body>
 
-  <dom-bind id="template">
-    <template>
-      <warp10-tiles-display-boolean
-        data="[[data1]]" 
-        label="[[label1]]"
-        tile="[[tile1]]"
-        fg-color="[[fgColor1]]"
-        bg-color="[[bgColor1]]"
-        icon-for-true="[[iconForTrue]]"
-        icon-for-false="[[iconForFalse]]"
-        description="[[description1]]"></warp10-tiles-display-boolean>
+  <div class="container">
+    <dom-bind id="template">
+      <template>
+        <warp10-tiles-display-boolean
+          data="[[data1]]" 
+          label="[[label1]]"
+          tile="[[tile1]]"
+          fg-color="[[fgColor1]]"
+          bg-color="[[bgColor1]]"
+          icon-for-true="[[iconForTrue]]"
+          icon-for-false="[[iconForFalse]]"
+          description="[[description1]]"></warp10-tiles-display-boolean>
 
-      <warp10-tiles-display-boolean
-        data="[[data2]]" 
-        label="[[label2]]"
-        tile="[[tile2]]"
-        fg-color="[[fgColor2]]"
-        bg-color="[[bgColor2]]"
-        icon-for-true="[[iconForTrue]]"
-        icon-for-false="[[iconForFalse]]"
-        description="[[description2]]"></warp10-tiles-display-boolean>
-    </template>
-  </dom-bind>
-
+        <warp10-tiles-display-boolean
+          data="[[data2]]" 
+          label="[[label2]]"
+          tile="[[tile2]]"
+          fg-color="[[fgColor2]]"
+          bg-color="[[bgColor2]]"
+          icon-for-true="[[iconForTrue]]"
+          icon-for-false="[[iconForFalse]]"
+          description="[[description2]]"></warp10-tiles-display-boolean>
+      </template>
+    </dom-bind>
+  </div>
   <script>
       var autobind = document.querySelector('dom-bind');
 
