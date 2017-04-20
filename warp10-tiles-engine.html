@@ -162,6 +162,13 @@
     // Extend Polymer.Element base class
     class Warp10TilesEngine extends Warp10TilesSizesMixin(Polymer.Element) {
 
+      /**
+        * Fired when the useful dimensions of the element change
+        *
+        * @event useful-dimensions-change
+        * @param {object} detail the useful dimensions 
+        */
+
       static get is() { return 'warp10-tiles-engine' }
 
       static get properties() {
@@ -186,14 +193,14 @@
           */
           bgColor: {
             type: String,
-            observer: "_onBgColorChanged"            
+            observer: '_onBgColorChanged'            
           },       
           /**
           * The foreground color
           */
           fgColor: {          
             type: String,
-            observer: "_onFgColorChanged"     
+            observer: '_onFgColorChanged'     
           },
           _hideDescription: {
             type: Boolean,
@@ -206,7 +213,7 @@
           _mouseIn: {
             type: String,
             value: ''
-          }             
+          },  
         }
       }
 
@@ -219,7 +226,8 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log('[warp10-tiles-engine] connectedCallback'); }
+        if (this.debug) { console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight); }
+        window.setTimeout(it => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight) , 100)
       }
 
 
@@ -239,6 +247,9 @@
           '--tile-width': dimensions.width+"px",
           '--tile-height': dimensions.height+"px",
         });
+        // we need to wait for the label property to be set in the DOM
+        // I havent yet found a clean way to do it...
+        window.setTimeout( it => this._getUsefulDimensions(), 50);
       }
 
 
@@ -278,7 +289,27 @@
       _cancelCloseDescription(){
         clearTimeout(this.closeTimeout);
       }
-      
+
+      // --------------------------------------------------------------------------------------------
+      // Instance methods
+      // --------------------------------------------------------------------------------------------  
+
+      _getUsefulDimensions() {
+
+        let usefulDimensions = {
+          width: this.$$('.main-content').clientWidth,
+          height: this.$$('.main-content').clientHeight
+        }
+        this.dispatchEvent(new CustomEvent('useful-dimensions-change', {detail: usefulDimensions}));
+      }
+
+      // --------------------------------------------------------------------------------------------
+      // Helper methods
+      // --------------------------------------------------------------------------------------------  
+
+      $$(selector) {
+        return this.shadowRoot.querySelector(selector);
+      } 
     }
 
     // Register custom element definition using standard platform API

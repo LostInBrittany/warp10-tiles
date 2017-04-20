@@ -35,7 +35,7 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
-        on-dimensions-changed="_onDimensionsChange"
+        on-useful-dimensions-change="_onUsefulDimensionsChange"
         debug="[[debug]]">  
       <div id="value" slot="value">[[data]]</div>
     </warp10-tiles-engine>
@@ -88,17 +88,18 @@
       // Event listeners
       // --------------------------------------------------------------------------------------------  
 
-      _onDimensionsChange(evt) {
+      _onUsefulDimensionsChange(evt) {
+        if (this.debug) { console.log('[warp10-tiles-display-message] _onUsefulDimensionsChange',evt.detail); }
         this._dimensions = evt.detail;
       }
 
 
       _textHeight() {
-        if (!this._isAttached) {
+        if (!this._isAttached || !this._dimensions) {
           return;
         }
-        if (this.debug) { console.debug("[warp10-tiles-display-message] _textHeight",  this.$.value.clientHeight, this._dimensions); }
-        if ( this.$.value.clientHeight >= this._dimensions.height - 40) {
+        if (this.debug) { console.debug(`[warp10-tiles-display-message] _textHeight clientHeight: ${this.$$('#value').clientHeight}, scrollHeight: ${this.$$('#value').scrollHeight}`); }
+        if ( this.$$('#value').scrollHeight > this.$$('#value').clientHeight) {
           let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
           let newFontSize = currentFontSize * 0.9 + "px";
           this.$.value.style.fontSize = newFontSize;

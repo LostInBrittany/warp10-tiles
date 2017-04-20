@@ -12,6 +12,14 @@
   // Mixing grouping features common to all Warp 10 Tiles
   const Warp10TilesSizesMixin = superclass => class extends superclass {
 
+
+      /**
+        * Fired when the dimensions of the element change
+        *
+        * @event dimensions-change
+        * @param {object} detail the dimensions 
+        */
+
     static get properties() {
       return {      
         /**
@@ -78,7 +86,6 @@
         size = '';
       }
       if (this.debug) { console.log('[warp10-tiles-size-mixin] _getDimensions', this._palette[size]); }
-      this.dispatchEvent(new CustomEvent('dimensions-changed', {detail: this._palette[size]}));
       return this._palette[size];
     }
     
