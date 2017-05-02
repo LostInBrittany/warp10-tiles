@@ -27,7 +27,10 @@
         precision: {
           type: Number,
           value: -1
-        },        
+        },  
+        usefulDimensions: {
+          type: Object,
+        },      
         /**
         * If true, print logs
         */
@@ -86,10 +89,10 @@
     // --------------------------------------------------------------------------------------------  
 
     _textWidth() {
-      if (!this._isAttached) {
+      if (!this._isAttached || !this._dimensions) {
         return;
       }
-      if (this.debug) { console.debug("[warp10-tiles-num-mixin] _textWidth",  this.$.value.clientWidth, this._dimensions); }
+      if (this.debug) { console.debug("[warp10-tiles-num-mixin] _textWidth", this._displayValue, this.$.value.clientWidth, this._dimensions); }
       if ( this.$.value.clientWidth >= this._dimensions.width) {
         let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
         let newFontSize = currentFontSize * 0.9 + "px";
@@ -104,7 +107,8 @@
     // --------------------------------------------------------------------------------------------  
 
     _onDimensionsChange(evt) {
-      this._dimensions = evt.detail;
+      if (this.debug) { console.debug("[warp10-tiles-num-mixin] _onDimensionsChange", evt.detail.value); }
+      this._dimensions = evt.detail.value;
     }    
 
   }
