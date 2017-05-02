@@ -46,6 +46,7 @@
           value: { 
             'small':  { width: 70,  height: 70  }, 
             '':       { width: 150, height: 150 }, 
+            'medium': { width: 150, height: 150 },
             'normal': { width: 150, height: 150 },
             'square': { width: 150, height: 150 },
             'wide':   { width: 310, height: 150 },
@@ -86,7 +87,7 @@
       if (! size in Object.keys(this._palette) ) {
         size = '';
       }
-      if (this.debug) { console.log('[warp10-tiles-size-mixin] _getDimensions', this._palette[size]); }
+      if (this.debug) { console.log('[warp10-tiles-size-mixin] _getDimensions', size, this._palette[size]); }
       return this._palette[size];
     }
     

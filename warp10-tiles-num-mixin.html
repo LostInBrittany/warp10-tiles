@@ -75,7 +75,7 @@
         data = Math.floor(data*Math.pow(10,precision))/Math.pow(10,precision);
       } 
       let dataElements = data.toString().split('.');
-      let dataAsString = dataElements[0].replace(/(\d)+(\d{3})+/g, "$2");
+      let dataAsString = dataElements[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
       if (dataElements.length >1) {
         dataAsString += "."+ dataElements[1];
       }
@@ -92,7 +92,7 @@
       if (!this._isAttached || !this._dimensions) {
         return;
       }
-      if (this.debug) { console.debug("[warp10-tiles-num-mixin] _textWidth", this._displayValue, this.$.value.clientWidth, this._dimensions); }
+      if (this.debug) { console.debug(`[warp10-tiles-num-mixin] _textWidth - value: ${this._displayValue}, clientWidth: ${this.$.value.clientWidth}, widget width: ${this._dimensions.width}`); }
       if ( this.$.value.clientWidth >= this._dimensions.width) {
         let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
         let newFontSize = currentFontSize * 0.9 + "px";
