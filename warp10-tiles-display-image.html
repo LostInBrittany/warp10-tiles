@@ -37,7 +37,7 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
-        on-dimensions-changed="_onDimensionsChange"
+        on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">  
       <div id="value" slot="value">
         <iron-image id="imageIcon" src="[[data]]" sizing="contain"></iron-image>
@@ -75,12 +75,12 @@
       // Event listeners
       // --------------------------------------------------------------------------------------------  
 
-      _onDimensionsChange(evt) {
+      _onDimensionsChanged(evt) {
         this.updateStyles({ 
-          '--image-width': `${evt.detail.width - 20}px`,
-          '--image-height': `${evt.detail.height - 40}px`
+          '--image-width': `${evt.detail.value.width - 20}px`,
+          '--image-height': `${evt.detail.value.height - 40}px`
         });
-        if (this.debug) { console.log('[warp10-tiles-display-image] _onDimensionsChange', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
+        if (this.debug) { console.log('[warp10-tiles-display-image] _onDimensionsChanged', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
       }
          
 
