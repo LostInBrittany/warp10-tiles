@@ -213,7 +213,12 @@
           _mouseIn: {
             type: String,
             value: ''
-          },  
+          }, 
+          usefulDimensions: {
+            type: Object,
+            readOnly: true,
+            notify: true,
+          } 
         }
       }
 
@@ -242,7 +247,8 @@
       _onFgColorChanged() {
         this.updateStyles({ '--fg-color': this.fgColor });
       }
-      _onDimensionsChange(dimensions) {
+      _onDimensionsChanged(dimensions) {
+        if (this.debug) { console.log('[warp10-tiles-engine] _onDimensionsChange', dimensions); }
         this.updateStyles({
           '--tile-width': dimensions.width+"px",
           '--tile-height': dimensions.height+"px",
@@ -300,6 +306,7 @@
           width: this.$$('.main-content').clientWidth,
           height: this.$$('.main-content').clientHeight
         }
+        this._setUsefulDimensions(usefulDimensions);
         this.dispatchEvent(new CustomEvent('useful-dimensions-change', {detail: usefulDimensions}));
       }
 

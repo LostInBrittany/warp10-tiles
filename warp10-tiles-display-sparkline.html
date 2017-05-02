@@ -66,7 +66,7 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
-        on-dimensions-changed="_onDimensionsChange"
+        on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">  
       <div id="value" slot="value"> 
         <warp10-display-chart
@@ -240,11 +240,12 @@
       // Event listeners
       // --------------------------------------------------------------------------------------------  
 
-      _onDimensionsChange(evt) {
-        this._dimensions = evt.detail;
+      _onDimensionsChanged(evt) {
+        this._dimensions = evt.detail.value;
+         if (this.debug) { console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions) };
         this.updateStyles({
-          '--chart-width': `${this._dimensions.width-20}px`,
-          '--chart-height': `${this._dimensions.height-40}px`
+          '--chart-width': `${this._dimensions.width - 20}px`,
+          '--chart-height': `${this._dimensions.height - 20}px`
         })
       }
 

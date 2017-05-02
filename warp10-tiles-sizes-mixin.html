@@ -34,8 +34,9 @@
          */            
         dimensions: {
           type: Object,
+          notify: true,
           computed: "_getDimensions(size)",
-          observer: "_onDimensionsChange"
+          observer: "_onDimensionsChanged"
         },         
         /**
           * The palette of tile sizes
@@ -93,7 +94,7 @@
     // Observers
     // --------------------------------------------------------------------------------------------    
 
-    _onDimensionsChange(dimensions) {
+    _onDimensionsChanged(dimensions) {
     }
 }
 </script>

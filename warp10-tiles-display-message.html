@@ -35,7 +35,7 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
-        on-useful-dimensions-change="_onUsefulDimensionsChange"
+        on-useful-dimensions-changed="_onUsefulDimensionsChange"
         debug="[[debug]]">  
       <div id="value" slot="value">[[data]]</div>
     </warp10-tiles-engine>
@@ -89,8 +89,8 @@
       // --------------------------------------------------------------------------------------------  
 
       _onUsefulDimensionsChange(evt) {
-        if (this.debug) { console.log('[warp10-tiles-display-message] _onUsefulDimensionsChange',evt.detail); }
-        this._dimensions = evt.detail;
+        if (this.debug) { console.log('[warp10-tiles-display-message] _onUsefulDimensionsChange',evt.detail.value); }
+        this._dimensions = evt.detail.value;
       }
 
 
