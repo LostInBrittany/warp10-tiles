@@ -100,7 +100,9 @@
             data="[[_responseParams.data]]" 
             label="[[_responseParams.label]]"
             description="[[_responseParams.description]]"
-            debug="[[debug]]"></warp10-tiles-display-sparkline>
+            hide-axis="[[_responseParams.hideAxis]]"
+            debug="[[debug]]"
+            ></warp10-tiles-display-sparkline>
       </template>
     </dom-if>     
 
@@ -281,6 +283,9 @@
         } 
         if (params.label === undefined) {
           params.label = this.label;
+        } 
+        if (params.hideAxis === undefined) {
+          params.hideAxis = true;
         } 
           
         

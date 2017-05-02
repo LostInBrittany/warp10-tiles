@@ -74,7 +74,8 @@
             data="[[data]]"
             line-width="0.75"
             current-values="{{_currentValues}}"
-            hide-axis hide-tooltip
+            hide-axis="[[hideAxis]]"
+            hide-tooltip
             on-mouseenter="_mouseEnter" 
             on-mouseleave="_mouseLeave"></warp10-display-chart>
       </div>
@@ -117,7 +118,17 @@
       static get is() { return 'warp10-tiles-display-sparkline' }
 
       static get properties() {
-        return {                   
+        return {    
+
+          /**
+          * Hide the axis
+          */  
+
+          hideAxis: {
+            type: Boolean,
+            value: true
+          },  
+
           /**
           * The data to display
           */
@@ -222,6 +233,8 @@
         }
         return currentValues.yValues[i].yval.toLocaleString('en-EN',{maximumFractionDigits: 3});
       }
+
+
       _getName(currentValues,i) {
         if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
           return "";
@@ -288,7 +301,6 @@
         clearTimeout(this.closeTimeout);
       }
 
-
       _onCurrentValuesChange(currentValues){
         if (this.debug){ console.log('[warp10-tiles-display-sparkline] _onCurrentValuesChange',currentValues) };    
       }
@@ -300,4 +312,3 @@
   </script>  
 
 </dom-module>  
-
