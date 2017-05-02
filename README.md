@@ -33,6 +33,10 @@ Tiles that allow to visualize different types of data:
 
   ![`warp10-display-image` example](./resources/warp10-tiles-display-image-screenshot-01.png)
 
+- Message:  `warp10-display-message` element
+
+  ![`warp10-display-num` example](./resources/warp10-tiles-display-message-screenshot-01.png)
+
 - Number:  `warp10-display-num` element
 
   ![`warp10-display-num` example](./resources/warp10-tiles-display-num-screenshot-01.png)
