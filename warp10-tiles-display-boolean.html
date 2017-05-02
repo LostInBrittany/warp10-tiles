@@ -27,12 +27,12 @@
         display: inline-block;
       }
       #booleanIcon {
-        --iron-icon-height: 64px;
-        --iron-icon-width: 64px;
+        --iron-icon-height: var(--icon-size,64px);
+        --iron-icon-width: var(--icon-size,64px);
       }
       #imageIcon {
-        width: 64px;
-        height: 64px;
+        width: var(--icon-size,64px);
+        height: var(--icon-size,64px);
       }
     </style>
 
@@ -43,6 +43,7 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
+        on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">  
       <div id="value" slot="value">
         <dom-if if="[[!useExternalImages]]">
@@ -123,6 +124,12 @@
         } else {
           return this.iconForFalse;
         }
+      }
+
+      _onDimensionsChanged(evt) {
+        this.updateStyles({ 
+          '--icon-size': `${evt.detail.value.width - 40}px`
+        });
       }
 
     }

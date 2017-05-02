@@ -50,7 +50,8 @@
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
-        on-dimensions-changed="_onDimensionsChange"
+        useful-dimensions="{{usefulDimensions}}"
+        on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">  
       <div id="value" slot="value">
         <paper-progress 
@@ -118,7 +119,7 @@
 
       static get observers() {
         return [ 
-          "_gaugeDimensions(_isAttached, _dimensions)"
+          
         ]
       }
 
@@ -131,37 +132,36 @@
       // Observers
       // --------------------------------------------------------------------------------------------  
 
-      _onMinChange(min) {
-        if (this.debug) { console.log('[warp10-tiles-display-gauge] _onMinChange', min); }  
-      }
-
-      _gaugeDimensions() {
-        if (!this._isAttached) {
-          return;
-        }
-        let usefulWidth = this._dimensions.width - 20;
-        let usefulHeight = this._dimensions.height - 40;
+      _onDimensionsChanged(evt) {
+        let usefulWidth = parseInt(evt.detail.value.width);
+        let usefulHeight = parseInt(evt.detail.value.height);
         let progressWidth = 120;
         let progressHeight = 8;
 
-        
-        if(this.usefulWidth > 200 || this.usefulHeight > 200) {
+        if(usefulWidth > 200 || usefulHeight > 200) {
           progressHeight = 12;
         }
-
-        if(this.usefulWidth > 260) {
-          progressWidth = this.usefulWidth - 40;
+        if(usefulWidth > 260) {
+          progressWidth = parseInt(usefulWidth) - 40;
         }
 
-        if(this.usefulWidth > 260 && this.usefulHeight > 260) {
+        if(usefulWidth > 260 && usefulHeight > 260) {
           progressHeight = 30;
         }
 
         this.updateStyles({
           '--progressHeight': progressHeight.toString() + 'px',
           '--progressWidth': progressWidth.toString() + 'px'
-        });
+        });    
+        
+        if (this.debug) { console.log('[warp10-tiles-display-gauge] _onDimensionsChanged', evt.detail.value, { '--progressHeight': progressHeight.toString() + 'px', '--progressWidth': progressWidth.toString() + 'px'}); }   
+        
       }
+
+      _onMinChange(min) {
+        if (this.debug) { console.log('[warp10-tiles-display-gauge] _onMinChange', min); }  
+      }
+
 
       _onPrimaryColorChange(color) {
         this.updateStyles({ '--primary-color': color});
