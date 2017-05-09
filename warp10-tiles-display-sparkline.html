@@ -58,6 +58,13 @@
         width: var(--chart-width,100%);
         height: var(--chart-height,100%);
       }
+      .colorDot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 6px;
+        background-color: black;
+      }
     </style>
     
     <warp10-tiles-engine 
@@ -87,13 +94,16 @@
       <div class="value-bounds-content">
         <dom-if if="[[_hasNLines(_currentValues,1)]]">
           <template>
+            <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span> 
             {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>   
           </template>
         </dom-if>
         <dom-if if="{{_hasNLines(_currentValues,2)}}">
           <template> 
             <div>
+              <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span>  
               {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>            
+              <span class="colorDot" style$="background-color: [[_getColor(_currentValues,1)]]"></span> 
               {{_getName(_currentValues,1)}}: {{_getValue(_currentValues,1)}}
             </div> 
           </template>
@@ -101,8 +111,10 @@
         <dom-if if="{{_hasMoreThanNLines(_currentValues,2)}}">
           <template>
             <div>
-              max: {{_maxValue(_currentValues)}} <br>            
-              min: {{_minValue(_currentValues)}}
+              max: <span class="colorDot" style$="background-color: [[_getMaxColor(_currentValues,0)]]"></span> 
+              {{_getMaxName(_currentValues)}}: {{_maxValue(_currentValues)}} <br>            
+              min: <span class="colorDot" style$="background-color: [[_getMinColor(_currentValues,0)]]"></span> 
+              {{_getMinName(_currentValues)}}:  {{_minValue(_currentValues)}}
             </div> 
           </template>
         </dom-if>
@@ -247,8 +259,80 @@
         return label;
       }
 
+      _getColor(currentValues,i) {
+        if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
+          return "";
+        }
+        var color = this.data[0].params[i].color;
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues) };
+        return color;
+      }
 
+      _getMaxColor(currentValues) {
+        var color = "";
+        var max = - Number.MAX_VALUE;
+        var maxIndex = -1;
+        if (!currentValues || !currentValues.yValues  ) {
+            return;
+        }
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval > max) {
+            max = currentValues.yValues[i].yval;
+            color = currentValues.yValues[i].color;
+            maxIndex = i;
+          }        
+        }
+        return color;
+      }
+      _getMinColor(currentValues) {
+        var color = "";
+        var min =  Number.MAX_VALUE;
+        var minIndex = -1;
+        if (!currentValues || !currentValues.yValues  ) {
+            return;
+        }
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval < min) {
+            min = currentValues.yValues[i].yval;
+            color = currentValues.yValues[i].color;
+            minIndex = i;
+          }        
+        }
+        return color;
+      }      
 
+      _getMaxName(currentValues) {
+        var name = "";
+        var max = - Number.MAX_VALUE;
+        var maxIndex = -1;
+        if (!currentValues || !currentValues.yValues  ) {
+            return;
+        }
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval > max) {
+            max = currentValues.yValues[i].yval;
+            name = currentValues.yValues[i].name;
+            maxIndex = i;
+          }        
+        }
+        return name;
+      }
+      _getMinName(currentValues) {
+        var name = "";
+        var min =  Number.MAX_VALUE;
+        var minIndex = -1;
+        if (!currentValues || !currentValues.yValues  ) {
+            return;
+        }
+        for (var i=0; i<currentValues.yValues.length; i++) {
+          if (currentValues.yValues[i].yval < min) {
+            min = currentValues.yValues[i].yval;
+            name = currentValues.yValues[i].name;
+            minIndex = i;
+          }        
+        }
+        return name;
+      }      
       // --------------------------------------------------------------------------------------------
       // Event listeners
       // --------------------------------------------------------------------------------------------  
