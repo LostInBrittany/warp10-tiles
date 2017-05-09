@@ -49,10 +49,20 @@
         content: " "
       }
       .value-bounds-content {
+        font-size: 0.90rem;
+        display: flex;
+        flex-flow: column;
+        padding: 5px;
+      } 
+
+      .value-bounds-content-gts{
         display: flex;
         flex-flow: row;
         justify-content: space-around;
         padding: 5px;
+      } 
+      .value-bounds-content > .right {
+        font-size: 0.80rem;
       } 
       warp10-display-chart {
         width: var(--chart-width,100%);
@@ -60,10 +70,14 @@
       }
       .colorDot {
         display: inline-block;
+        margin-right: 6px;
         width: 12px;
         height: 12px;
         border-radius: 6px;
         background-color: black;
+      }
+      .right {
+        text-align: right;
       }
     </style>
     
@@ -92,10 +106,12 @@
     <div class="value-bounds" hidden="{{_hideValueBounds}}">
       <div class="value-bounds-close" on-click="_closeValueBounds"></div>
       <div class="value-bounds-content">
+        <div class="right">[[_getDate(_currentValues)]]</div>
+        <div class="value-bounds-content-gts">
         <dom-if if="[[_hasNLines(_currentValues,1)]]">
           <template>
             <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span> 
-            {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>   
+            [[_getName(_currentValues,0)]]: [[_getValue(_currentValues,0)]] <br>   
           </template>
         </dom-if>
         <dom-if if="{{_hasNLines(_currentValues,2)}}">
@@ -111,13 +127,25 @@
         <dom-if if="{{_hasMoreThanNLines(_currentValues,2)}}">
           <template>
             <div>
-              max: <span class="colorDot" style$="background-color: [[_getMaxColor(_currentValues,0)]]"></span> 
-              {{_getMaxName(_currentValues)}}: {{_maxValue(_currentValues)}} <br>            
-              min: <span class="colorDot" style$="background-color: [[_getMinColor(_currentValues,0)]]"></span> 
-              {{_getMinName(_currentValues)}}:  {{_minValue(_currentValues)}}
-            </div> 
+              <dom-repeat items="[[_currentValues.yValues]]" item="value" index-as="index">
+                <template>
+                  <span class="colorDot" style$="background-color: [[_getColor(_currentValues,index)]]"></span>  
+                  {{_getName(_currentValues,index)}}: {{_getValue(_currentValues,index)}} <br>     
+                </template>
+              </dom-repeat>
+            </div>
           </template>
-        </dom-if>
+          <dom-if if="{{_hasMoreThanNLines(_currentValues,10)}}">
+            <template>
+              <div>
+                max: <span class="colorDot" style$="background-color: [[_getMaxColor(_currentValues,0)]]"></span> 
+                {{_getMaxName(_currentValues)}}: {{_maxValue(_currentValues)}} <br>            
+                min: <span class="colorDot" style$="background-color: [[_getMinColor(_currentValues,0)]]"></span> 
+                {{_getMinName(_currentValues)}}:  {{_minValue(_currentValues)}}
+              </div> 
+            </template>
+          </dom-if>
+        </div>
       </div>
 
   </template>
@@ -246,6 +274,14 @@
         return currentValues.yValues[i].yval.toLocaleString('en-EN',{maximumFractionDigits: 3});
       }
 
+      _getDate(currentValues) {
+        if (!currentValues ) {
+          return "";
+        }
+        var ts = currentValues.xValue;
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getDate', ts) };
+        return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(ts))
+      }
 
       _getName(currentValues,i) {
         if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
