@@ -25,6 +25,10 @@ Tiles that allow to visualize different types of data:
 
   ![`warp10-display-boolean` example](./resources/warp10-tiles-display-boolean-screenshot-01.png)
 
+- Date:  `warp10-display-date` element
+
+  ![`warp10-display-date` example](./resources/warp10-tiles-display-date-screenshot-01.png)
+
 - Gauge:  `warp10-display-gauge` element
 
   ![`warp10-display-gauge` example](./resources/warp10-tiles-display-gauge-screenshot-01.png)

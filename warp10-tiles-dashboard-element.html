@@ -15,6 +15,7 @@
 
 <!-- Import elements -->
 <link rel="import" href="./warp10-tiles-display-boolean.html">
+<link rel="import" href="./warp10-tiles-display-date.html">
 <link rel="import" href="./warp10-tiles-display-gauge.html">
 <link rel="import" href="./warp10-tiles-display-image.html">
 <link rel="import" href="./warp10-tiles-display-message.html">
@@ -57,6 +58,21 @@
             debug="[[debug]]"></warp10-tiles-display-boolean>
       </template>
     </dom-if>  
+
+    <dom-if if="[[equals(_resultType,'date')]]">
+      <template>
+        <warp10-tiles-display-date 
+            size="[[_responseParams.size]]" 
+            bg-color="[[_responseParams.bgColor]]" 
+            fg-color="[[_responseParams.fgColor]]"
+            use-external-images="[[_responseParams.useExternalImages]]"
+            data="[[_responseParams.data]]" 
+            utc-offset="[[_responseParams.utcOffset]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-date>
+      </template>
+    </dom-if> 
 
     <dom-if if="[[equals(_resultType,'number')]]">
       <template>
@@ -173,7 +189,7 @@
           },          
           _validResultTypes:{
             type: Boolean,
-            value: [ 'boolean', 'number', 'gauge', 'map', 'img', 'chart', 'error' ]
+            value: [ 'boolean', 'date', 'number', 'gauge', 'map', 'img', 'chart', 'error' ]
           },
           _responseParams: {
             type: Object,

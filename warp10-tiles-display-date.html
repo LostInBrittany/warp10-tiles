@@ -155,14 +155,14 @@
 
       _getTimezone() {
 
-        if (this.utcOffset == 0) {
+        if (!this.utcOffset || this.utcOffset == 0) {
           return "UTC";
         }
 
         if (Math.abs(this.utcOffset) <= 16) {
           return `${(this.utcOffset >=0)?'+':''}${(Math.abs(this.utcOffset) < 10)?'0':''}${this.utcOffset}:00`;
         } else {
-          let houts = this.utcOffset / 60;
+          let hours = this.utcOffset / 60;
           let minutes = this.utcOffset % 60;   
           return `${(this.utcOffset >=0)?'+':''}${(Math.abs(hours) < 10)?'0':''}${this.hours}:${(Math.abs(minutes) < 10)?'0':''}${this.minutes}`;    
         }
