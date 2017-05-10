@@ -70,7 +70,6 @@
       }
       .colorDot {
         display: inline-block;
-        margin-right: 6px;
         width: 12px;
         height: 12px;
         border-radius: 6px;
@@ -78,6 +77,29 @@
       }
       .right {
         text-align: right;
+      }
+
+
+      .table    { 
+        display: table; 
+      
+      }
+      .tr       { display: table-row; }
+      .thead    { display: table-header-group; }
+      .tbody    { display: table-row-group; }
+      .tfoot    { display: table-footer-group; }
+      .col      { display: table-column; }
+      .colgroup { display: table-column-group; }
+      .td, .th  { display: table-cell; }
+      .caption  { display: table-caption; }
+      .table {
+        table-layout: fixed;
+      }
+      .col0 { 
+        width: 20px;
+      }
+      .col1 {
+        padding-right: 16px;
       }
     </style>
     
@@ -114,23 +136,22 @@
             [[_getName(_currentValues,0)]]: [[_getValue(_currentValues,0)]] <br>   
           </template>
         </dom-if>
-        <dom-if if="{{_hasNLines(_currentValues,2)}}">
-          <template> 
-            <div>
-              <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span>  
-              {{_getName(_currentValues,0)}}: {{_getValue(_currentValues,0)}} <br>            
-              <span class="colorDot" style$="background-color: [[_getColor(_currentValues,1)]]"></span> 
-              {{_getName(_currentValues,1)}}: {{_getValue(_currentValues,1)}}
-            </div> 
-          </template>
-        </dom-if>
-        <dom-if if="{{_hasMoreThanNLines(_currentValues,2)}}">
+        <dom-if if="{{_hasMoreThanNLines(_currentValues,1)}}">
           <template>
-            <div>
+            <div class="table">
               <dom-repeat items="[[_currentValues.yValues]]" item="value" index-as="index">
                 <template>
-                  <span class="colorDot" style$="background-color: [[_getColor(_currentValues,index)]]"></span>  
-                  {{_getName(_currentValues,index)}}: {{_getValue(_currentValues,index)}} <br>     
+                  <div class="tr">
+                    <div class="td col0">
+                      <span class="colorDot" style$="background-color: [[_getColor(_currentValues,index)]]"></span>  
+                    </div>
+                    <div class="td col1">
+                      {{_getName(_currentValues,index)}}:
+                    </div>
+                    <div class="td col2">
+                      {{_getValue(_currentValues,index)}}
+                    </div>
+                  </div>     
                 </template>
               </dom-repeat>
             </div>
