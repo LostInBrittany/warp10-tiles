@@ -1,0 +1,73 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Display num test</title>
+
+<style>
+  .container {
+    display: flex;
+    flex-flow: row wrap;
+  }
+</style>
+<script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
+<link   rel="import" href=" ../../polymer/polymer.html">
+
+
+<link   rel="import" href=" ../warp10-tiles-display-date.html">
+</head>
+<body>
+
+  <div class="container">
+
+    <dom-bind id="template">
+      <template>
+        <warp10-tiles-display-date
+          data="[[data1]]" 
+          label="[[label1]]"
+          size="[[size1]]"
+          fg-color="[[fgColor1]]"
+          bg-color="[[bgColor1]]"
+          description="[[description1]]"
+          debug></warp10-tiles-display-date>
+
+        <warp10-tiles-display-date
+          data="[[data2]]" 
+          label="[[label2]]"
+          size="[[size2]]"
+          fg-color="[[fgColor2]]"
+          bg-color="[[bgColor2]]"
+          utc-offset="1"
+          description="[[description2]]"></warp10-tiles-display-date>
+      </template>
+    </dom-bind>
+
+  </div>
+  <script>
+      var autobind = document.querySelector('dom-bind');
+
+      autobind.data1 = '1494432470477272';
+      autobind.label1 = 'A nice date';
+      autobind.size1 = 'large';
+      autobind.fgColor1 = 'white';
+      autobind.bgColor1 = 'orange';
+      autobind.description1 = 'This is a nice date';
+
+      autobind.data2 = '1494432470477';
+      autobind.label2 = 'A not so nice date';
+      autobind.size2 = 'large';
+      autobind.fgColor2 = 'white';
+      autobind.bgColor2 = 'red';
+      autobind.description2 = 'This is a not so nice date';
+
+  </script>
+  
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+</html>

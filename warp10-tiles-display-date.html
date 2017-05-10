@@ -1,0 +1,178 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Import mixins -->
+<link rel="import" href="./warp10-tiles-mixin.html">
+
+<!-- Import elements -->
+<link rel="import" href="../moment-js/moment-js.html">
+<link rel="import" href="./warp10-tiles-engine.html">
+<link rel="import" href="./warp10-tiles-style.html">
+
+<dom-module id="warp10-tiles-display-date">
+
+  <template>
+
+    <style include="warp10-tiles-style">
+      :host {
+        display: inline-block;
+      }
+      #value {
+        font-size: 5rem;
+        text-align: center;
+        display: flex;
+        flex-flow: column nowrap;
+      }
+      .time {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: flex-end;
+      }
+      .timezone {
+        margin-left: 16px;
+        font-size: 0.8em;
+      }
+    </style>
+    
+    <warp10-tiles-engine 
+        size="[[size]]"  
+        fg-color="[[fgColor]]"
+        bg-color="[[bgColor]]"
+        label="[[label]]"
+        description="[[description]]"
+        on-useful-dimensions-changed="_onUsefulDimensionsChange"
+        debug="[[debug]]">  
+      <div id="value" slot="value" lang="en">
+        <div class="date">
+          <moment-js 
+              date="[[_parseTS(data)]]" 
+              format="YYYY‑MM‑DD"
+              utc-offset="[[utcOffset]]"></moment-js> 
+        </div>
+        <div class="time">
+          <moment-js 
+              date="[[_parseTS(data)]]" 
+              format="HH:mm:ss"
+              utc-offset="[[utcOffset]]"></moment-js> 
+          <div class="timezone">
+            [[_timezone]]
+          </div>
+       </div>
+    </warp10-tiles-engine>
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TilesDisplaydate extends Warp10TilesMixin(Polymer.Element) {
+
+      static get is() { return 'warp10-tiles-display-date' }
+
+      static get properties() {
+        return {           
+          /**
+          * The data to display
+          */
+          data: {
+            type: String,
+            value: 0
+          },
+          utcOffset: {
+            type: Number,
+            value: 0
+          },
+          _dimensions: {
+            type: Object,
+          },
+          _valueFontSize: {
+            type: Number,
+            value: 1
+          }, 
+          _isAttached: {
+            type: Boolean,
+            value: false
+          },
+          _timezone: {
+            type: String,
+            computed: "_getTimezone(utcOffset)"
+          }
+        }
+      }
+
+
+      static get observers() {
+        return [ 
+          "_textHeight(data,_isAttached,_dimensions)"
+        ]
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this._isAttached = true;
+        if (this.debug) { console.log('[warp10-tiles-display-date] connectedCallback'); }
+      }
+
+      // --------------------------------------------------------------------------------------------
+      // Event listeners
+      // --------------------------------------------------------------------------------------------  
+
+      _onUsefulDimensionsChange(evt) {
+        if (this.debug) { console.log('[warp10-tiles-display-date] _onUsefulDimensionsChange',evt.detail.value); }
+        this._dimensions = evt.detail.value;
+      }
+
+
+      _textHeight() {
+        if (!this._isAttached || !this._dimensions) {
+          return;
+        }
+        if (this.debug) { console.debug(`[warp10-tiles-display-date] _textHeight clientHeight: ${this.$$('#value').clientHeight}, scrollHeight: ${this.$$('#value').scrollHeight}`); }
+        if ( this.$$('#value').scrollHeight > this.$$('#value').clientHeight || this.$$('#value').scrollWidth > this.$$('#value').clientWidth) {
+          let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
+          let newFontSize = currentFontSize * 0.9 + "px";
+          this.$.value.style.fontSize = newFontSize;
+          if (this.debug)  { console.debug("[warp10-display-date] _textHeight - value.style", newFontSize); }
+          this._textHeight();
+        }
+      }      
+
+      _parseTS(date) {
+        let inputtext = parseInt(date);
+        if ((inputtext >= 100000000000000) || (inputtext <= -100000000000000)) {
+          // Timestamp in microseconds
+          inputtext = Math.round(inputtext / 1000)
+        }
+        let datum = new Date(inputtext)
+
+        return datum;
+      }
+
+      _getTimezone() {
+
+        if (this.utcOffset == 0) {
+          return "UTC";
+        }
+
+        if (Math.abs(this.utcOffset) <= 16) {
+          return `${(this.utcOffset >=0)?'+':''}${(Math.abs(this.utcOffset) < 10)?'0':''}${this.utcOffset}:00`;
+        } else {
+          let houts = this.utcOffset / 60;
+          let minutes = this.utcOffset % 60;   
+          return `${(this.utcOffset >=0)?'+':''}${(Math.abs(hours) < 10)?'0':''}${this.hours}:${(Math.abs(minutes) < 10)?'0':''}${this.minutes}`;    
+        }
+      }
+
+    }
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TilesDisplaydate.is, Warp10TilesDisplaydate);    
+  </script>  
+
+</dom-module>  
+
