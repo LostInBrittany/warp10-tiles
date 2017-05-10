@@ -284,10 +284,10 @@
       }
 
       _getName(currentValues,i) {
-        if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
+        if (!currentValues || !currentValues.yValues) { 
           return "";
         }
-        var label = this.data[0].params[i].key;
+        var label = currentValues.yValues[i].name;
         if (!label) {
           label = "Line "+i;
         }
@@ -296,10 +296,10 @@
       }
 
       _getColor(currentValues,i) {
-        if (!this.data || !this.data[0] || !this.data[0].params || !this.data[0].params[i] ) {
+        if (!currentValues || !currentValues.yValues) { 
           return "";
         }
-        var color = this.data[0].params[i].color;
+        var color = currentValues.yValues[i].color;
         if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues) };
         return color;
       }
