@@ -37,7 +37,7 @@
         description="[[description]]"
         on-useful-dimensions-changed="_onUsefulDimensionsChange"
         debug="[[debug]]">  
-      <div id="value" slot="value">[[data]]</div>
+      <div id="value" slot="value" lang="en">[[_format(data)]]</div>
     </warp10-tiles-engine>
   </template>
 
@@ -99,13 +99,21 @@
           return;
         }
         if (this.debug) { console.debug(`[warp10-tiles-display-message] _textHeight clientHeight: ${this.$$('#value').clientHeight}, scrollHeight: ${this.$$('#value').scrollHeight}`); }
-        if ( this.$$('#value').scrollHeight > this.$$('#value').clientHeight) {
+        if ( this.$$('#value').scrollHeight > this.$$('#value').clientHeight || this.$$('#value').scrollWidth > this.$$('#value').clientWidth) {
           let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
           let newFontSize = currentFontSize * 0.9 + "px";
           this.$.value.style.fontSize = newFontSize;
           if (this.debug)  { console.debug("[warp10-display-message] _textHeight - value.style", newFontSize); }
           this._textHeight();
         }
+      }
+
+      _format(data) {
+        if (typeof data !== 'string') {
+          return "";
+        }
+        // Replace standard hyphens with non-breaking hyphens, 	&#x2011;, &#8209;, '‑'
+        return data.replace(/-/g,'‑');
       }
 
     }
