@@ -304,8 +304,9 @@
 
         let usefulDimensions = {
           width: this.$$('.main-content').clientWidth,
-          height: this.$$('.main-content').clientHeight
+          height: Math.min(this.$$('.main-content').clientHeight, this.$$('.tile-content').clientHeight - 30)
         }
+        
         this._setUsefulDimensions(usefulDimensions);
         this.dispatchEvent(new CustomEvent('useful-dimensions-change', {detail: usefulDimensions}));
       }

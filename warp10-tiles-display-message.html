@@ -74,7 +74,7 @@
 
       static get observers() {
         return [ 
-          "_textHeight(data,_isAttached,_dimensions)"
+          "_adjustValueSize(data,_isAttached,_dimensions)"
         ]
       }
 
@@ -93,13 +93,23 @@
         this._dimensions = evt.detail.value;
       }
 
+      _adjustValueSize() {
+        window.setTimeout( it => this._textHeight(), 50);
+      }
+
+
 
       _textHeight() {
         if (!this._isAttached || !this._dimensions) {
           return;
         }
-        if (this.debug) { console.debug(`[warp10-tiles-display-message] _textHeight clientHeight: ${this.$$('#value').clientHeight}, scrollHeight: ${this.$$('#value').scrollHeight}`); }
-        if ( this.$$('#value').scrollHeight > this.$$('#value').clientHeight || this.$$('#value').scrollWidth > this.$$('#value').clientWidth) {
+        if (this.debug) { console.debug(`[warp10-tiles-display-message] _textHeight clientHeight: ${this.$.value.clientHeight}, scrollHeight: ${this.$.value.scrollHeight}, scrollWidth: ${ this.$.value.scrollWidth}, clientwidth: ${this.$.value.clientWidth}, dimensions.width: ${this._dimensions.width}, dimensions.height: ${this._dimensions.height}, offsetWidth: ${this.$.value.offsetWidth}  `); }
+
+
+        if ( this.$.value.scrollHeight > this.$.value.clientHeight 
+            || this.$.value.scrollWidth > this.$.value.clientWidth 
+            || this.$.value.offsetHeight > this._dimensions.height 
+            || this.$.value.offsetWidth > this._dimensions.width) {
           let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px",""));
           let newFontSize = currentFontSize * 0.9 + "px";
           this.$.value.style.fontSize = newFontSize;
