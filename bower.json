@@ -46,13 +46,13 @@
     "1.x": {
       "dependencies": {
         "polymer": "Polymer/polymer#^1.9",
-    "iron-image": "PolymerElements/iron-image#^1.0.0",
-    "iron-icons": "PolymerElements/iron-icons#^1.0.0",
-    "paper-progress": "PolymerElements/paper-progress#^1.0.0",
-    "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
-    "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
-    "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.8.1",
-    "moment-js": "lostinbrittany/moment-js#0.8-rc2"
+        "iron-image": "PolymerElements/iron-image#^1.0.0",
+        "iron-icons": "PolymerElements/iron-icons#^1.0.0",
+        "paper-progress": "PolymerElements/paper-progress#^1.0.0",
+        "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
+        "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
+        "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.8.1",
+        "moment-js": "lostinbrittany/moment-js#0.8-rc2"
       },
       "devDependencies": {
         "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
@@ -68,5 +68,9 @@
         "webcomponentsjs": "^0.7"
       }
     }
+  },
+  "resolutions": {
+    "polymer": "1.9 - 2",
+    "webcomponentsjs": "^v1.0.0"
   }
 }

@@ -11,7 +11,6 @@
 <link rel="import" href="./warp10-tiles-mixin.html">
 
 <!-- Import elements -->
-<script src="../moment/min/moment.min.js">
 <link rel="import" href="../moment-js/moment-js.html">
 <link rel="import" href="./warp10-tiles-engine.html">
 <link rel="import" href="./warp10-tiles-style.html">
@@ -55,13 +54,15 @@
           <moment-js 
               date="[[_parseTS(data)]]" 
               format="YYYY‑MM‑DD"
-              utc-offset="[[utcOffset]]"></moment-js> 
+              utc-offset="[[utcOffset]]"
+              on-moment-is-ready="_momentIsReady"></moment-js> 
         </div>
         <div class="time">
           <moment-js 
               date="[[_parseTS(data)]]" 
               format="HH:mm:ss"
-              utc-offset="[[utcOffset]]"></moment-js> 
+              utc-offset="[[utcOffset]]"
+              on-moment-is-ready="_momentIsReady"></moment-js> 
           <div class="timezone">
             [[_timezone]]
           </div>
@@ -132,6 +133,11 @@
 
       _adjustValueSize() {
         window.setTimeout( it => this._textHeight(), 50);
+      }
+
+      _momentIsReady() {
+        if (this.debug) { console.debug('[warp10-tiles-display-date] _momentIsReady')};
+        this._adjustValueSize();
       }
 
       _textHeight() {
