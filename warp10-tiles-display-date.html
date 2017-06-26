@@ -88,7 +88,8 @@
           },
           utcOffset: {
             type: Number,
-            value: 0
+            value: 0,
+            observer: '_utcOffsetChanged'
           },
           _dimensions: {
             type: Object,
@@ -119,6 +120,18 @@
         super.connectedCallback();
         this._isAttached = true;
         if (this.debug) { console.log('[warp10-tiles-display-date] connectedCallback'); }
+      }
+
+      
+      // --------------------------------------------------------------------------------------------
+      // Observers
+      // --------------------------------------------------------------------------------------------  
+  
+      _utcOffsetChanged(offset) {
+         if (this.debug) { console.log('[warp10-tiles-display-date] _utcOffsetChanged',offset); }
+         if (offset == undefined) {
+           this.utcOffset = 0;
+         }      
       }
 
       // --------------------------------------------------------------------------------------------
