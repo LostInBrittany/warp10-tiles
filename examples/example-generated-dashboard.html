@@ -1,0 +1,85 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Warp10 Dashboard - Display dashboard test</title>
+
+  <style>
+    body {
+      margin: 0px;
+      background-color: #eee;
+    }
+
+  </style>
+  <script src=" ../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href=" ../../polymer/polymer.html">
+  <link rel="import" href=" ../../iron-ajax/iron-ajax.html">
+
+  <link rel="import" href=" ../warp10-tiles-page-generator.html">
+</head>
+
+
+<body>
+  <dom-module id="example-generated-card">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <warp10-tiles-page-generator 
+          conf="[[conf.content.0]]" 
+          bootstrap="[[now()]] 'endDate' STORE 1 d 'beginDate' STORE"          
+          debug></warp10-tiles-page-generator> 
+      <iron-ajax 
+          url="[[rootPath]]example-generated-dashboard.conf.json" 
+          handle-as="json" 
+          last-response="{{conf}}" 
+          on-response="_gotConf"
+          auto></iron-ajax>
+    </template>
+
+    <script>
+      HTMLImports.whenReady(function() {
+        class ExampleGeneratedCard extends Polymer.Element {
+          static get is() { return 'example-generated-card'; }
+          static get properties() {
+            return {};
+          }
+
+          _gotConf(evt, ironRequest){
+            console.log("[example-generated-dashboard] gotConf",ironRequest.response )
+          }
+
+          extractCard(conf) {
+            console.log("[example-generated-dashboard] extractCard",conf.content[0].content[0] )
+            return conf.content[0][0];
+          }
+
+          stringify(obj) {
+            return JSON.stringify(obj);
+          }
+
+          now() {
+            return new Date().getMilliseconds()*1000;
+          }
+        }
+
+        window.customElements.define(ExampleGeneratedCard.is, ExampleGeneratedCard);
+      });
+    </script>
+  </dom-module>
+
+
+  <example-generated-card></example-generated-card>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+
+</html>
