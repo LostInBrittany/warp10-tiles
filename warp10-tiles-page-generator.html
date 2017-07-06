@@ -48,11 +48,12 @@
                 <div class="cardBody">
                     <dom-repeat items="[[card.content]]" as="tile">
                         <template>
+                            [[log(tile)]]
                             <warp10-tiles-dashboard-element
-                            warpscript-script="[[_getConfParam('warpscript-script', conf, card, tile)]]"
-                            warpscript-reload="[[bootstrap]] [[_getConfParam('warpscript-reload', conf, card, tile)]]" 
+                            warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
+                            warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]" 
                             warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
-                            debug="[[_getConfParam('debug', conf, card, tile)]]">
+                            debug="[[debug]]">
                             </warp10-tiles-dashboard-element>
                         </template>
                     </dom-repeat>
@@ -101,8 +102,17 @@
 
 
       _getConfParam(param, conf, card, tile) {
-          return (tile[param] || card[param] || conf[param]);
+        if (this.debug) { console.log("[warp10-tiles-page-generator] _getConfParam", param, this._joinIfArray(tile[param] || card[param] || conf[param])); }
+        return this._joinIfArray(tile[param] || card[param] || conf[param]);
       }
+
+      _joinIfArray(obj) {         
+        if (Array.isArray(obj)) {
+          return obj.join('\n');
+        } 
+        return obj;
+      }
+      
     }
 
     window.customElements.define(Warp10TilesPageGenerator.is, Warp10TilesPageGenerator);

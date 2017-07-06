@@ -5,6 +5,7 @@
     { 
       "type": "page",
       "name": "generic",
+      "title": "Generic",
       "content": [
         {
           "type": "card",
