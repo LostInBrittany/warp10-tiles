@@ -50,11 +50,12 @@
                         <template>
                             [[log(tile)]]
                             <warp10-tiles-dashboard-element
-                            warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
-                            warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]" 
-                            warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
-                            debug="[[debug]]">
-                            </warp10-tiles-dashboard-element>
+                                bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"                              
+                                fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"        
+                                warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
+                                warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]" 
+                                warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
+                                debug="[[debug]]"></warp10-tiles-dashboard-element>
                         </template>
                     </dom-repeat>
                 </div>
