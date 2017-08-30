@@ -1,0 +1,82 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer-element.html">
+
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<dom-module id="warp10-tiles-conf-loader">
+  <template>
+    <style>
+    </style>
+
+    <iron-ajax 
+        id="confRootRequest" 
+        url="[[confRoot]]"
+        on-response="_onConfRootResponse"
+        on-error="_onConfRootError"
+        auto></iron-ajax>
+
+    <iron-ajax 
+        id="confModelRequest" 
+        on-response="_onConfModelResponse"
+        on-error="_onConfModelError"></iron-ajax>
+
+  </template>
+  <script>
+    
+    // Extend Polymer.Element base class
+    class Warp10TilesConfLoader extends Polymer.Element { 
+      
+      static get is() { return 'warp10-tiles-conf-loader' }
+
+      static get properties(){
+        return {
+          confRoot: {
+            type: String,
+            value: ''
+          },
+          confModel: {
+            type: String,
+            observer: '_onConfModelChange',
+            value: ''
+          },
+          conf: {
+            type: Object,
+            notify: true,
+            value: function() {
+              return {};
+            }
+          },
+          debug: {
+            type: Boolean,
+            value: false
+          },
+        };
+      }
+
+      _onConfModelChange() {
+        return {};
+      }
+
+      _onConfResponse(event, ironRequest) {
+        event.stopPropagation();
+        if (this.debug) { console.log(ironRequest.response); }
+        if (response.models) {
+          return;
+        }
+        this.conf = response;
+        //Launch Event
+      }
+
+    }
+
+    customElements.define(Warp10TilesConfLoader.is, Warp10TilesConfLoader);
+  </script>
+</dom-module>
