@@ -1,0 +1,16 @@
+{
+    "name": "test-collection",
+    "type": "collection",
+    "content": [
+        {
+            "type": "url",
+            "title": "Dashboard A",
+            "url": "./example-conf-loader-dash-a.conf.json"
+        },
+        {
+            "type": "url",
+            "title": "Dashboard B",
+            "url": "./example-conf-loader-dash-b.conf.json"
+        }
+    ]
+}

@@ -17,16 +17,16 @@
     </style>
 
     <iron-ajax 
-        id="confRootRequest" 
-        url="[[confRoot]]"
-        on-response="_onConfRootResponse"
-        on-error="_onConfRootError"
+        id="mainConfRequest" 
+        url="[[url]]"
+        on-response="_onMainConfResponse"
+        on-error="_onMainConfError"
         auto></iron-ajax>
 
     <iron-ajax 
-        id="confModelRequest" 
-        on-response="_onConfModelResponse"
-        on-error="_onConfModelError"></iron-ajax>
+        id="dashboardRequest" 
+        on-response="_onDashboardResponse"
+        on-error="_onDashboardError"></iron-ajax>
 
   </template>
   <script>
@@ -38,22 +38,46 @@
 
       static get properties(){
         return {
-          confRoot: {
+          /**
+           * Url of the main conf file
+           */
+          url: {
             type: String,
             value: ''
           },
-          confModel: {
-            type: String,
-            observer: '_onConfModelChange',
-            value: ''
+          /**
+           * Index of the dashboard to load conf for from `availableDashboards`
+           */
+          dashboard: {
+            type: Number,
+            observer: '_onDashboardChange',
+            value: 0
           },
-          conf: {
+          /**
+           * A list of available dashboards
+           * @type {Array<(Url|Dashboard)>}
+           */
+          availableDashboards: {
             type: Object,
             notify: true,
             value: function() {
               return {};
             }
           },
+          /**
+           * The conf object for the chosen (or default) dashboard
+           */
+          dashboardConf: {
+            type: Object,
+            notify: true,
+            observer: '_onDashboardConfChange',
+            value: function() {
+              return {};
+            }
+          },
+          /**
+           * If `true`, debug logs are sent to the console
+           */
           debug: {
             type: Boolean,
             value: false
@@ -61,19 +85,64 @@
         };
       }
 
-      _onConfModelChange() {
+      _onDashboardChange() {
         return {};
       }
 
-      _onConfResponse(event, ironRequest) {
+      _onDashboardConfChange() {
+        if (this.dashboardConf.type == 'url') {
+          this.$.dashboardRequest.url = this.dashboardConf.url;
+          this.$.dashboardRequest.generateRequest();
+        }
+      }
+
+
+      _onDashboardResponse(event, ironRequest) {
         event.stopPropagation();
-        if (this.debug) { console.log(ironRequest.response); }
-        if (response.models) {
+    
+        if (!ironRequest.response || 
+            !ironRequest.response.type || 
+            ironRequest.response.type != 'dashboard'  ||
+            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) ) )  {
+          console.warn('[warp10-tiles-conf-loader] _onDashboardResponse - Invalid conf file', ironRequest.url);
+          return;
+        }    
+        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onDashboardResponse', ironRequest.response); }
+        this.dashboardConf = ironRequest.response;
+      }
+
+      _onMainConfResponse(event, ironRequest) {
+        event.stopPropagation();
+
+        if (!ironRequest.response || 
+            !ironRequest.response.type || 
+            (ironRequest.response.type != 'collection' && ironRequest.response.type != 'dashboard' ) ||
+            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) ) ) {
+          console.warn('[warp10-tiles-conf-loader] _onConfResponse - Invalid conf file', ironRequest.url);
           return;
         }
-        this.conf = response;
-        //Launch Event
+
+
+        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onMainConfResponse'); }
+
+
+        if (ironRequest.response.type == 'collection') {
+          this.availableDashboards = ironRequest.response.content;         
+
+          if (!this.availableDashboards[this.dashboard]) {
+            this.dashboardConf = this.availableDashboards[0];
+          } else {
+            this.dashboardConf = this.availableDashboards[this.dashboard];
+          }
+
+        } else {
+          this.dashboardConf = ironRequest.response;
+        }
+
+
       }
+
+
 
     }
 
