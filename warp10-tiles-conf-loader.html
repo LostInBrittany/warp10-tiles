@@ -58,10 +58,11 @@
            * @type {Array<(Url|Dashboard)>}
            */
           availableDashboards: {
-            type: Object,
+            type: Array,
             notify: true,
+            observer: '_onAvailableDashboardChange',
             value: function() {
-              return {};
+              return [];
             }
           },
           /**
@@ -86,7 +87,12 @@
       }
 
       _onDashboardChange() {
-        return {};
+        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onDashboardChange', this.dashboard) };
+        if (!this.availableDashboards[this.dashboard]) {
+          this.dashboardConf = this.availableDashboards[0];
+        } else {
+          this.dashboardConf = this.availableDashboards[this.dashboard];
+        }      
       }
 
       _onDashboardConfChange() {
@@ -94,6 +100,10 @@
           this.$.dashboardRequest.url = this.dashboardConf.url;
           this.$.dashboardRequest.generateRequest();
         }
+      }
+
+      _onAvailableDashboardChange() {
+        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onAvailableDashboardChange', this.availableDashboards)};
       }
 
 
@@ -123,7 +133,7 @@
         }
 
 
-        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onMainConfResponse'); }
+        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onMainConfResponse',ironRequest.response); }
 
 
         if (ironRequest.response.type == 'collection') {
@@ -141,6 +151,7 @@
 
 
       }
+
 
 
 

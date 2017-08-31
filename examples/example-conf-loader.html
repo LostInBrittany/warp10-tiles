@@ -17,9 +17,15 @@
     }
 
   </style>
-  <script src=" ../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href=" ../../polymer/polymer.html">
-  <link rel="import" href=" ../../iron-ajax/iron-ajax.html">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
+
+  <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../paper-listbox/paper-listbox.html">  
+  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+  <!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+  <link rel="import" href="../../neon-animation/web-animations.html">
 
   <link rel="import" href=" ../warp10-tiles-page-generator.html">
   <link rel="import" href=" ../warp10-tiles-conf-loader.html">
@@ -34,13 +40,29 @@
           display: block;
         }
       </style>
+      <div  class="params">
+        <paper-dropdown-menu label="Choose a dashboard">
+          <paper-listbox slot="dropdown-content" selected="{{chosenDashboard}}">
+            <dom-repeat items="[[availableDashboards]]">
+              <template>
+                <paper-item 
+                    title="[[item.title]]">
+                  [[item.title]]</paper-item>
+              </template>
+            </dom-repeat>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </div>      
       <warp10-tiles-page-generator 
           conf="[[conf.content.0]]" 
           bootstrap="[[now()]] 'endDate' STORE 1 d 'beginDate' STORE"          
           debug></warp10-tiles-page-generator> 
       <warp10-tiles-conf-loader
-          url="[[rootPath]]example-conf-loader-global.conf.json"           
+          url="[[rootPath]]example-conf-loader-global.conf.json"          
+          dashboard="[[chosenDashboard]]" 
+          available-dashboards="{{availableDashboards}}"
           dashboard-conf="{{conf}}"
+          on-available-dashboards-changed="_onAvailableDashboardsChanged"
           debug></warp10-tiles-conf-loader>
     </template>
 
@@ -49,15 +71,41 @@
         class ExampleConfLoader extends Polymer.Element {
           static get is() { return 'example-conf-loader'; }
           static get properties() {
-            return {};
+            return {
+              chosenDashboard: {
+                type: Number,
+                value: 0,
+                observer: '_chosenDashboardObserver'
+              },
+              availableDashboards: {
+                type: Array,
+                value: () => [],
+                observer: '_availableDashboardsObserver'
+              },
+              conf: {
+                type: Object,
+                value: () => {}
+              }
+            };
           }
 
+          _chosenDashboardObserver() {
+            console.log('[example-conf-loader] _chosenDashboardObserver', this.chosenDashboard);
+          }
+
+          _availableDashboardsObserver() {
+            console.log('[example-conf-loader] _availableDashboardsObserver', this.availableDashboards);
+          }
+
+          _onAvailableDashboardsChanged(evt) {
+            console.log('[example-conf-loader] _onAvailableDashboardsChanged', evt.detail);
+          }
           _gotConf(evt, ironRequest){
-            console.log("[example-conf-loader] gotConf",ironRequest.response )
+            console.log('[example-conf-loader] gotConf',ironRequest.response );
           }
 
           extractCard(conf) {
-            console.log("[example-conf-loader] extractCard",conf.content[0].content[0] )
+            console.log('[example-conf-loader] extractCard',conf.content[0].content[0] );
             return conf.content[0][0];
           }
 
