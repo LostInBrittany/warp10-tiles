@@ -15,7 +15,7 @@
 <link rel="import" href="./warp10-tiles-engine.html">
 <link rel="import" href="./warp10-tiles-style.html">
 
-<dom-module id="warp10-tiles-display-date">
+<dom-module id="warp10-tiles-display-map">
 
     <template>
 
@@ -53,23 +53,9 @@
                 on-useful-dimensions-changed="_onUsefulDimensionsChange"
                 debug="[[debug]]">
             <div id="value" slot="value" lang="en">
-                <div class="date">
-                    <moment-js
-                            date="[[_parseTS(data)]]"
-                            format="YYYY‑MM‑DD"
-                            utc-offset="[[utcOffset]]"
-                            on-moment-is-ready="_momentIsReady"></moment-js>
-                </div>
-                <div class="time">
-                    <moment-js
-                            date="[[_parseTS(data)]]"
-                            format="HH:mm:ss"
-                            utc-offset="[[utcOffset]]"
-                            on-moment-is-ready="_momentIsReady"></moment-js>
-                    <div class="timezone">
-                        [[_timezone]]
-                    </div>
-                </div>
+                <warp10-display-map
+                        data="[[_responseParams.data]]"
+                ></warp10-display-map>
             </div>
         </warp10-tiles-engine>
     </template>
