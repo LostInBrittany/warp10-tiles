@@ -256,14 +256,14 @@
 
 
       _hasNLines(currentValues, n) {
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues) };
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues) }
         if (!currentValues || !currentValues.yValues) {
           return false;
         }
         return (currentValues.yValues.length === n);
       }
       _hasMoreThanNLines(currentValues, n) {
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues) };
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues) }
         if (!currentValues || !currentValues.yValues) { 
           return false;
         }

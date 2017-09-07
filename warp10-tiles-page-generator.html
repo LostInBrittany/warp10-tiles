@@ -13,8 +13,8 @@
         <style>
             :host {
                 display: block;
-            }
 
+            }
             .card {
                 display: block;
                 background-color: white;
@@ -38,95 +38,116 @@
                 display: flex;
                 flex-flow: row wrap;
             }
-        </style>
-        <dom-repeat items="[[conf.content]]" as="card">
-            <template>
-                <div class="card">
-                    <dom-if if="[[card.title]]">
-                        <template>
-                            <div class="cardHeader">
-                                <h1>[[card.title]]</h1>
-                            </div>
-                        </template>
-                    </dom-if>
-                    <div class="cardBody">
-                        <dom-repeat items="[[card.content]]" as="tile">
-                            <template>
-                                [[log(tile)]]
-                                <warp10-tiles-dashboard-element
-                                        bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"
-                                        fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"
-                                        warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
-                                        warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]"
-                                        warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
-                                        debug="[[debug]]"></warp10-tiles-dashboard-element>
-                            </template>
-                        </dom-repeat>
-                    </div>
-                </div>
-            </template>
-        </dom-repeat>
 
+            div.masonry {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            div.masonry div.masonry-item {
+                flex: 0 auto;
+                margin: 0 auto;
+                padding: .5em 0 0 .5em;
+                width: 100%;
+                position: relative;
+                float: left;
+
+            }
+        </style>
+
+        <div>
+            <dom-repeat items="[[conf.content]]" as="card">
+                <template>
+                    <div class="card">
+                        <dom-if if="[[card.title]]">
+                            <template>
+                                <div class="cardHeader">
+                                    <h1>[[card.title]]</h1>
+                                </div>
+                            </template>
+                        </dom-if>
+                        <div class="cardBody">
+                            <div class="masonry">
+                                <dom-repeat items="[[card.content]]" as="tile">
+                                    <div class="masonry-item">
+                                        <template>
+                                            [[log(tile)]]
+                                            <warp10-tiles-dashboard-element
+                                                    bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"
+                                                    fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"
+                                                    warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
+                                                    warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]"
+                                                    warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
+                                                    debug="[[debug]]"></warp10-tiles-dashboard-element>
+                                        </template>
+                                    </div>
+                                </dom-repeat>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </dom-repeat>
+        </div>
 
     </template>
 
     <script>
-        /**
-         * `warp10-tiles-page-generator`
-         *
-         * @customElement
-         * @polymer
-         * @demo examples/example-generated-dashboard.html
-         */
-        class Warp10TilesPageGenerator extends Polymer.Element {
-            static get is() {
-                return 'warp10-tiles-page-generator';
-            }
-
-            static get properties() {
-                return {
-                    conf: {
-                        type: Object,
-                        observer: '_onConfChange'
-                    },
-                    bootstrap: {
-                        type: String,
-                        value: ''
-                    },
-                    debug: {
-                        type: Boolean,
-                        value: false
-                    },
-                };
-            }
-
-            _onConfChange(conf) {
-                if (this.debug) {
-                    console.log("[warp10-tiles-page-generator] _onConfChange", conf);
-                }
-            }
-
-            stringify(obj) {
-                return JSON.stringify(obj);
-            }
-
-
-            _getConfParam(param, conf, card, tile) {
-                if (this.debug) {
-                    console.log("[warp10-tiles-page-generator] _getConfParam", param, this._joinIfArray(tile[param] || card[param] || conf[param]));
-                }
-                return this._joinIfArray(tile[param] || card[param] || conf[param]);
-            }
-
-            _joinIfArray(obj) {
-                if (Array.isArray(obj)) {
-                    return obj.join('\n');
-                }
-                return obj;
-            }
-
+      /**
+       * `warp10-tiles-page-generator`
+       *
+       * @customElement
+       * @polymer
+       * @demo examples/example-generated-dashboard.html
+       */
+      class Warp10TilesPageGenerator extends Polymer.Element {
+        static get is() {
+          return 'warp10-tiles-page-generator';
         }
 
-        window.customElements.define(Warp10TilesPageGenerator.is, Warp10TilesPageGenerator);
+        static get properties() {
+          return {
+            conf: {
+              type: Object,
+              observer: '_onConfChange'
+            },
+            bootstrap: {
+              type: String,
+              value: ''
+            },
+            debug: {
+              type: Boolean,
+              value: false
+            },
+          };
+        }
+
+        _onConfChange(conf) {
+          if (this.debug) {
+            console.log("[warp10-tiles-page-generator] _onConfChange", conf);
+          }
+        }
+
+        stringify(obj) {
+          return JSON.stringify(obj);
+        }
+
+
+        _getConfParam(param, conf, card, tile) {
+          if (this.debug) {
+            console.log("[warp10-tiles-page-generator] _getConfParam", param, this._joinIfArray(tile[param] || card[param] || conf[param]));
+          }
+          return this._joinIfArray(tile[param] || card[param] || conf[param]);
+        }
+
+        _joinIfArray(obj) {
+          if (Array.isArray(obj)) {
+            return obj.join('\n');
+          }
+          return obj;
+        }
+
+      }
+
+      window.customElements.define(Warp10TilesPageGenerator.is, Warp10TilesPageGenerator);
     </script>
 </dom-module>

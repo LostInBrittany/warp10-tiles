@@ -23,25 +23,6 @@
             :host {
                 display: inline-block;
             }
-
-            #value {
-                font-size: 5rem;
-                text-align: center;
-                display: flex;
-                flex-flow: column nowrap;
-                max-width: var(--max-width)
-            }
-
-            .time {
-                display: flex;
-                flex-flow: row nowrap;
-                align-items: flex-end;
-            }
-
-            .timezone {
-                margin-left: 16px;
-                font-size: 0.8em;
-            }
         </style>
 
         <warp10-tiles-engine
@@ -54,7 +35,12 @@
                 debug="[[debug]]">
             <div id="value" slot="value" lang="en">
                 <warp10-display-map
-                        data="[[_responseParams.data]]"
+                        data="[[data]]"
+                        zoom="[[zoom]]"
+                        longitude="[[longitude]]"
+                        latitude="[[latitude]]"
+                        currentValues="[[currentValues]]"
+                        annotationsSelectedTimestamp="[[annotationsSelectedTimestamp]]"
                 ></warp10-display-map>
             </div>
         </warp10-tiles-engine>
@@ -63,10 +49,10 @@
     <script>
 
         // Extend Polymer.Element base class
-        class Warp10TilesDisplaydate extends Warp10TilesMixin(Polymer.Element) {
+        class Warp10TilesDisplayMap extends Warp10TilesMixin(Polymer.Element) {
 
             static get is() {
-                return 'warp10-tiles-display-date'
+                return 'warp10-tiles-display-map'
             }
 
             static get properties() {
@@ -77,11 +63,6 @@
                     data: {
                         type: String,
                         value: 0
-                    },
-                    utcOffset: {
-                        type: Number,
-                        value: 0,
-                        observer: '_utcOffsetChanged'
                     },
                     _dimensions: {
                         type: Object,
@@ -94,9 +75,44 @@
                         type: Boolean,
                         value: false
                     },
-                    _timezone: {
-                        type: String,
-                        computed: "_getTimezone(utcOffset)"
+                    /**
+                     * The level of zoom
+                     */
+                    zoom: {
+                        type: Number,
+                        notify: true,
+                        value: 10
+                    },
+                    /**
+                     * The longitude of the map center
+                     */
+                    longitude: {
+                        type: Number,
+                        notify: true
+                    },
+                    /**
+                     * The latitude of the map center
+                     */
+                    latitude: {
+                        type: Number,
+                        notify: true
+                    },
+                    /**
+                     * The selected value set
+                     */
+                    currentValues: {
+                        type: Object,
+                        observer: '_currentValuesChanged',
+                        notify: true
+                    },
+                    /**
+                     * The timestamp of the selected annotationsSelectedTimestamp
+                     */
+                    annotationsSelectedTimestamp: {
+                        type: Number,
+                        notify: true,
+                        observer: "_annotationsSelectedTimestampChanged",
+                        value: -1
                     }
                 }
             }
@@ -112,23 +128,10 @@
                 super.connectedCallback();
                 this._isAttached = true;
                 if (this.debug) {
-                    console.log('[warp10-tiles-display-date] connectedCallback');
+                    console.log('[warp10-tiles-display-map] connectedCallback');
                 }
             }
 
-
-            // --------------------------------------------------------------------------------------------
-            // Observers
-            // --------------------------------------------------------------------------------------------
-
-            _utcOffsetChanged(offset) {
-                if (this.debug) {
-                    console.log('[warp10-tiles-display-date] _utcOffsetChanged', offset);
-                }
-                if (!offset) {
-                    this.utcOffset = 0;
-                }
-            }
 
             // --------------------------------------------------------------------------------------------
             // Event listeners
@@ -148,9 +151,8 @@
 
             _momentIsReady() {
                 if (this.debug) {
-                    console.debug('[warp10-tiles-display-date] _momentIsReady')
+                    console.debug('[warp10-tiles-display-map] _momentIsReady')
                 }
-                ;
                 this._adjustValueSize();
             }
 
@@ -159,7 +161,7 @@
                     return;
                 }
                 if (this.debug) {
-                    console.debug(`[warp10-tiles-display-date] _textHeight clientHeight: ${this.$.value.clientHeight}, scrollHeight: ${this.$.value.scrollHeight}, scrollWidth: ${ this.$.value.scrollWidth}, clientwidth: ${this.$.value.clientWidth}, dimensions.width: ${this._dimensions.width}, dimensions.height: ${this._dimensions.height}, offsetWidth: ${this.$.value.offsetWidth}  `);
+                    console.debug(`[warp10-tiles-display-map] _textHeight clientHeight: ${this.$.value.clientHeight}, scrollHeight: ${this.$.value.scrollHeight}, scrollWidth: ${ this.$.value.scrollWidth}, clientwidth: ${this.$.value.clientWidth}, dimensions.width: ${this._dimensions.width}, dimensions.height: ${this._dimensions.height}, offsetWidth: ${this.$.value.offsetWidth}  `);
                 }
 
                 if (this.$.value.scrollHeight > this.$.value.clientHeight
@@ -170,42 +172,15 @@
                     let newFontSize = currentFontSize * 0.9 + "px";
                     this.$.value.style.fontSize = newFontSize;
                     if (this.debug) {
-                        console.debug("[warp10-display-date] _textHeight - value.style", newFontSize);
+                        console.debug("[warp10-display-map] _textHeight - value.style", newFontSize);
                     }
                     this._textHeight();
                 }
             }
-
-            _parseTS(date) {
-                let inputtext = parseInt(date);
-                if ((inputtext >= 100000000000000) || (inputtext <= -100000000000000)) {
-                    // Timestamp in microseconds
-                    inputtext = Math.round(inputtext / 1000)
-                }
-                let datum = new Date(inputtext);
-
-                return datum;
-            }
-
-            _getTimezone() {
-
-                if (!this.utcOffset || this.utcOffset === 0) {
-                    return "UTC";
-                }
-
-                if (Math.abs(this.utcOffset) <= 16) {
-                    return `${(this.utcOffset >= 0) ? '+' : ''}${(Math.abs(this.utcOffset) < 10) ? '0' : ''}${this.utcOffset}:00`;
-                } else {
-                    let hours = this.utcOffset / 60;
-                    let minutes = this.utcOffset % 60;
-                    return `${(this.utcOffset >= 0) ? '+' : ''}${(Math.abs(hours) < 10) ? '0' : ''}${this.hours}:${(Math.abs(minutes) < 10) ? '0' : ''}${this.minutes}`;
-                }
-            }
-
         }
 
         // Register custom element definition using standard platform API
-        customElements.define(Warp10TilesDisplaydate.is, Warp10TilesDisplaydate);
+        customElements.define(Warp10TilesDisplayMap.is, Warp10TilesDisplayMap);
     </script>
 
 </dom-module>  

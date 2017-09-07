@@ -135,7 +135,8 @@
                         description="[[_responseParams.description]]"
                         debug="[[debug]]"></warp10-tiles-display-message>
             </template>
-        </dom-if><dom-if if="[[equals(_resultType,'map')]]">
+        </dom-if>
+        <dom-if if="[[equals(_resultType,'map')]]">
             <template>
                 <warp10-tiles-display-map
                         size="[[_responseParams.size]]"
@@ -143,6 +144,9 @@
                         fg-color="[[_responseParams.fgColor]]"
                         data="[[_responseParams.data]]"
                         label="[[_responseParams.label]]"
+                        zoom="[[_responseParams.zoom]]"
+                        latitude="[[_responseParams.latitude]]"
+                        longitude="[[_responseParams.longitude]]"
                         description="[[_responseParams.description]]"
                         debug="[[debug]]"></warp10-tiles-display-map>
             </template>
