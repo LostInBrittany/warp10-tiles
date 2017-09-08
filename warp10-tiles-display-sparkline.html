@@ -309,8 +309,8 @@
           return "";
         }
         var ts = currentValues.xValue;
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getDate', ts) };
-        return d3.time.format('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(ts))
+        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getDate', ts) }
+        return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
       }
 
       _getName(currentValues,i) {
