@@ -26,6 +26,7 @@
       :host {
         display: inline-block;
       }
+
       #value {
         font-size: 2.5rem;
       }
@@ -36,32 +37,33 @@
         --paper-progress-height: var(--progressHeight, 8px);
         width: var(--progressWidth, 120px);
         height: var(--progressHeight, 8px);
-      }    
+      }
+
       paper-progress.outside_bounds {
-        -webkit-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
-        -moz-box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
-        box-shadow: 0px 0px 10px 5px rgba(255,0,0,1);
-      }  
+        -webkit-box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
+        -moz-box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
+        box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
+      }
     </style>
-    
-    <warp10-tiles-engine 
-        size="[[size]]"  
+
+    <warp10-tiles-engine
+        size="[[size]]"
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
         useful-dimensions="{{usefulDimensions}}"
         on-useful-dimensions-changed="_onDimensionsChanged"
-        debug="[[debug]]">  
+        debug="[[debug]]">
       <div id="value" slot="value">
-        <paper-progress 
-            id="progress" 
-            value="[[_displayValue]]" 
-            secondary-progress="[[secondaryValue]]" 
-            min="[[min]]" 
-            max="[[max]]" 
+        <paper-progress
+            id="progress"
+            value="[[_displayValue]]"
+            secondary-progress="[[secondaryValue]]"
+            min="[[min]]"
+            max="[[max]]"
             class$="[[_outsideBounds]]">
-        </paper-progress>                
+        </paper-progress>
       </div>
     </warp10-tiles-engine>
   </template>
@@ -71,10 +73,12 @@
     // Extend Polymer.Element base class
     class Warp10TilesDisplayGauge extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
 
-      static get is() { return 'warp10-tiles-display-gauge' }
+      static get is() {
+        return 'warp10-tiles-display-gauge'
+      }
 
       static get properties() {
-        return {            
+        return {
           /**
            * The secondary value of the gauge
            */
@@ -96,7 +100,7 @@
           max: {
             type: Number,
             value: 100
-          },   
+          },
           /**
            * The primary color of the gauge
            */
@@ -118,14 +122,14 @@
 
 
       static get observers() {
-        return [ 
-          
-        ]
+        return []
       }
 
       connectedCallback() {
         super.connectedCallback();
-        if (this.debug) { console.log('[warp10-tiles-display-gauge] connectedCallback'); }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-gauge] connectedCallback');
+        }
       }
 
       // --------------------------------------------------------------------------------------------
@@ -138,42 +142,50 @@
         let progressWidth = 120;
         let progressHeight = 8;
 
-        if(usefulWidth > 200 || usefulHeight > 200) {
+        if (usefulWidth > 200 || usefulHeight > 200) {
           progressHeight = 12;
         }
-        if(usefulWidth > 260) {
+        if (usefulWidth > 260) {
           progressWidth = parseInt(usefulWidth) - 40;
         }
 
-        if(usefulWidth > 260 && usefulHeight > 260) {
+        if (usefulWidth > 260 && usefulHeight > 260) {
           progressHeight = 30;
         }
 
         this.updateStyles({
           '--progressHeight': progressHeight.toString() + 'px',
           '--progressWidth': progressWidth.toString() + 'px'
-        });    
-        
-        if (this.debug) { console.log('[warp10-tiles-display-gauge] _onDimensionsChanged', evt.detail.value, { '--progressHeight': progressHeight.toString() + 'px', '--progressWidth': progressWidth.toString() + 'px'}); }   
-        
+        });
+
+        if (this.debug) {
+          console.log('[warp10-tiles-display-gauge] _onDimensionsChanged', evt.detail.value, {
+            '--progressHeight': progressHeight.toString() + 'px',
+            '--progressWidth': progressWidth.toString() + 'px'
+          });
+        }
+
       }
 
       _onMinChange(min) {
-        if (this.debug) { console.log('[warp10-tiles-display-gauge] _onMinChange', min); }  
+        if (this.debug) {
+          console.log('[warp10-tiles-display-gauge] _onMinChange', min);
+        }
       }
 
 
       _onPrimaryColorChange(color) {
-        this.updateStyles({ '--primary-color': color});
+        this.updateStyles({'--primary-color': color});
       }
+
       _onSecondaryColorChange(color) {
-        this.updateStyles({ '--secondary-color': color});
-      }      
+        this.updateStyles({'--secondary-color': color});
+      }
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplayGauge.is, Warp10TilesDisplayGauge);    
-  </script>  
+    customElements.define(Warp10TilesDisplayGauge.is, Warp10TilesDisplayGauge);
+  </script>
 
 </dom-module>  
 

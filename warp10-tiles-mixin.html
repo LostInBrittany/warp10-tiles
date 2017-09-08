@@ -1,4 +1,3 @@
-
 <!--
 @license Apache 2.0
 @copyright Cityzen Data 2017
@@ -17,58 +16,60 @@
   const Warp10TilesMixin = superclass => class extends superclass {
 
     static get properties() {
-      return {    
+      return {
         /**
          * The tile type
-         */ 
-        size:{
+         */
+        size: {
           type: String,
           value: '',
-        },       
+        },
         /**
-        * The label to display
-        */
+         * The label to display
+         */
         label: {
           type: String,
           value: ''
         },
-        
+
         /**
-        * The description 
-        */
+         * The description
+         */
         description: {
           type: String,
-          value: ''          
+          value: ''
         },
         /**
-        * The background color
-        */
+         * The background color
+         */
         bgColor: {
-          type: String,    
-          value: '#aaa'    
-        },       
+          type: String,
+          value: '#aaa'
+        },
         /**
-        * The foreground color
-        */
-        fgColor: {          
+         * The foreground color
+         */
+        fgColor: {
           type: String,
           value: '#fff'
         },
         /**
-        * If true, print logs
-        */
+         * If true, print logs
+         */
         debug: {
           type: Boolean,
-          value: false          
-        },    
+          value: false
+        },
 
- 
+
       }
     }
 
     connectedCallback() {
       super.connectedCallback();
-      if (this.debug) { console.log('[warp10-tile] connectedCallback'); }
+      if (this.debug) {
+        console.log('[warp10-tile] connectedCallback');
+      }
     }
 
 

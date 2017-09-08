@@ -31,8 +31,9 @@
     "iron-image": "PolymerElements/iron-image#^2.0.0",
     "iron-icons": "PolymerElements/iron-icons#^2.0.0",
     "paper-progress": "PolymerElements/paper-progress#^2.0.0",
-    "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.9.0",
-    "moment-js": "lostinbrittany/moment-js#0.8-rc2"
+    "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.12.3",
+    "moment-js": "lostinbrittany/moment-js#0.8-rc2",
+    "moment-timezone": "^0.5.13"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
@@ -58,7 +59,7 @@
         "paper-progress": "PolymerElements/paper-progress#^1.0.0",
         "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
         "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
-        "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.8.1",
+        "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.12.3",
         "moment-js": "lostinbrittany/moment-js#0.8-rc2"
       },
       "devDependencies": {

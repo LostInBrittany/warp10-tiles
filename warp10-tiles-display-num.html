@@ -24,19 +24,20 @@
       :host {
         display: inline-block;
       }
+
       #value {
         font-size: 5rem;
       }
     </style>
-    
-    <warp10-tiles-engine 
-        size="[[size]]"  
+
+    <warp10-tiles-engine
+        size="[[size]]"
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
         on-useful-dimensions-changed="_onDimensionsChange"
-        debug="[[debug]]">  
+        debug="[[debug]]">
       <div id="value" slot="value">[[_displayValue]]</div>
     </warp10-tiles-engine>
   </template>
@@ -46,23 +47,26 @@
     // Extend Polymer.Element base class
     class Warp10TilesDisplayNum extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
 
-      static get is() { return 'warp10-tiles-display-num' }
+      static get is() {
+        return 'warp10-tiles-display-num'
+      }
 
       static get properties() {
-        return {  
-        }
+        return {}
       }
 
       connectedCallback() {
         super.connectedCallback();
-        if (this.debug) { console.log('[warp10-tiles-display-num] connectedCallback'); }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-num] connectedCallback');
+        }
       }
 
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplayNum.is, Warp10TilesDisplayNum);    
-  </script>  
+    customElements.define(Warp10TilesDisplayNum.is, Warp10TilesDisplayNum);
+  </script>
 
 </dom-module>  
 
