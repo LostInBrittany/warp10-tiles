@@ -23,11 +23,12 @@
       :host {
         display: inline-block;
       }
+
       .tile {
         width: var(--tile-width, 150px);
         height: var(--tile-width, 150px);
-        color: var(--fg-color, white);   
-        background-color: var(--bg-color, grey);        
+        color: var(--fg-color, white);
+        background-color: var(--bg-color, grey);
         display: block;
         position: relative;
         margin: 5px;
@@ -35,9 +36,11 @@
         cursor: pointer;
         overflow: hidden;
       }
+
       .tile:hover {
         filter: brightness(80%);
       }
+
       .tile-main {
         position: absolute;
         top: 0;
@@ -47,42 +50,46 @@
         overflow: hidden;
         display: none;
       }
+
       .tile-main:first-child {
         display: block;
-      }	
+      }
+
       .tile-content {
         position: absolute;
         top: 0;
         left: 0;
         bottom: 0;
-        width: 100%;           
+        width: 100%;
         display: flex;
         flex-flow: column nowrap;
         justify-content: space-between;
         align-items: center;
         align-content: space-between;
-      }      
+      }
+
       .description {
         position: absolute;
-        top: 0; 
+        top: 0;
         left: 0;
-        width: 100%;  
+        width: 100%;
         height: 100%;
-        background-color: rgba(128,128,128,0.8);   
+        background-color: rgba(128, 128, 128, 0.8);
         display: flex;
         flex-flow: column;
         justify-content: space-around;
       }
 
-      .main-content {        
+      .main-content {
         width: 100%;
-        height: 100%;       
+        height: 100%;
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
         align-items: center;
         align-content: space-between;
       }
+
       slot[name='value']::slotted(*) {
         display: flex;
         justify-content: center;
@@ -90,6 +97,7 @@
         max-width: 100%;
         height: 100%;
       }
+
       .label {
         width: 100%;
         padding-top: 8px;
@@ -103,57 +111,62 @@
       .description[hidden] {
         display: none;
       }
-      .description-text {         
-        text-align: center;    
+
+      .description-text {
+        text-align: center;
       }
-      .description-open, 
+
+      .description-open,
       .description-close {
         position: absolute;
-        top:0;
-        right:0;
+        top: 0;
+        right: 0;
         height: 17px;
-        padding: 5px;   
-        font-weight: bolder;  
-        z-index:2;   
-      } 
+        padding: 5px;
+        font-weight: bolder;
+        z-index: 2;
+      }
+
       .description-open::before {
         content: " ";
-      }      
+      }
+
       .description-open.mouse_in::before {
         content: "?";
       }
+
       .description-close::before {
-        content: "X";        
+        content: "X";
       }
     </style>
 
 
-    <div id='tile' class="tile" on-mouseenter="_mouseEntered" on-mouseleave="_mouseLeft" >
-      
+    <div id='tile' class="tile" on-mouseenter="_mouseEntered" on-mouseleave="_mouseLeft">
+
       <div class="tile-main">
-        <div 
-            class$="description-open [[_mouseIn]]" 
-            on-click="_openDescription"  
-            on-mouseenter="_initOpenDescription" 
+        <div
+            class$="description-open [[_mouseIn]]"
+            on-click="_openDescription"
+            on-mouseenter="_initOpenDescription"
             on-mouseleave="_cancelOpenDescription"></div>
         <div class="tile-content">
-          <div class="main-content">        
+          <div class="main-content">
             <slot name='value'></slot>
           </div>
           <div class='label'>[[label]]</div>
-        </div>    
+        </div>
       </div>
-      <div 
-          class="description" 
-          hidden="[[_hideDescription]]" 
-          on-mouseleave="_initCloseDescription" 
-          on-mouseenter="_cancelCloseDescription" >
+      <div
+          class="description"
+          hidden="[[_hideDescription]]"
+          on-mouseleave="_initCloseDescription"
+          on-mouseenter="_cancelCloseDescription">
         <div class="description-close" on-click="_closeDescription"></div>
         <div class="description-text">
           [[description]]
         </div>
       </div>
-    </div>    
+    </div>
 
   </template>
 
@@ -163,78 +176,80 @@
     class Warp10TilesEngine extends Warp10TilesSizesMixin(Polymer.Element) {
 
       /**
-        * Fired when the useful dimensions of the element change
-        *
-        * @event useful-dimensions-change
-        * @param {object} detail the useful dimensions 
-        */
+       * Fired when the useful dimensions of the element change
+       *
+       * @event useful-dimensions-change
+       * @param {object} detail the useful dimensions
+       */
 
-      static get is() { return 'warp10-tiles-engine' }
+      static get is() {
+        return 'warp10-tiles-engine'
+      }
 
       static get properties() {
-        return {   
+        return {
           /**
-          * The label to display
-          */
+           * The label to display
+           */
           label: {
             type: String,
             value: ''
           },
-          
+
           /**
-          * The description 
-          */
+           * The description
+           */
           description: {
             type: String,
-            value: ''          
+            value: ''
           },
           /**
-          * The background color
-          */
+           * The background color
+           */
           bgColor: {
             type: String,
-            observer: '_onBgColorChanged'            
-          },       
+            observer: '_onBgColorChanged'
+          },
           /**
-          * The foreground color
-          */
-          fgColor: {          
+           * The foreground color
+           */
+          fgColor: {
             type: String,
-            observer: '_onFgColorChanged'     
+            observer: '_onFgColorChanged'
           },
           _hideDescription: {
             type: Boolean,
-            value: true     
-          },   
-          _hoverDelay:{
+            value: true
+          },
+          _hoverDelay: {
             type: Number,
             value: 500
           },
           _mouseIn: {
             type: String,
             value: ''
-          }, 
+          },
           usefulDimensions: {
             type: Object,
             readOnly: true,
             notify: true,
-          } 
+          }
         }
       }
 
 
       static get observers() {
-        return [           
-        ]
+        return []
       }
 
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight); }
-        window.setTimeout(it => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight) , 100)
+        if (this.debug) {
+          console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight);
+        }
+        window.setTimeout(it => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight), 100)
       }
-
 
 
       // --------------------------------------------------------------------------------------------
@@ -242,20 +257,24 @@
       // --------------------------------------------------------------------------------------------    
 
       _onBgColorChanged() {
-        this.updateStyles({ '--bg-color': this.bgColor });
+        this.updateStyles({'--bg-color': this.bgColor});
       }
+
       _onFgColorChanged() {
-        this.updateStyles({ '--fg-color': this.fgColor });
+        this.updateStyles({'--fg-color': this.fgColor});
       }
+
       _onDimensionsChanged(dimensions) {
-        if (this.debug) { console.log('[warp10-tiles-engine] _onDimensionsChanged', dimensions); }
+        if (this.debug) {
+          console.log('[warp10-tiles-engine] _onDimensionsChanged', dimensions);
+        }
         this.updateStyles({
-          '--tile-width': dimensions.width+"px",
-          '--tile-height': dimensions.height+"px",
+          '--tile-width': dimensions.width + "px",
+          '--tile-height': dimensions.height + "px",
         });
         // we need to wait for the label property to be set in the DOM
         // I havent yet found a clean way to do it...
-        window.setTimeout( it => this._getUsefulDimensions(), 50);
+        window.setTimeout(it => this._getUsefulDimensions(), 50);
       }
 
 
@@ -264,35 +283,50 @@
       // --------------------------------------------------------------------------------------------  
 
       _mouseEntered() {
-        if (this.debug) { console.log('[warp10-tiles-engine] _mouseEntered');}
+        if (this.debug) {
+          console.log('[warp10-tiles-engine] _mouseEntered');
+        }
         this._mouseIn = 'mouse_in';
       }
+
       _mouseLeft() {
         this._mouseIn = '';
       }
 
       _openDescription() {
-        if (this.debug) { console.debug("[warp10-tiles-engine] _openDescription"); }
+        if (this.debug) {
+          console.debug("[warp10-tiles-engine] _openDescription");
+        }
         this._hideDescription = false;
       }
-      _initOpenDescription(){
-        if (this.debug) { console.debug("[warp10-tiles-engine] _initOpenDescription"); }
+
+      _initOpenDescription() {
+        if (this.debug) {
+          console.debug("[warp10-tiles-engine] _initOpenDescription");
+        }
         this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
       }
-      _cancelOpenDescription(){
+
+      _cancelOpenDescription() {
         this._mouseIn = '';
-        if (this.debug) { console.debug("[warp10-tiles-engine] _cancelOpenDescription"); }
+        if (this.debug) {
+          console.debug("[warp10-tiles-engine] _cancelOpenDescription");
+        }
         clearTimeout(this.openTimeout);
-      }     
+      }
 
       _closeDescription() {
-        if (this.debug) { console.debug("[warp10-tiles-engine] _closeDescription"); }
+        if (this.debug) {
+          console.debug("[warp10-tiles-engine] _closeDescription");
+        }
         this._hideDescription = true;
-      }  
-      _initCloseDescription(){
+      }
+
+      _initCloseDescription() {
         this.closeTimeout = setTimeout(this._closeDescription.bind(this), this._hoverDelay);
-      }   
-      _cancelCloseDescription(){
+      }
+
+      _cancelCloseDescription() {
         clearTimeout(this.closeTimeout);
       }
 
@@ -306,7 +340,7 @@
           width: this.$$('.main-content').clientWidth,
           height: Math.min(this.$$('.main-content').clientHeight, this.$$('.tile-content').clientHeight - 30)
         }
-        
+
         this._setUsefulDimensions(usefulDimensions);
         this.dispatchEvent(new CustomEvent('useful-dimensions-change', {detail: usefulDimensions}));
       }
@@ -317,12 +351,12 @@
 
       $$(selector) {
         return this.shadowRoot.querySelector(selector);
-      } 
+      }
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesEngine.is, Warp10TilesEngine);    
-  </script>  
+    customElements.define(Warp10TilesEngine.is, Warp10TilesEngine);
+  </script>
 
 </dom-module>  
   

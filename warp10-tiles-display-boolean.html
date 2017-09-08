@@ -26,30 +26,32 @@
       :host {
         display: inline-block;
       }
+
       #booleanIcon {
-        --iron-icon-height: var(--icon-size,64px);
-        --iron-icon-width: var(--icon-size,64px);
+        --iron-icon-height: var(--icon-size, 64px);
+        --iron-icon-width: var(--icon-size, 64px);
       }
+
       #imageIcon {
-        width: var(--icon-size,64px);
-        height: var(--icon-size,64px);
+        width: var(--icon-size, 64px);
+        height: var(--icon-size, 64px);
       }
     </style>
 
-  
-    <warp10-tiles-engine 
-        size="[[size]]"  
+
+    <warp10-tiles-engine
+        size="[[size]]"
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
         on-useful-dimensions-changed="_onDimensionsChanged"
-        debug="[[debug]]">  
+        debug="[[debug]]">
       <div id="value" slot="value">
         <dom-if if="[[!useExternalImages]]">
           <template>
-            <iron-icon id="booleanIcon" icon="[[_iconName]]"></iron-icon>  
-          </template> 
+            <iron-icon id="booleanIcon" icon="[[_iconName]]"></iron-icon>
+          </template>
         </dom-if>
         <dom-if if="[[useExternalImages]]">
           <template>
@@ -63,20 +65,22 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesDisplayBoolean extends Warp10TilesMixin(Polymer.Element) {    
+    class Warp10TilesDisplayBoolean extends Warp10TilesMixin(Polymer.Element) {
 
-      static get is() { return 'warp10-tiles-display-boolean' }
+      static get is() {
+        return 'warp10-tiles-display-boolean'
+      }
 
       static get properties() {
-        return {           
+        return {
           /**
-          * The data to display
-          */
+           * The data to display
+           */
           data: {
             type: Number,
             value: 0
           },
-        
+
           /**
            * Icon to show when the value is true
            */
@@ -94,7 +98,7 @@
           /**
            * If true, it tries to use external images for the state icons
            */
-          useExternalImages:{
+          useExternalImages: {
             type: Boolean,
             value: false
           },
@@ -105,20 +109,24 @@
           _isAttached: {
             type: Boolean,
             value: false
-          },          
+          },
         }
       }
-  
+
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log('[warp10-tiles-display-boolean] connectedCallback'); }
-      }    
+        if (this.debug) {
+          console.log('[warp10-tiles-display-boolean] connectedCallback');
+        }
+      }
 
 
       // Computed properties' methods
-      _getIconName() {        
-        if (this.debug) { console.log('[warp10-tiles-display-boolean]  _getIconName', this.data, this.iconForTrue, this.iconForFalse); }
+      _getIconName() {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-boolean]  _getIconName', this.data, this.iconForTrue, this.iconForFalse);
+        }
         if (this.data) {
           return this.iconForTrue;
         } else {
@@ -127,7 +135,7 @@
       }
 
       _onDimensionsChanged(evt) {
-        this.updateStyles({ 
+        this.updateStyles({
           '--icon-size': `${evt.detail.value.width - 40}px`
         });
       }
@@ -135,5 +143,5 @@
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplayBoolean.is, Warp10TilesDisplayBoolean);    
+    customElements.define(Warp10TilesDisplayBoolean.is, Warp10TilesDisplayBoolean);
   </script>       

@@ -16,27 +16,29 @@
     <style>
     </style>
 
-    <iron-ajax 
-        id="mainConfRequest" 
+    <iron-ajax
+        id="mainConfRequest"
         url="[[url]]"
         on-response="_onMainConfResponse"
         on-error="_onMainConfError"
         auto></iron-ajax>
 
-    <iron-ajax 
-        id="dashboardRequest" 
+    <iron-ajax
+        id="dashboardRequest"
         on-response="_onDashboardResponse"
         on-error="_onDashboardError"></iron-ajax>
 
   </template>
   <script>
-    
-    // Extend Polymer.Element base class
-    class Warp10TilesConfLoader extends Polymer.Element { 
-      
-      static get is() { return 'warp10-tiles-conf-loader' }
 
-      static get properties(){
+    // Extend Polymer.Element base class
+    class Warp10TilesConfLoader extends Polymer.Element {
+
+      static get is() {
+        return 'warp10-tiles-conf-loader'
+      }
+
+      static get properties() {
         return {
           /**
            * Url of the main conf file
@@ -61,7 +63,7 @@
             type: Array,
             notify: true,
             observer: '_onAvailableDashboardChange',
-            value: function() {
+            value: function () {
               return [];
             }
           },
@@ -72,7 +74,7 @@
             type: Object,
             notify: true,
             observer: '_onDashboardConfChange',
-            value: function() {
+            value: function () {
               return {};
             }
           },
@@ -87,12 +89,15 @@
       }
 
       _onDashboardChange() {
-        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onDashboardChange', this.dashboard) };
+        if (this.debug) {
+          console.log('[warp10-tiles-conf-loader] _onDashboardChange', this.dashboard)
+        }
+        ;
         if (!this.availableDashboards[this.dashboard]) {
           this.dashboardConf = this.availableDashboards[0];
         } else {
           this.dashboardConf = this.availableDashboards[this.dashboard];
-        }      
+        }
       }
 
       _onDashboardConfChange() {
@@ -103,41 +108,48 @@
       }
 
       _onAvailableDashboardChange() {
-        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onAvailableDashboardChange', this.availableDashboards)};
+        if (this.debug) {
+          console.log('[warp10-tiles-conf-loader] _onAvailableDashboardChange', this.availableDashboards)
+        }
+        ;
       }
 
 
       _onDashboardResponse(event, ironRequest) {
         event.stopPropagation();
-    
-        if (!ironRequest.response || 
-            !ironRequest.response.type || 
-            ironRequest.response.type != 'dashboard'  ||
-            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) ) )  {
+
+        if (!ironRequest.response ||
+            !ironRequest.response.type ||
+            ironRequest.response.type != 'dashboard' ||
+            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
           console.warn('[warp10-tiles-conf-loader] _onDashboardResponse - Invalid conf file', ironRequest.url);
           return;
-        }    
-        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onDashboardResponse', ironRequest.response); }
+        }
+        if (this.debug) {
+          console.log('[warp10-tiles-conf-loader] _onDashboardResponse', ironRequest.response);
+        }
         this.dashboardConf = ironRequest.response;
       }
 
       _onMainConfResponse(event, ironRequest) {
         event.stopPropagation();
 
-        if (!ironRequest.response || 
-            !ironRequest.response.type || 
+        if (!ironRequest.response ||
+            !ironRequest.response.type ||
             (ironRequest.response.type != 'collection' && ironRequest.response.type != 'dashboard' ) ||
-            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) ) ) {
+            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
           console.warn('[warp10-tiles-conf-loader] _onConfResponse - Invalid conf file', ironRequest.url);
           return;
         }
 
 
-        if (this.debug) { console.log('[warp10-tiles-conf-loader] _onMainConfResponse',ironRequest.response); }
+        if (this.debug) {
+          console.log('[warp10-tiles-conf-loader] _onMainConfResponse', ironRequest.response);
+        }
 
 
         if (ironRequest.response.type == 'collection') {
-          this.availableDashboards = ironRequest.response.content;         
+          this.availableDashboards = ironRequest.response.content;
 
           if (!this.availableDashboards[this.dashboard]) {
             this.dashboardConf = this.availableDashboards[0];
@@ -151,8 +163,6 @@
 
 
       }
-
-
 
 
     }

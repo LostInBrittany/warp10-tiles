@@ -24,21 +24,22 @@
       :host {
         display: inline-block;
       }
+
       iron-image {
         width: var(--image-width, 64px);
         height: var(--image-height, 64px);
       }
     </style>
 
-  
-    <warp10-tiles-engine 
-        size="[[size]]"  
+
+    <warp10-tiles-engine
+        size="[[size]]"
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
         on-useful-dimensions-changed="_onDimensionsChanged"
-        debug="[[debug]]">  
+        debug="[[debug]]">
       <div id="value" slot="value">
         <iron-image id="imageIcon" src="[[data]]" sizing="contain"></iron-image>
       </div>
@@ -48,27 +49,31 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesDisplayImage extends Warp10TilesMixin(Polymer.Element) {    
+    class Warp10TilesDisplayImage extends Warp10TilesMixin(Polymer.Element) {
 
-      static get is() { return 'warp10-tiles-display-image' }    
+      static get is() {
+        return 'warp10-tiles-display-image'
+      }
 
       static get properties() {
-        return {   
+        return {
           /**
-          * The src of the image to be displayed
-          */
+           * The src of the image to be displayed
+           */
           data: {
             type: String,
             value: ""
-          },  
+          },
         }
-      }    
+      }
 
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log('[warp10-tiles-display-image] connectedCallback'); }
-      }   
+        if (this.debug) {
+          console.log('[warp10-tiles-display-image] connectedCallback');
+        }
+      }
 
 
       // --------------------------------------------------------------------------------------------
@@ -76,16 +81,18 @@
       // --------------------------------------------------------------------------------------------  
 
       _onDimensionsChanged(evt) {
-        this.updateStyles({ 
+        this.updateStyles({
           '--image-width': `${evt.detail.value.width - 20}px`,
           '--image-height': `${evt.detail.value.height - 40}px`
         });
-        if (this.debug) { console.log('[warp10-tiles-display-image] _onDimensionsChanged', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px` ); }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-image] _onDimensionsChanged', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px`);
+        }
       }
-         
+
 
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplayImage.is, Warp10TilesDisplayImage);    
+    customElements.define(Warp10TilesDisplayImage.is, Warp10TilesDisplayImage);
   </script>       

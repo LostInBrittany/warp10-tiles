@@ -26,48 +26,57 @@
         display: inline-block;
         position: relative;
       }
+
       #value {
         font-size: 5rem;
         text-align: center;
       }
+
       .value-bounds {
         position: absolute;
-        bottom: 5px; 
+        bottom: 5px;
         left: 5px;
         width: calc(100% - 10px);
-        background-color: rgba(128,128,128,0.8);
+        background-color: rgba(128, 128, 128, 0.8);
         color: white;
       }
+
       .value-bounds[hidden] {
         display: none;
       }
+
       .value-bounds-close {
-        float:right;
-        padding: 5px;        
+        float: right;
+        padding: 5px;
       }
+
       .value-bounds-close::before {
         content: " "
       }
+
       .value-bounds-content {
         font-size: 0.90rem;
         display: flex;
         flex-flow: column;
         padding: 5px;
-      } 
+      }
 
-      .value-bounds-content-gts{
+      .value-bounds-content-gts {
         display: flex;
         flex-flow: row;
         justify-content: space-around;
         padding: 5px;
-      } 
+      }
+
       .value-bounds-content > .right {
         font-size: 0.80rem;
-      } 
-      warp10-display-chart {
-        width: var(--chart-width,100%);
-        height: var(--chart-height,100%);
       }
+
+      warp10-display-chart {
+        width: var(--chart-width, 100%);
+        height: var(--chart-height, 100%);
+      }
+
       .colorDot {
         display: inline-block;
         width: 12px;
@@ -75,43 +84,70 @@
         border-radius: 6px;
         background-color: black;
       }
+
       .right {
         text-align: right;
       }
 
+      .table {
+        display: table;
 
-      .table    { 
-        display: table; 
-      
       }
-      .tr       { display: table-row; }
-      .thead    { display: table-header-group; }
-      .tbody    { display: table-row-group; }
-      .tfoot    { display: table-footer-group; }
-      .col      { display: table-column; }
-      .colgroup { display: table-column-group; }
-      .td, .th  { display: table-cell; }
-      .caption  { display: table-caption; }
+
+      .tr {
+        display: table-row;
+      }
+
+      .thead {
+        display: table-header-group;
+      }
+
+      .tbody {
+        display: table-row-group;
+      }
+
+      .tfoot {
+        display: table-footer-group;
+      }
+
+      .col {
+        display: table-column;
+      }
+
+      .colgroup {
+        display: table-column-group;
+      }
+
+      .td, .th {
+        display: table-cell;
+      }
+
+      .caption {
+        display: table-caption;
+      }
+
       .table {
         table-layout: fixed;
       }
-      .col0 { 
+
+      .col0 {
         width: 20px;
       }
+
       .col1 {
         padding-right: 16px;
       }
     </style>
-    
-    <warp10-tiles-engine 
-        size="[[size]]"  
+
+    <warp10-tiles-engine
+        size="[[size]]"
         fg-color="[[fgColor]]"
         bg-color="[[bgColor]]"
         label="[[label]]"
         description="[[description]]"
         on-useful-dimensions-changed="_onDimensionsChanged"
-        debug="[[debug]]">  
-      <div id="value" slot="value"> 
+        debug="[[debug]]">
+      <div id="value" slot="value">
         <warp10-display-chart
             id="warp10-display-chart" value-bounds="{{valueBounds}}"
             data="[[data]]"
@@ -121,7 +157,7 @@
             hide-tooltip
             min="[[min]]"
             max="[[max]]"
-            on-mouseenter="_mouseEnter" 
+            on-mouseenter="_mouseEnter"
             on-mouseleave="_mouseLeave"></warp10-display-chart>
       </div>
     </warp10-tiles-engine>
@@ -132,44 +168,44 @@
       <div class="value-bounds-content">
         <div class="right">[[_getDate(_currentValues)]]</div>
         <div class="value-bounds-content-gts">
-        <dom-if if="[[_hasNLines(_currentValues,1)]]">
-          <template>
-            <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span> 
-            [[_getName(_currentValues,0)]]: [[_getValue(_currentValues,0)]] <br>   
-          </template>
-        </dom-if>
-        <dom-if if="{{_hasMoreThanNLines(_currentValues,1)}}">
-          <template>
-            <div class="table">
-              <dom-repeat items="[[_currentValues.yValues]]" item="value" index-as="index">
-                <template>
-                  <div class="tr">
-                    <div class="td col0">
-                      <span class="colorDot" style$="background-color: [[_getColor(_currentValues,index)]]"></span>  
+          <dom-if if="[[_hasNLines(_currentValues,1)]]">
+            <template>
+              <span class="colorDot" style$="background-color: [[_getColor(_currentValues,0)]]"></span>
+              [[_getName(_currentValues,0)]]: [[_getValue(_currentValues,0)]] <br>
+            </template>
+          </dom-if>
+          <dom-if if="{{_hasMoreThanNLines(_currentValues,1)}}">
+            <template>
+              <div class="table">
+                <dom-repeat items="[[_currentValues.yValues]]" item="value" index-as="index">
+                  <template>
+                    <div class="tr">
+                      <div class="td col0">
+                        <span class="colorDot" style$="background-color: [[_getColor(_currentValues,index)]]"></span>
+                      </div>
+                      <div class="td col1">
+                        {{_getName(_currentValues,index)}}:
+                      </div>
+                      <div class="td col2">
+                        {{_getValue(_currentValues,index)}}
+                      </div>
                     </div>
-                    <div class="td col1">
-                      {{_getName(_currentValues,index)}}:
-                    </div>
-                    <div class="td col2">
-                      {{_getValue(_currentValues,index)}}
-                    </div>
-                  </div>     
-                </template>
-              </dom-repeat>
-            </div>
-          </template>
-        </dom-if>
+                  </template>
+                </dom-repeat>
+              </div>
+            </template>
+          </dom-if>
           <dom-if if="{{_hasMoreThanNLines(_currentValues,10)}}">
             <template>
               <div>
-                max: <span class="colorDot" style$="background-color: [[_getMaxColor(_currentValues,0)]]"></span> 
-                {{_getMaxName(_currentValues)}}: {{_maxValue(_currentValues)}} <br>            
-                min: <span class="colorDot" style$="background-color: [[_getMinColor(_currentValues,0)]]"></span> 
-                {{_getMinName(_currentValues)}}:  {{_minValue(_currentValues)}}
-              </div> 
+                max: <span class="colorDot" style$="background-color: [[_getMaxColor(_currentValues,0)]]"></span>
+                {{_getMaxName(_currentValues)}}: {{_maxValue(_currentValues)}} <br>
+                min: <span class="colorDot" style$="background-color: [[_getMinColor(_currentValues,0)]]"></span>
+                {{_getMinName(_currentValues)}}: {{_minValue(_currentValues)}}
+              </div>
             </template>
           </dom-if>
-      </div>
+        </div>
       </div>
     </div>
   </template>
@@ -179,34 +215,38 @@
     // Extend Polymer.Element base class
     class Warp10TilesDisplaySparkline extends Warp10TilesMixin(Polymer.Element) {
 
-      static get is() { return 'warp10-tiles-display-sparkline' }
+      static get is() {
+        return 'warp10-tiles-display-sparkline'
+      }
 
       static get properties() {
-        return {    
+        return {
 
           /**
-          * Hide the axis
-          */  
+           * Hide the axis
+           */
 
           hideAxis: {
             type: Boolean,
             value: true
-          },  
+          },
 
           /**
-          * The data to display
-          */
+           * The data to display
+           */
           data: {
             type: Array,
-            value() { return []; }
-          },    
+            value() {
+              return [];
+            }
+          },
 
-          _hideValueBounds:  {
+          _hideValueBounds: {
             type: Boolean,
             value: true
           },
-          
-          _hoverDelay:{
+
+          _hoverDelay: {
             type: Number,
             value: 500
           },
@@ -222,32 +262,32 @@
           _valueFontSize: {
             type: Number,
             value: 1
-          }, 
+          },
           _isAttached: {
             type: Boolean,
             value: false
           },
-            min: {
-                type: Number,
-            },
-            max: {
-                type: Number,
-            },
+          min: {
+            type: Number,
+          },
+          max: {
+            type: Number,
+          },
         }
       }
 
 
       static get observers() {
-        return [ 
-        ]
+        return []
       }
 
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] connectedCallback'); }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] connectedCallback');
+        }
       }
-
 
 
       // --------------------------------------------------------------------------------------------
@@ -256,209 +296,251 @@
 
 
       _hasNLines(currentValues, n) {
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues) }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues)
+        }
         if (!currentValues || !currentValues.yValues) {
           return false;
         }
         return (currentValues.yValues.length === n);
       }
+
       _hasMoreThanNLines(currentValues, n) {
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues) }
-        if (!currentValues || !currentValues.yValues) { 
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues)
+        }
+        if (!currentValues || !currentValues.yValues) {
           return false;
         }
         return (currentValues.yValues.length > n);
       }
+
       _maxValue(currentValues) {
-        var max = - Number.MAX_VALUE;
+        var max = -Number.MAX_VALUE;
         var maxIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval > max) {
             max = currentValues.yValues[i].yval;
             maxIndex = i;
-          }        
+          }
         }
         return max;
       }
+
       _minValue(currentValues) {
-        var min =  Number.MAX_VALUE;
+        var min = Number.MAX_VALUE;
         var minIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             minIndex = i;
-          }        
+          }
         }
         return min;
       }
+
       _getValue(currentValues, i) {
-        if (!currentValues || !currentValues.yValues) { 
+        if (!currentValues || !currentValues.yValues) {
           return false;
         }
-        return currentValues.yValues[i].yval.toLocaleString('en-EN',{maximumFractionDigits: 3});
+        return currentValues.yValues[i].yval.toLocaleString('en-EN', {maximumFractionDigits: 3});
       }
 
       _getDate(currentValues) {
-        if (!currentValues ) {
+        if (!currentValues) {
           return "";
         }
         var ts = currentValues.xValue;
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getDate', ts) }
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _getDate', ts)
+        }
         return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
       }
 
-      _getName(currentValues,i) {
-        if (!currentValues || !currentValues.yValues) { 
+      _getName(currentValues, i) {
+        if (!currentValues || !currentValues.yValues) {
           return "";
         }
         var label = currentValues.yValues[i].name;
         if (!label) {
-          label = "Line "+i;
+          label = "Line " + i;
         }
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getName', label) };
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _getName', label)
+        }
+        ;
         return label;
       }
 
-      _getColor(currentValues,i) {
-        if (!currentValues || !currentValues.yValues) { 
+      _getColor(currentValues, i) {
+        if (!currentValues || !currentValues.yValues) {
           return "";
         }
         var color = currentValues.yValues[i].color;
-        if (this.debug) { console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues) };
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues)
+        }
+        ;
         return color;
       }
 
       _getMaxColor(currentValues) {
         var color = "";
-        var max = - Number.MAX_VALUE;
+        var max = -Number.MAX_VALUE;
         var maxIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval > max) {
             max = currentValues.yValues[i].yval;
             color = currentValues.yValues[i].color;
             maxIndex = i;
-          }        
+          }
         }
         return color;
       }
+
       _getMinColor(currentValues) {
         var color = "";
-        var min =  Number.MAX_VALUE;
+        var min = Number.MAX_VALUE;
         var minIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             color = currentValues.yValues[i].color;
             minIndex = i;
-          }        
+          }
         }
         return color;
-      }      
+      }
 
       _getMaxName(currentValues) {
         var name = "";
-        var max = - Number.MAX_VALUE;
+        var max = -Number.MAX_VALUE;
         var maxIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval > max) {
             max = currentValues.yValues[i].yval;
             name = currentValues.yValues[i].name;
             maxIndex = i;
-          }        
+          }
         }
         return name;
       }
+
       _getMinName(currentValues) {
         var name = "";
-        var min =  Number.MAX_VALUE;
+        var min = Number.MAX_VALUE;
         var minIndex = -1;
-        if (!currentValues || !currentValues.yValues  ) {
-            return;
+        if (!currentValues || !currentValues.yValues) {
+          return;
         }
-        for (var i=0; i<currentValues.yValues.length; i++) {
+        for (var i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             name = currentValues.yValues[i].name;
             minIndex = i;
-          }        
+          }
         }
         return name;
-      }      
+      }
+
       // --------------------------------------------------------------------------------------------
       // Event listeners
       // --------------------------------------------------------------------------------------------  
 
       _onDimensionsChanged(evt) {
         this._dimensions = evt.detail.value;
-         if (this.debug) { console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions) };
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions)
+        }
+        ;
         this.updateStyles({
           '--chart-width': `${this._dimensions.width - 20}px`,
           '--chart-height': `${this._dimensions.height - 20}px`
         })
       }
 
-      _mouseEnter() {        
+      _mouseEnter() {
         if (this._hideValueBounds) {
           this._initOpenValueBounds();
         } else {
           this._cancelCloseValueBounds();
-        }        
+        }
       }
+
       _mouseLeave() {
         if (this._hideValueBounds) {
           this._cancelOpenValueBounds();
         } else {
           this._initCloseValueBounds();
-        }        
+        }
       }
-      
+
       _openValueBounds() {
-        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _openValueBounds') };
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _openValueBounds')
+        }
+        ;
         this._hideValueBounds = false;
       }
-      _initOpenValueBounds(){        
-        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds') };
+
+      _initOpenValueBounds() {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds')
+        }
+        ;
         this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
       }
-      _cancelOpenValueBounds(){
-        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds') };
+
+      _cancelOpenValueBounds() {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds')
+        }
+        ;
         clearTimeout(this.openTimeout);
       }
 
       _closeValueBounds() {
-        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _closeValueBounds') };
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _closeValueBounds')
+        }
+        ;
         this._hideValueBounds = true;
-      }   
-      _initCloseValueBounds(){
+      }
+
+      _initCloseValueBounds() {
         this.closeTimeout = setTimeout(this._closeValueBounds.bind(this), this._hoverDelay);
-      }   
-      _cancelCloseValueBounds(){
+      }
+
+      _cancelCloseValueBounds() {
         clearTimeout(this.closeTimeout);
       }
 
-      _onCurrentValuesChange(currentValues){
-        if (this.debug){ console.log('[warp10-tiles-display-sparkline] _onCurrentValuesChange',currentValues) };    
+      _onCurrentValuesChange(currentValues) {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-sparkline] _onCurrentValuesChange', currentValues)
+        }
+        ;
       }
 
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplaySparkline.is, Warp10TilesDisplaySparkline);    
-  </script>  
+    customElements.define(Warp10TilesDisplaySparkline.is, Warp10TilesDisplaySparkline);
+  </script>
 
 </dom-module>  

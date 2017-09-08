@@ -28,410 +28,410 @@
 
 <dom-module id="warp10-tiles-dashboard-element">
 
-    <template>
+  <template>
 
-        <style include="warp10-tiles-style">
-        </style>
+    <style include="warp10-tiles-style">
+    </style>
 
-        <warp10-warpscript-caller
-                id="warpscriptcaller"
-                url="[[warpscriptBaseUrl]]"
-                warpscript="[[_warpscriptScriptWithParams]]"
-                on-response="_handleResponse" on-error="_handleError"
-                reload="[[warpscriptReload]]"
-                loading="{{loading}}"
-                header-name="CityzenData"></warp10-warpscript-caller>
-
-
-        <dom-if if="[[equals(_resultType,'boolean')]]">
-            <template>
-                <warp10-tiles-display-boolean
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        icon-for-true="[[_responseParams.iconForTrue]]"
-                        icon-for-false="[[_responseParams.iconForFalse]]"
-                        use-external-images="[[_responseParams.useExternalImages]]"
-                        data="[[_responseParams.data]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-boolean>
-            </template>
-        </dom-if>
-
-        <dom-if if="[[equals(_resultType,'date')]]">
-            <template>
-                <warp10-tiles-display-date
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        use-external-images="[[_responseParams.useExternalImages]]"
-                        data="[[_responseParams.data]]"
-                        utc-offset="[[_responseParams.utcOffset]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-date>
-            </template>
-        </dom-if>
-
-        <dom-if if="[[equals(_resultType,'number')]]">
-            <template>
-                <warp10-tiles-display-num
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        data="[[_responseParams.data]]"
-                        precision="[[_responseParams.precision]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-num>
-            </template>
-        </dom-if>
-
-        <dom-if if="[[equals(_resultType,'gauge')]]">
-            <template>
-                <warp10-tiles-display-gauge
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        data="[[_responseParams.data]]"
-                        secondary-value="[[_responseParams.secondaryValue]]"
-                        min="[[_responseParams.min]]"
-                        max="[[_responseParams.max]]"
-                        primary-color="[[_responseParams.data.color]]"
-                        secondary-color="[[_responseParams.data.secondaryColor]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-gauge>
-            </template>
-        </dom-if>
+    <warp10-warpscript-caller
+        id="warpscriptcaller"
+        url="[[warpscriptBaseUrl]]"
+        warpscript="[[_warpscriptScriptWithParams]]"
+        on-response="_handleResponse" on-error="_handleError"
+        reload="[[warpscriptReload]]"
+        loading="{{loading}}"
+        header-name="CityzenData"></warp10-warpscript-caller>
 
 
-        <dom-if if="[[equals(_resultType,'chart')]]">
-            <template>
-                <warp10-tiles-display-sparkline
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        data="[[_responseParams.data]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        hide-axis="[[_responseParams.hideAxis]]"
-                        debug="[[debug]]"
-                        min="-50"
-                        max="1500"
-                ></warp10-tiles-display-sparkline>
-            </template>
-        </dom-if>
+    <dom-if if="[[equals(_resultType,'boolean')]]">
+      <template>
+        <warp10-tiles-display-boolean
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            icon-for-true="[[_responseParams.iconForTrue]]"
+            icon-for-false="[[_responseParams.iconForFalse]]"
+            use-external-images="[[_responseParams.useExternalImages]]"
+            data="[[_responseParams.data]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-boolean>
+      </template>
+    </dom-if>
 
-        <dom-if if="[[equals(_resultType,'error')]]">
-            <template>
-                <warp10-tiles-display-message
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        data="[[_responseParams.data]]"
-                        label="[[_responseParams.label]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-message>
-            </template>
-        </dom-if>
-        <dom-if if="[[equals(_resultType,'map')]]">
-            <template>
-                <warp10-tiles-display-map
-                        size="[[_responseParams.size]]"
-                        bg-color="[[_responseParams.bgColor]]"
-                        fg-color="[[_responseParams.fgColor]]"
-                        data="[[_responseParams.data]]"
-                        label="[[_responseParams.label]]"
-                        zoom="[[_responseParams.zoom]]"
-                        latitude="[[_responseParams.latitude]]"
-                        longitude="[[_responseParams.longitude]]"
-                        description="[[_responseParams.description]]"
-                        debug="[[debug]]"></warp10-tiles-display-map>
-            </template>
-        </dom-if>
+    <dom-if if="[[equals(_resultType,'date')]]">
+      <template>
+        <warp10-tiles-display-date
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            use-external-images="[[_responseParams.useExternalImages]]"
+            data="[[_responseParams.data]]"
+            utc-offset="[[_responseParams.utcOffset]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-date>
+      </template>
+    </dom-if>
 
-    </template>
+    <dom-if if="[[equals(_resultType,'number')]]">
+      <template>
+        <warp10-tiles-display-num
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            data="[[_responseParams.data]]"
+            precision="[[_responseParams.precision]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-num>
+      </template>
+    </dom-if>
 
-    <script>
+    <dom-if if="[[equals(_resultType,'gauge')]]">
+      <template>
+        <warp10-tiles-display-gauge
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            data="[[_responseParams.data]]"
+            secondary-value="[[_responseParams.secondaryValue]]"
+            min="[[_responseParams.min]]"
+            max="[[_responseParams.max]]"
+            primary-color="[[_responseParams.data.color]]"
+            secondary-color="[[_responseParams.data.secondaryColor]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-gauge>
+      </template>
+    </dom-if>
 
-        // Extend Polymer.Element base class
-        class Warp10TilesDashboardElement extends Warp10TilesSizesMixin(Warp10TilesMixin(Polymer.Element)) {
 
-            static get is() {
-                return 'warp10-tiles-dashboard-element'
+    <dom-if if="[[equals(_resultType,'chart')]]">
+      <template>
+        <warp10-tiles-display-sparkline
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            data="[[_responseParams.data]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            hide-axis="[[_responseParams.hideAxis]]"
+            debug="[[debug]]"
+            min="-50"
+            max="1500"
+        ></warp10-tiles-display-sparkline>
+      </template>
+    </dom-if>
+
+    <dom-if if="[[equals(_resultType,'error')]]">
+      <template>
+        <warp10-tiles-display-message
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            data="[[_responseParams.data]]"
+            label="[[_responseParams.label]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-message>
+      </template>
+    </dom-if>
+    <dom-if if="[[equals(_resultType,'map')]]">
+      <template>
+        <warp10-tiles-display-map
+            size="[[_responseParams.size]]"
+            bg-color="[[_responseParams.bgColor]]"
+            fg-color="[[_responseParams.fgColor]]"
+            data="[[_responseParams.data]]"
+            label="[[_responseParams.label]]"
+            zoom="[[_responseParams.zoom]]"
+            latitude="[[_responseParams.latitude]]"
+            longitude="[[_responseParams.longitude]]"
+            description="[[_responseParams.description]]"
+            debug="[[debug]]"></warp10-tiles-display-map>
+      </template>
+    </dom-if>
+
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TilesDashboardElement extends Warp10TilesSizesMixin(Warp10TilesMixin(Polymer.Element)) {
+
+      static get is() {
+        return 'warp10-tiles-dashboard-element'
+      }
+
+      static get properties() {
+        return {
+          /**
+           * The WarpScript script to execute
+           */
+          warpscriptScript: {
+            type: String,
+            value: ""
+          },
+
+          /**
+           * A value of `reload > 0` it's
+           * the number of seconds between two calls
+           * to the WarpScript server
+           */
+          warpscriptReload: {
+            type: Number,
+            value: -1
+          },
+
+          /**
+           * Base URL of WarpScript platform
+           */
+          warpscriptBaseUrl: {
+            type: String,
+            value: ""
+          },
+          /**
+           * The response of the Warp 10 server
+           */
+          warpscriptResponse: {
+            type: Array,
+            value: function () {
+              return [];
             }
+          },
 
-            static get properties() {
-                return {
-                    /**
-                     * The WarpScript script to execute
-                     */
-                    warpscriptScript: {
-                        type: String,
-                        value: ""
-                    },
-
-                    /**
-                     * A value of `reload > 0` it's
-                     * the number of seconds between two calls
-                     * to the WarpScript server
-                     */
-                    warpscriptReload: {
-                        type: Number,
-                        value: -1
-                    },
-
-                    /**
-                     * Base URL of WarpScript platform
-                     */
-                    warpscriptBaseUrl: {
-                        type: String,
-                        value: ""
-                    },
-                    /**
-                     * The response of the Warp 10 server
-                     */
-                    warpscriptResponse: {
-                        type: Array,
-                        value: function () {
-                            return [];
-                        }
-                    },
-
-                    _warpscriptScriptWithParams: {
-                        type: String,
-                        value: ''
-                    },
-                    _resultType: {
-                        type: String,
-                        computed: '_getResultType(warpscriptResponse)'
-                    },
-                    _validResultTypes: {
-                        type: Boolean,
-                        value: ['boolean', 'date', 'number', 'gauge', 'map', 'img', 'chart', 'error']
-                    },
-                    _responseParams: {
-                        type: Object,
-                        value: function () {
-                            return {};
-                        }
-                    },
-                    _isAttached: {
-                        type: Boolean,
-                        value: false
-                    },
-                };
+          _warpscriptScriptWithParams: {
+            type: String,
+            value: ''
+          },
+          _resultType: {
+            type: String,
+            computed: '_getResultType(warpscriptResponse)'
+          },
+          _validResultTypes: {
+            type: Boolean,
+            value: ['boolean', 'date', 'number', 'gauge', 'map', 'img', 'chart', 'error']
+          },
+          _responseParams: {
+            type: Object,
+            value: function () {
+              return {};
             }
+          },
+          _isAttached: {
+            type: Boolean,
+            value: false
+          },
+        };
+      }
 
-            static get observers() {
-                return [
-                    '_onParamsChange(warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)'
-                ]
-            }
+      static get observers() {
+        return [
+          '_onParamsChange(warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)'
+        ]
+      }
 
-            connectedCallback() {
-                super.connectedCallback();
-                this._isAttached = true;
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] connectedCallback');
-                }
-            }
+      connectedCallback() {
+        super.connectedCallback();
+        this._isAttached = true;
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] connectedCallback');
+        }
+      }
 
-            // --------------------------------------------------------------------------------------------
-            // Computed properties
-            // --------------------------------------------------------------------------------------------
+      // --------------------------------------------------------------------------------------------
+      // Computed properties
+      // --------------------------------------------------------------------------------------------
 
-            _getResultType() {
+      _getResultType() {
 
-                if (!this._isValidResponse(this.warpscriptResponse)) {
-                    return null;
-                }
+        if (!this._isValidResponse(this.warpscriptResponse)) {
+          return null;
+        }
 
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _getResultType', this.warpscriptResponse[0].type);
-                }
-                return this.warpscriptResponse[0].type;
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _getResultType', this.warpscriptResponse[0].type);
+        }
+        return this.warpscriptResponse[0].type;
 
-            }
+      }
 
-            // --------------------------------------------------------------------------------------------
-            // Computed properties
-            // --------------------------------------------------------------------------------------------
-            equals(a, b) {
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] equals', a, b);
-                }
-                return (a == b);
-            }
-
-
-            // --------------------------------------------------------------------------------------------
-            // Observers
-            // --------------------------------------------------------------------------------------------
-            _onParamsChange() {
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.warpscriptBaseUrl, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
-                }
-                if (!this._isAttached || !this.warpscriptScript) {
-                    return false;
-                }
-                if (!this.dimensions.width || !this.dimensions.height) {
-                    if (this.debug) {
-                        console.log('[warp10-dashboard-element] _onParamsChange - Dimensions not yet available');
-                    }
-                    return;
-                }
-                this._initializeWarpscript();
-                this.$.warpscriptcaller.generateRequest();
-            }
-
-            // --------------------------------------------------------------------------------------------
-            // Event listeners
-            // --------------------------------------------------------------------------------------------
-
-            _onDimensionsChange(dimensions) {
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _onDimensionsChange', dimensions);
-                }
-            }
-
-            _handleResponse(event, response) {
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _receivedResponse from event', {
-                        event: event,
-                        response: response
-                    });
-                }
-
-                if (!response.stack || !response.stack instanceof Array) {
-                    this.data = null;
-                    return;
-                }
-
-                if (!this._isValidResponse(response.stack)) {
-                    return null;
-                }
-                this.warpscriptResponse = response.stack;
-
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _receivedResponse from event', {
-                        event: event,
-                        response: response
-                    });
-                }
-
-                let params = this.warpscriptResponse[0].params;
-
-                // Size param was originally called `tile` so we still support it
-                if (params.tile !== undefined) {
-                    console.warn("Param `tile` in WarpScript response is deprecated, please change it to `size`");
-                    params.size = params.tile;
-                }
-
-                if (params.size === undefined) {
-                    params.size = this.size;
-                }
-
-                if (params.fgColor === undefined) {
-                    params.fgColor = this.fgColor;
-                }
-                if (params.bgColor === undefined) {
-                    params.bgColor = this.bgColor;
-                }
-                if (params.label === undefined) {
-                    params.label = this.label;
-                }
-                if (params.hideAxis === undefined) {
-                    params.hideAxis = true;
-                }
+      // --------------------------------------------------------------------------------------------
+      // Computed properties
+      // --------------------------------------------------------------------------------------------
+      equals(a, b) {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] equals', a, b);
+        }
+        return (a == b);
+      }
 
 
-                this._responseParams = params;
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _handleResponse - Response params', this._responseParams);
-                }
-            }
+      // --------------------------------------------------------------------------------------------
+      // Observers
+      // --------------------------------------------------------------------------------------------
+      _onParamsChange() {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.warpscriptBaseUrl, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
+        }
+        if (!this._isAttached || !this.warpscriptScript) {
+          return false;
+        }
+        if (!this.dimensions.width || !this.dimensions.height) {
+          if (this.debug) {
+            console.log('[warp10-dashboard-element] _onParamsChange - Dimensions not yet available');
+          }
+          return;
+        }
+        this._initializeWarpscript();
+        this.$.warpscriptcaller.generateRequest();
+      }
 
-            _handleError(event, error) {
+      // --------------------------------------------------------------------------------------------
+      // Event listeners
+      // --------------------------------------------------------------------------------------------
 
-            }
+      _onDimensionsChange(dimensions) {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _onDimensionsChange', dimensions);
+        }
+      }
+
+      _handleResponse(event, response) {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _receivedResponse from event', {
+            event: event,
+            response: response
+          });
+        }
+
+        if (!response.stack || !response.stack instanceof Array) {
+          this.data = null;
+          return;
+        }
+
+        if (!this._isValidResponse(response.stack)) {
+          return null;
+        }
+        this.warpscriptResponse = response.stack;
+
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _receivedResponse from event', {
+            event: event,
+            response: response
+          });
+        }
+
+        let params = this.warpscriptResponse[0].params;
+
+        // Size param was originally called `tile` so we still support it
+        if (params.tile !== undefined) {
+          console.warn("Param `tile` in WarpScript response is deprecated, please change it to `size`");
+          params.size = params.tile;
+        }
+
+        if (params.size === undefined) {
+          params.size = this.size;
+        }
+
+        if (params.fgColor === undefined) {
+          params.fgColor = this.fgColor;
+        }
+        if (params.bgColor === undefined) {
+          params.bgColor = this.bgColor;
+        }
+        if (params.label === undefined) {
+          params.label = this.label;
+        }
+        if (params.hideAxis === undefined) {
+          params.hideAxis = true;
+        }
 
 
-            // --------------------------------------------------------------------------------------------
-            // Other instance methods
-            // --------------------------------------------------------------------------------------------
+        this._responseParams = params;
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _handleResponse - Response params', this._responseParams);
+        }
+      }
+
+      _handleError(event, error) {
+
+      }
 
 
-            /**
-             *  Return true if `response` is a valid response.
-             *  A valid response is an array with one and only one element.
-             *  This element is an object with a `type` (of one of the `_validResultTypes`) and a `params` (Object) property
-             */
-            _isValidResponse(response) {
-                console.debug("[warp10-dashboard-element] _isValidResponse - eval", response);
-                if (response.length !== 1) {
-                    if (this.debug) {
-                        console.log('[warp10-dashboard-element] _isValidResponse - response.length != 1');
-                    }
-                    return false;
-                }
-                if (typeof response[0] !== "object") {
-                    if (this.debug) {
-                        console.log('[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object');
-                    }
-                    return false;
-                }
-                if (!"type" in response[0] || !"params" in response[0]) {
-                    if (this.debug) {
-                        console.log('[warp10-dashboard-element] _isValidResponse - `type` and/or `params` not in wresponse[0]');
-                    }
-                    return false;
-                }
-                if (this._validResultTypes.indexOf(response[0].type) < 0) {
-                    console.debug('[warp10-dashboard-element] _isValidResponse - Unknown response type', response[0].type, 'Valid types are', this._validResultTypes);
-                    return false;
-                }
+      // --------------------------------------------------------------------------------------------
+      // Other instance methods
+      // --------------------------------------------------------------------------------------------
 
-                if (typeof response[0].params !== "object") {
-                    if (this.debug) {
-                        console.log('[warp10-dashboard-element] _isValidResponse - `params` not !== object');
-                    }
-                    return false;
-                }
-                if (this.debug) {
-                    console.log('[warp10-dashboard-element] _isValidResponse');
-                }
-                return true;
-            }
 
-            _initializeWarpscript() {
-                // Trying to get content as HTML content
-                let htmlContent = Polymer.dom(this).innerHTML.trim();
-                // If we have a value in the `warpscript` attribute, we keep it, else we use the HTML content
+      /**
+       *  Return true if `response` is a valid response.
+       *  A valid response is an array with one and only one element.
+       *  This element is an object with a `type` (of one of the `_validResultTypes`) and a `params` (Object) property
+       */
+      _isValidResponse(response) {
+        console.debug("[warp10-dashboard-element] _isValidResponse - eval", response);
+        if (response.length !== 1) {
+          if (this.debug) {
+            console.log('[warp10-dashboard-element] _isValidResponse - response.length != 1');
+          }
+          return false;
+        }
+        if (typeof response[0] !== "object") {
+          if (this.debug) {
+            console.log('[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object');
+          }
+          return false;
+        }
+        if (!"type" in response[0] || !"params" in response[0]) {
+          if (this.debug) {
+            console.log('[warp10-dashboard-element] _isValidResponse - `type` and/or `params` not in wresponse[0]');
+          }
+          return false;
+        }
+        if (this._validResultTypes.indexOf(response[0].type) < 0) {
+          console.debug('[warp10-dashboard-element] _isValidResponse - Unknown response type', response[0].type, 'Valid types are', this._validResultTypes);
+          return false;
+        }
 
-                // console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
-                if (this.warpscriptScript === '') {
-                    this._warpscriptScriptWithParams = htmlContent;
-                } else {
-                    this._warpscriptScriptWithParams = this.warpscriptScript;
-                }
+        if (typeof response[0].params !== "object") {
+          if (this.debug) {
+            console.log('[warp10-dashboard-element] _isValidResponse - `params` not !== object');
+          }
+          return false;
+        }
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _isValidResponse');
+        }
+        return true;
+      }
 
-                this._warpscriptScriptWithParams = this._storeParams() + this._warpscriptScriptWithParams;
+      _initializeWarpscript() {
+        // Trying to get content as HTML content
+        let htmlContent = Polymer.dom(this).innerHTML.trim();
+        // If we have a value in the `warpscript` attribute, we keep it, else we use the HTML content
 
-                if (this.debug) {
-                    console.log("[warp10-dashboard-element] _initialize - warpscriptScript", {
-                        _warpscriptScriptWithParams: this._warpscriptScriptWithParams,
-                        warpscriptScript: this.warpscriptScript,
-                        htmlContent: htmlContent
-                    });
-                }
+        // console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
+        if (this.warpscriptScript === '') {
+          this._warpscriptScriptWithParams = htmlContent;
+        } else {
+          this._warpscriptScriptWithParams = this.warpscriptScript;
+        }
 
-            }
+        this._warpscriptScriptWithParams = this._storeParams() + this._warpscriptScriptWithParams;
 
-            _storeParams() {
-                return `
+        if (this.debug) {
+          console.log("[warp10-dashboard-element] _initialize - warpscriptScript", {
+            _warpscriptScriptWithParams: this._warpscriptScriptWithParams,
+            warpscriptScript: this.warpscriptScript,
+            htmlContent: htmlContent
+          });
+        }
+
+      }
+
+      _storeParams() {
+        return `
           '${this.size}' 'tile' STORE
           '${this.label}' 'label' STORE
           '${this.description}' 'description' STORE
@@ -440,11 +440,11 @@
           '${this.fgColor}' 'fgColor' STORE
           '${this.bgColor}' 'bgColor' STORE
         `
-            }
-        }
+      }
+    }
 
-        // Register custom element definition using standard platform API
-        customElements.define(Warp10TilesDashboardElement.is, Warp10TilesDashboardElement);
-    </script>
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TilesDashboardElement.is, Warp10TilesDashboardElement);
+  </script>
 
 </dom-module>      
