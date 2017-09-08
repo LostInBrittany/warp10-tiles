@@ -1,0 +1,70 @@
+<!--
+@author Xavier MARIN (@XavMarin)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Warp10 Dashboard - Display map test</title>
+
+  <style>
+    .container {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  </style>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="../../polymer/polymer-element.html">
+
+  <!-- Import mixins -->
+  <link rel="import" href="../warp10-tiles-mixin.html">
+  <!-- Import mixins -->
+  <link rel="import" href="../warp10-tiles-sizes-mixin.html">
+
+  <link rel="import" href="../warp10-tiles-display-map.html">
+</head>
+<body>
+
+<div class="container">
+
+  <dom-bind id="template">
+    <template>
+      <warp10-tiles-display-map
+          size="[[size]]"
+          bg-color="[[bgColor]]"
+          fg-color="[[fgColor]]"
+          data="[[data]]"
+          label="[[label]]"
+          zoom="[[zoom]]"
+          latitude="[[latitude]]"
+          longitude="[[longitude]]"
+          description="[[description]]"
+          debug="[[debug]]"></warp10-tiles-display-map>
+    </template>
+    </template>
+  </dom-bind>
+
+</div>
+<script>
+  let autobind = document.querySelector('dom-bind');
+  autobind.data = [{
+    "gts": [
+      {"c": "", "l": {}, "a": {}, "v": [[1504854000000000, 48.565699984319508, -72.33240002766252, 30400, "1"]]},
+    ],
+    "params": [{"render": "marker"}],
+    "globalParams": {"interpolate": "cardinal"}
+  }];
+  autobind.label = 'A nice map';
+  autobind.size = 'big';
+  autobind.fgColor = 'white';
+  autobind.bgColor = 'orange';
+  autobind.zoom = 10;
+  autobind.description = 'This is a nice map';
+</script>
+
+<p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+</html>
