@@ -7,6 +7,7 @@
 
 <!-- Load the Polymer.Element base class -->
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../granite-yaml/granite-yaml-remote-parser.html">
 
 
 <link rel="import" href="../iron-ajax/iron-ajax.html">
@@ -92,7 +93,7 @@
           console.log('[warp10-tiles-conf-loader] _onDashboardChange', this.dashboard);
         }
 
-        if (this.availableDashboards.length == 0) {
+        if (this.availableDashboards.length === 0) {
           return;
         }
     
@@ -107,7 +108,7 @@
         if (this.debug) {
           console.log('[warp10-tiles-conf-loader] _onDashboardConfChange', this.dashboardConf);
         }
-        if (this.dashboardConf.type == 'url') {
+        if (this.dashboardConf.type === 'url') {
           this.$.dashboardRequest.url = this.dashboardConf.url;
           this.$.dashboardRequest.generateRequest();
         }
@@ -124,7 +125,7 @@
 
         if (!ironRequest.response ||
             !ironRequest.response.type ||
-            ironRequest.response.type != 'dashboard' ||
+            ironRequest.response.type !== 'dashboard' ||
             ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
           console.warn('[warp10-tiles-conf-loader] _onDashboardResponse - Invalid conf file', ironRequest.url);
           return;
@@ -140,7 +141,7 @@
 
         if (!ironRequest.response ||
             !ironRequest.response.type ||
-            (ironRequest.response.type != 'collection' && ironRequest.response.type != 'dashboard' ) ||
+            (ironRequest.response.type !== 'collection' && ironRequest.response.type !== 'dashboard' ) ||
             ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
           console.warn('[warp10-tiles-conf-loader] _onConfResponse - Invalid conf file', ironRequest.url);
           return;
@@ -152,7 +153,7 @@
         }
 
 
-        if (ironRequest.response.type == 'collection') {
+        if (ironRequest.response.type === 'collection') {
           this.availableDashboards = ironRequest.response.content;
 
           if (!this.availableDashboards[this.dashboard]) {

@@ -25,6 +25,8 @@
 
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
+<link rel="import" href="../warp10-iron/warp10-warpscript-request-gatherer.html">
+
 
 <dom-module id="warp10-tiles-dashboard-element">
 
@@ -32,16 +34,15 @@
 
     <style include="warp10-tiles-style">
     </style>
-
-    <warp10-warpscript-caller
-        id="warpscriptcaller"
-        url="[[warpscriptBaseUrl]]"
+    <warp10-warpscript-request-gatherer
+        id="[[name]]"
+        name="[[name]]"
+        proxy="[[proxyName]]"
         warpscript="[[_warpscriptScriptWithParams]]"
-        on-response="_handleResponse" on-error="_handleError"
-        reload="[[warpscriptReload]]"
-        loading="{{loading}}"
-        header-name="CityzenData"></warp10-warpscript-caller>
-
+        interval="[[warpscriptReload]]"
+        on-response="_handleResponse"
+        on-error="_handleError"
+    ></warp10-warpscript-request-gatherer>
 
     <dom-if if="[[equals(_resultType,'boolean')]]">
       <template>
@@ -180,24 +181,23 @@
            */
           warpscriptReload: {
             type: Number,
-            value: -1,
-          },
-
-          /**
-           * Base URL of WarpScript platform
-           */
-          warpscriptBaseUrl: {
-            type: String,
-            value: '',
+            value: -1
           },
           /**
            * The response of the Warp 10 server
            */
           warpscriptResponse: {
             type: Array,
-            value: function() {
+            value: function () {
               return [];
-            },
+            }
+          },
+
+          proxyName: {
+            type: String
+          },
+          name: {
+            type: String
           },
 
           _warpscriptScriptWithParams: {
@@ -214,7 +214,7 @@
           },
           _responseParams: {
             type: Object,
-            value: function() {
+            value: function () {
               return {};
             },
           },
@@ -222,7 +222,7 @@
             type: Boolean,
             value: false,
           },
-        };
+        }
       }
 
       static get observers() {
@@ -262,7 +262,7 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] equals', a, b);
         }
-        return (a == b);
+        return (a === b);
       }
 
 
@@ -271,9 +271,7 @@
       // --------------------------------------------------------------------------------------------
       _onParamsChange() {
         if (this.debug) {
-          console.log('[warp10-dashboard-element] _onParamsChange', 
-            this.warpscriptScript, this.warpscriptReload, this.warpscriptBaseUrl, 
-            this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
+          console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
         }
         if (!this._isAttached || !this.warpscriptScript) {
           return false;
@@ -285,7 +283,7 @@
           return;
         }
         this._initializeWarpscript();
-        this.$.warpscriptcaller.generateRequest();
+        //this.$.warpscriptcaller.generateWarpscript(this.proxyName);
       }
 
       // --------------------------------------------------------------------------------------------
@@ -306,20 +304,20 @@
           });
         }
 
-        if (!response.stack || !(response.stack instanceof Array)) {
+        if (!response) { // || !response.stack || !response.stack instanceof Array) {
           this.data = null;
           return;
         }
 
-        if (!this._isValidResponse(response.stack)) {
+        if (!this._isValidResponse(response)) {
           return null;
         }
-        this.warpscriptResponse = response.stack;
+        this.warpscriptResponse = response;
 
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
             event: event,
-            response: response,
+            response: response
           });
         }
 
@@ -356,9 +354,10 @@
       }
 
       _handleError(event, error) {
-
+        console.error('[warp10-dashboard-element] _handleError', event, error);
       }
-      
+
+
       // --------------------------------------------------------------------------------------------
       // Other instance methods
       // --------------------------------------------------------------------------------------------
@@ -413,7 +412,7 @@
         let htmlContent = Polymer.dom(this).innerHTML.trim();
         // If we have a value in the `warpscript` attribute, we keep it, else we use the HTML content
 
-        // console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
+        console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
         if (this.warpscriptScript === '') {
           this._warpscriptScriptWithParams = htmlContent;
         } else {
@@ -440,7 +439,7 @@
           '${this.dimensions.height}' 'height' STORE
           '${this.fgColor}' 'fgColor' STORE
           '${this.bgColor}' 'bgColor' STORE
-        `;
+        `
       }
     }
 
