@@ -28,7 +28,7 @@
   <link rel="import" href="../../neon-animation/web-animations.html">
 
   <link rel="import" href=" ../warp10-tiles-page-generator.html">
-  <link rel="import" href=" ../warp10-tiles-conf-loader.html">
+  <link rel="import" href=" ../warp10-tiles-yaml-conf-loader.html">
 </head>
 
 
@@ -57,13 +57,13 @@
           conf="[[conf.content.0]]" 
           bootstrap="[[now()]] 'endDate' STORE 1 d 'beginDate' STORE"          
           debug></warp10-tiles-page-generator> 
-      <warp10-tiles-conf-loader
-          url="[[rootPath]]resources/example-conf-loader-global.conf.json"          
+      <warp10-tiles-yaml-conf-loader
+          url="[[rootPath]]resources/example-conf-loader-global.conf.yml"          
           dashboard="[[chosenDashboard]]" 
           available-dashboards="{{availableDashboards}}"
           dashboard-conf="{{conf}}"
           on-available-dashboards-changed="_onAvailableDashboardsChanged"
-          debug></warp10-tiles-conf-loader>
+          debug></warp10-tiles-yaml-conf-loader>
     </template>
 
     <script>

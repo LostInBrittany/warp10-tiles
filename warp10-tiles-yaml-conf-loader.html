@@ -9,32 +9,31 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 
-<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../granite-yaml/granite-yaml-remote-parser.html">
 
-<dom-module id="warp10-tiles-conf-loader">
+<dom-module id="warp10-tiles-yaml-conf-loader">
   <template>
     <style>
     </style>
 
-    <iron-ajax
+    <granite-yaml-remote-parser
         id="mainConfRequest"
         url="[[url]]"
-        on-response="_onMainConfResponse"
+        on-yaml-parsed="_onMainConfResponse"
         on-error="_onMainConfError"
-        auto></iron-ajax>
+        auto></granite-yaml-remote-parser>
 
-    <iron-ajax
+    <granite-yaml-remote-parser
         id="dashboardRequest"
-        on-response="_onDashboardResponse"
-        on-error="_onDashboardError"></iron-ajax>
+        on-yaml-parsed="_onDashboardResponse"></granite-yaml-remote-parser>
 
   </template>
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesConfLoader extends Polymer.Element {
+    class Warp10TilesYamlConfLoader extends Polymer.Element {
       static get is() {
-        return 'warp10-tiles-conf-loader';
+        return 'warp10-tiles-yaml-conf-loader';
       }
 
       static get properties() {
@@ -119,41 +118,45 @@
         }
       }
 
-      _onDashboardResponse(event, ironRequest) {
+      _onDashboardResponse(evt) {
         event.stopPropagation();
 
-        if (!ironRequest.response ||
-            !ironRequest.response.type ||
-            ironRequest.response.type != 'dashboard' ||
-            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
-          console.warn('[warp10-tiles-conf-loader] _onDashboardResponse - Invalid conf file', ironRequest.url);
+        if (!evt.detail || !evt.detail.obj ||
+            !evt.detail.obj.type ||
+            evt.detail.obj.type != 'dashboard' ||
+            ( !evt.detail.obj.content || !Array.isArray(evt.detail.obj.content) )) {
+          console.warn('[warp10-tiles-conf-loader] _onDashboardResponse - Invalid conf file', this.$.dashboardRequest.url);
           return;
         }
         if (this.debug) {
-          console.log('[warp10-tiles-conf-loader] _onDashboardResponse', ironRequest.response);
+          console.log('[warp10-tiles-conf-loader] _onDashboardResponse', evt.detail);
         }
-        this.dashboardConf = ironRequest.response;
+        this.dashboardConf = evt.detail.obj;
       }
 
-      _onMainConfResponse(event, ironRequest) {
+      _onMainConfResponse(evt) {
         event.stopPropagation();
 
-        if (!ironRequest.response ||
-            !ironRequest.response.type ||
-            (ironRequest.response.type != 'collection' && ironRequest.response.type != 'dashboard' ) ||
-            ( !ironRequest.response.content || !Array.isArray(ironRequest.response.content) )) {
-          console.warn('[warp10-tiles-conf-loader] _onConfResponse - Invalid conf file', ironRequest.url);
+        if (this.debug) {
+          console.log('[warp10-tiles-conf-loader] _onMainConfResponse', evt);
+        }
+
+        if (!evt.detail || !evt.detail.obj ||
+            !evt.detail.obj.type ||
+            (evt.detail.obj.type != 'collection' && evt.detail.obj.type != 'dashboard' ) ||
+            ( !evt.detail.obj.content || !Array.isArray(evt.detail.obj.content) )) {
+          console.warn('[warp10-tiles-conf-loader] _onConfResponse - Invalid conf file', this.url);
           return;
         }
 
 
         if (this.debug) {
-          console.log('[warp10-tiles-conf-loader] _onMainConfResponse', ironRequest.response);
+          console.log('[warp10-tiles-conf-loader] _onMainConfResponse', evt.detail);
         }
 
 
-        if (ironRequest.response.type == 'collection') {
-          this.availableDashboards = ironRequest.response.content;
+        if (evt.detail.obj.type == 'collection') {
+          this.availableDashboards = evt.detail.obj.content;
 
           if (!this.availableDashboards[this.dashboard]) {
             this.dashboardConf = this.availableDashboards[0];
@@ -161,11 +164,11 @@
             this.dashboardConf = this.availableDashboards[this.dashboard];
           }
         } else {
-          this.dashboardConf = ironRequest.response;
+          this.dashboardConf = evt.detail.obj;
         }
       }
     }
 
-    customElements.define(Warp10TilesConfLoader.is, Warp10TilesConfLoader);
+    customElements.define(Warp10TilesYamlConfLoader.is, Warp10TilesYamlConfLoader);
   </script>
 </dom-module>

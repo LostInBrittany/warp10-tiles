@@ -33,7 +33,8 @@
     "paper-progress": "PolymerElements/paper-progress#^2.0.0",
     "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.12.3",
     "moment-js": "lostinbrittany/moment-js#0.8-rc2",
-    "moment-timezone": "^0.5.13"
+    "moment-timezone": "^0.5.13",
+    "granite-yaml": "LostInBrittany/granite-yaml#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
