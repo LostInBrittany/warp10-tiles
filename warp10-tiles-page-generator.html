@@ -180,7 +180,7 @@
 
       _getRepeatedTile(tile, value) {
         let innerTile = JSON.parse(JSON.stringify(tile.item));
-        innerTile['warpscript-script'] = innerTile['warpscript-script'].replace(tile.variable, value);
+        innerTile['warpscript-script'] = innerTile['warpscript-script'].replace(new RegExp(tile.variable, 'g'), value);
         return innerTile;
       }
     }
