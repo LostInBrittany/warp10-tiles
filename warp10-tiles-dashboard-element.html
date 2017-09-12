@@ -155,12 +155,12 @@
   </template>
 
   <script>
-
+    /* globals Warp10TilesSizesMixin, Warp10TilesMixin */
+    /* eslint new-cap:  ["error", { "capIsNewExceptions": ["Warp10TilesSizesMixin", "Warp10TilesMixin"] }] */
     // Extend Polymer.Element base class
     class Warp10TilesDashboardElement extends Warp10TilesSizesMixin(Warp10TilesMixin(Polymer.Element)) {
-
       static get is() {
-        return 'warp10-tiles-dashboard-element'
+        return 'warp10-tiles-dashboard-element';
       }
 
       static get properties() {
@@ -170,7 +170,7 @@
            */
           warpscriptScript: {
             type: String,
-            value: ""
+            value: '',
           },
 
           /**
@@ -180,7 +180,7 @@
            */
           warpscriptReload: {
             type: Number,
-            value: -1
+            value: -1,
           },
 
           /**
@@ -188,47 +188,48 @@
            */
           warpscriptBaseUrl: {
             type: String,
-            value: ""
+            value: '',
           },
           /**
            * The response of the Warp 10 server
            */
           warpscriptResponse: {
             type: Array,
-            value: function () {
+            value: function() {
               return [];
-            }
+            },
           },
 
           _warpscriptScriptWithParams: {
             type: String,
-            value: ''
+            value: '',
           },
           _resultType: {
             type: String,
-            computed: '_getResultType(warpscriptResponse)'
+            computed: '_getResultType(warpscriptResponse)',
           },
           _validResultTypes: {
             type: Boolean,
-            value: ['boolean', 'date', 'number', 'gauge', 'map', 'img', 'chart', 'error']
+            value: ['boolean', 'date', 'number', 'gauge', 'map', 'img', 'chart', 'error'],
           },
           _responseParams: {
             type: Object,
-            value: function () {
+            value: function() {
               return {};
-            }
+            },
           },
           _isAttached: {
             type: Boolean,
-            value: false
+            value: false,
           },
         };
       }
 
       static get observers() {
         return [
-          '_onParamsChange(warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)'
-        ]
+          /* eslint max-length: 200 */
+          '_onParamsChange(warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)',
+        ];
       }
 
       connectedCallback() {
@@ -244,7 +245,6 @@
       // --------------------------------------------------------------------------------------------
 
       _getResultType() {
-
         if (!this._isValidResponse(this.warpscriptResponse)) {
           return null;
         }
@@ -253,7 +253,6 @@
           console.log('[warp10-dashboard-element] _getResultType', this.warpscriptResponse[0].type);
         }
         return this.warpscriptResponse[0].type;
-
       }
 
       // --------------------------------------------------------------------------------------------
@@ -272,7 +271,9 @@
       // --------------------------------------------------------------------------------------------
       _onParamsChange() {
         if (this.debug) {
-          console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.warpscriptBaseUrl, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
+          console.log('[warp10-dashboard-element] _onParamsChange', 
+            this.warpscriptScript, this.warpscriptReload, this.warpscriptBaseUrl, 
+            this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
         }
         if (!this._isAttached || !this.warpscriptScript) {
           return false;
@@ -301,11 +302,11 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
             event: event,
-            response: response
+            response: response,
           });
         }
 
-        if (!response.stack || !response.stack instanceof Array) {
+        if (!response.stack || !(response.stack instanceof Array)) {
           this.data = null;
           return;
         }
@@ -318,7 +319,7 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
             event: event,
-            response: response
+            response: response,
           });
         }
 
@@ -326,7 +327,7 @@
 
         // Size param was originally called `tile` so we still support it
         if (params.tile !== undefined) {
-          console.warn("Param `tile` in WarpScript response is deprecated, please change it to `size`");
+          console.warn('Param `tile` in WarpScript response is deprecated, please change it to `size`');
           params.size = params.tile;
         }
 
@@ -357,8 +358,7 @@
       _handleError(event, error) {
 
       }
-
-
+      
       // --------------------------------------------------------------------------------------------
       // Other instance methods
       // --------------------------------------------------------------------------------------------
@@ -370,20 +370,22 @@
        *  This element is an object with a `type` (of one of the `_validResultTypes`) and a `params` (Object) property
        */
       _isValidResponse(response) {
-        console.debug("[warp10-dashboard-element] _isValidResponse - eval", response);
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _isValidResponse - eval', response);
+        }
         if (response.length !== 1) {
           if (this.debug) {
             console.log('[warp10-dashboard-element] _isValidResponse - response.length != 1');
           }
           return false;
         }
-        if (typeof response[0] !== "object") {
+        if (typeof response[0] !== 'object') {
           if (this.debug) {
             console.log('[warp10-dashboard-element] _isValidResponse - typeof response[0] !== object');
           }
           return false;
         }
-        if (!"type" in response[0] || !"params" in response[0]) {
+        if (!'type' in response[0] || !'params' in response[0]) {
           if (this.debug) {
             console.log('[warp10-dashboard-element] _isValidResponse - `type` and/or `params` not in wresponse[0]');
           }
@@ -394,7 +396,7 @@
           return false;
         }
 
-        if (typeof response[0].params !== "object") {
+        if (typeof response[0].params !== 'object') {
           if (this.debug) {
             console.log('[warp10-dashboard-element] _isValidResponse - `params` not !== object');
           }
@@ -421,13 +423,12 @@
         this._warpscriptScriptWithParams = this._storeParams() + this._warpscriptScriptWithParams;
 
         if (this.debug) {
-          console.log("[warp10-dashboard-element] _initialize - warpscriptScript", {
+          console.log('[warp10-dashboard-element] _initialize - warpscriptScript', {
             _warpscriptScriptWithParams: this._warpscriptScriptWithParams,
             warpscriptScript: this.warpscriptScript,
-            htmlContent: htmlContent
+            htmlContent: htmlContent,
           });
         }
-
       }
 
       _storeParams() {
@@ -439,7 +440,7 @@
           '${this.dimensions.height}' 'height' STORE
           '${this.fgColor}' 'fgColor' STORE
           '${this.bgColor}' 'bgColor' STORE
-        `
+        `;
       }
     }
 
