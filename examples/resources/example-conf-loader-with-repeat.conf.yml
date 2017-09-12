@@ -1,0 +1,35 @@
+type: "dashboard"
+name: "dash_a"
+title: "Dashboard A"
+content: 
+  - type: "page"
+    name: "generic"
+    title: "Generic Dash A"
+    content:
+
+      - type: "card"
+        name: "generic"
+        warpscript-base-url: "https://home.cityzendata.net/api/v0/exec"
+        title: "Two simple tiles Dash A"
+        content:
+          - type: "repeat"
+            items: [ 1, 2, 7, 9 ]
+            variable: "@@index"
+            item:
+              type: "tile"            
+              name: "a_date"
+              warpscript-script: |
+                { 
+                  'type' 'date' 
+                  'params' {
+                    'label' 'A date @@index'
+                    'size' 'large'
+                    'fgColor' 'white'
+                    'hexFgColor' '#ffffff'
+                    'bgColor' 'orange'
+                    'description' 'A date @@index'
+                    'data' 1494432470477272
+                  }
+                }
+              warpscript-base-url: "https://home.cityzendata.net/api/v0/exec"
+              warpscript-reload: 5 

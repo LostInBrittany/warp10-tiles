@@ -50,12 +50,6 @@
         flex-flow: row wrap;
       }
 
-      div.masonry div.masonry-item {
-        box-sizing: border-box;
-        border: 1px solid white;
-        background-color: #1b1b1b;
-
-      }
     </style>
 
     <div>
@@ -72,18 +66,38 @@
             <div class="cardBody">
               <div class="masonry">
                 <dom-repeat items="[[card.content]]" as="tile">
-                  <div class="masonry-item">
-                    <template>
-                      [[log(tile)]]
-                      <warp10-tiles-dashboard-element
-                          bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"
-                          fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"
-                          warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
-                          warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]"
-                          warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
-                          debug="[[debug]]"></warp10-tiles-dashboard-element>
-                    </template>
-                  </div>
+                  <template>
+                    <dom-if if="_isTile(tile.type)" restamp>
+                      <template>
+                        <div class="masonry-item">
+                          <warp10-tiles-dashboard-element
+                              bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"
+                              fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"
+                              warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
+                              warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]"
+                              warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
+                              debug="[[debug]]"></warp10-tiles-dashboard-element>                          
+                        </div>
+                      </template>
+                    </dom-if>
+                    <dom-if if="_isRepeat(tile.type)" restamp>
+                      <template>
+                        <dom-repeat items="[[tile.items]]" as="value">
+                          <template>
+                            <div class="masonry-item">
+                              <warp10-tiles-dashboard-element
+                                  bg-color="[[_getInnerTileConfParam('bgColor', conf, card, tile, value)]]"
+                                  fg-color="[[_getInnerTileConfParam('fgColor', conf, card, tile, value)]]"
+                                  warpscript-script="[[bootstrap]] [[_getInnerTileConfParam('warpscript-script', conf, card, tile, value)]]"
+                                  warpscript-reload="[[_getInnerTileConfParam('warpscript-reload', conf, card, tile, value)]]"
+                                  warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, tile, value)]]"
+                                  debug="[[debug]]"></warp10-tiles-dashboard-element>
+                            </div>
+                          </template>
+                        </dom-repeat>    
+                      </template>
+                    </dom-if>                             
+                  </template>
                 </dom-repeat>
               </div>
             </div>
@@ -111,22 +125,22 @@
         return {
           conf: {
             type: Object,
-            observer: '_onConfChange'
+            observer: '_onConfChange',
           },
           bootstrap: {
             type: String,
-            value: ''
+            value: '',
           },
           debug: {
             type: Boolean,
-            value: false
+            value: false,
           },
         };
       }
 
       _onConfChange(conf) {
         if (this.debug) {
-          console.log("[warp10-tiles-page-generator] _onConfChange", conf);
+          console.log('[warp10-tiles-page-generator] _onConfChange', conf);
         }
       }
 
@@ -134,10 +148,17 @@
         return JSON.stringify(obj);
       }
 
+      _getInnerTileConfParam(param, conf, card, tile, value) {
+          if (this.debug) {
+            console.log('[warp10-tiles-page-generator] _getInnerTileConfParam', value);
+          }
+          return this._getConfParam(param, conf, card, this._getRepeatedTile(tile, value));
+      }
 
       _getConfParam(param, conf, card, tile) {
         if (this.debug) {
-          console.log("[warp10-tiles-page-generator] _getConfParam", param, this._joinIfArray(tile[param] || card[param] || conf[param]));
+          console.log('[warp10-tiles-page-generator] _getConfParam',
+              param, this._joinIfArray(tile[param] || card[param] || conf[param]));
         }
         return this._joinIfArray(tile[param] || card[param] || conf[param]);
       }
@@ -149,6 +170,19 @@
         return obj;
       }
 
+      _isTile(tile) {
+        return tile.type == 'tile';
+      }
+
+      _isRepeat(tile) {
+        return tile.type == 'repeat';
+      }
+
+      _getRepeatedTile(tile, value) {
+        let innerTile = JSON.parse(JSON.stringify(tile.item));
+        innerTile['warpscript-script'] = innerTile['warpscript-script'].replace(tile.variable, value);
+        return innerTile;
+      }
     }
 
     window.customElements.define(Warp10TilesPageGenerator.is, Warp10TilesPageGenerator);

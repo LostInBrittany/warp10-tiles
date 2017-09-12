@@ -1,0 +1,119 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Warp10 Dashboard - Example of conf-loader</title>
+
+  <style>
+    body {
+      margin: 0px;
+      background-color: #eee;
+    }
+
+  </style>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../iron-ajax/iron-ajax.html">
+
+  <link rel="import" href="../../paper-item/paper-item.html">
+  <link rel="import" href="../../paper-listbox/paper-listbox.html">  
+  <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+  <!-- Ensure Web Animations polyfill is loaded since neon-animation 2.0 doesn't import it -->
+  <link rel="import" href="../../neon-animation/web-animations.html">
+
+  <link rel="import" href=" ../warp10-tiles-page-generator.html">
+  <link rel="import" href=" ../warp10-tiles-yaml-conf-loader.html">
+</head>
+
+
+<body>
+  <dom-module id="example-conf-loader-with-repeat">
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style> 
+      <warp10-tiles-page-generator 
+          conf="[[conf.content.0]]" 
+          bootstrap="[[now()]] 'endDate' STORE 1 d 'beginDate' STORE"          
+          debug></warp10-tiles-page-generator> 
+      <warp10-tiles-yaml-conf-loader
+          url="[[rootPath]]resources/example-conf-loader-with-repeat.conf.yml"          
+          dashboard="[[chosenDashboard]]" 
+          available-dashboards="{{availableDashboards}}"
+          dashboard-conf="{{conf}}"
+          on-available-dashboards-changed="_onAvailableDashboardsChanged"
+          debug></warp10-tiles-yaml-conf-loader>
+    </template>
+
+    <script>
+      /* globals HTMLImports */
+      HTMLImports.whenReady(function() {
+        class ExampleConfLoader extends Polymer.Element {
+          static get is() {return 'example-conf-loader-with-repeat';}
+          static get properties() {
+            return {
+              chosenDashboard: {
+                type: Number,
+                value: 0,
+                observer: '_chosenDashboardObserver',
+              },
+              availableDashboards: {
+                type: Array,
+                value: () => [],
+                observer: '_availableDashboardsObserver',
+              },
+              conf: {
+                type: Object,
+                value: () => {},
+              },
+            };
+          }
+
+          _chosenDashboardObserver() {
+            console.log('[example-conf-loader-with-repeat] _chosenDashboardObserver', this.chosenDashboard);
+          }
+
+          _availableDashboardsObserver() {
+            console.log('[example-conf-loader-with-repeat] _availableDashboardsObserver', this.availableDashboards);
+          }
+
+          _onAvailableDashboardsChanged(evt) {
+            console.log('[example-conf-loader-with-repeat] _onAvailableDashboardsChanged', evt.detail);
+          }
+          _gotConf(evt, ironRequest) {
+            console.log('[example-conf-loader-with-repeat] gotConf', ironRequest.response );
+          }
+
+          extractCard(conf) {
+            console.log('[example-conf-loader-with-repeat] extractCard', conf.content[0].content[0] );
+            return conf.content[0][0];
+          }
+
+          stringify(obj) {
+            return JSON.stringify(obj);
+          }
+
+          now() {
+            return new Date().getMilliseconds()*1000;
+          }
+        }
+        window.customElements.define(ExampleConfLoader.is, ExampleConfLoader);
+      });
+    </script>
+  </dom-module>
+
+
+  <example-conf-loader-with-repeat></example-conf-loader-with-repeat>
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+
+</html>
