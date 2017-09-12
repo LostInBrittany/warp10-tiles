@@ -1,0 +1,9 @@
+name: "test-collection"
+type: "collection"
+content: 
+  - title: "Dashboard A"
+    type: "url"
+    url: "./resources/example-conf-loader-dash-a.conf.yml"
+  - title: "Dashboard B"
+    type: "url"
+    url: "./resources/example-conf-loader-dash-b.conf.yml"
