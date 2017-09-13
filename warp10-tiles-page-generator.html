@@ -86,6 +86,8 @@
                               fg-color="[[_getConfParam('fg-color', conf, card, item)]]"
                               proxy-name="[[item.requester]]"
                               name="[[item.name]]"
+                              bootstrap="[[bootstrap]]"
+                              warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
                               warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
                               warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
                               debug="[[debug]]"></warp10-tiles-dashboard-element>
@@ -102,6 +104,8 @@
                                   fg-color="[[_getInnerTileConfParam('fgColor', conf, card, item, value)]]"
                                   proxy-name="[[item.item.requester]]"
                                   name="[[item.item.name]][[index]]"
+                                  bootstrap="[[bootstrap]]"
+                                  warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, item)]]"
                                   warpscript-script="[[bootstrap]] [[_getInnerTileConfParam('warpscript-script', conf, card, item, value)]]"
                                   warpscript-reload="[[_getInnerTileConfParam('warpscript-reload', conf, card, item, value)]]"
                                   debug="[[debug]]"></warp10-tiles-dashboard-element>
@@ -188,16 +192,20 @@
       }
 
       _isTile(tile) {
+        console.log('[warp10-tiles-page-generator] isTile', tile.type);
         return tile.type === 'tile';
       }
 
       _isRepeat(tile) {
+        console.log('[warp10-tiles-page-generator] _isRepeat', tile.type);
         return tile.type === 'repeat';
       }
 
       _getRepeatedTile(tile, value) {
         let innerTile = JSON.parse(JSON.stringify(tile.item));
-        console.log('[warp10-tiles-page-generator] _getRepeatedTile', tile.item, innerTile);
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] _getRepeatedTile', tile.item, innerTile);
+        }
         innerTile['warpscript-script'] = innerTile['warpscript-script'].replace(new RegExp(tile.variable, 'g'), value);
         return innerTile;
       }

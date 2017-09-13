@@ -22,6 +22,7 @@
 <link rel="import" href="./warp10-tiles-display-map.html">
 <link rel="import" href="./warp10-tiles-display-num.html">
 <link rel="import" href="./warp10-tiles-display-sparkline.html">
+<link rel="import" href="../granite-spinner/granite-spinner.html">
 
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
@@ -53,13 +54,23 @@
             id="warpscriptcaller"
             url="[[warpscriptBaseUrl]]"
             warpscript="[[_warpscriptScriptWithParams]]"
-            on-response="_handleResponse" on-error="_handleError"
+            on-response="_handleResponse"
+            on-error="_handleError"
             reload="[[warpscriptReload]]"
             loading="{{loading}}"
+            auto
             header-name="CityzenData"></warp10-warpscript-caller>
       </template>
     </dom-if>
-
+    <dom-if if="[[_warpscriptScriptWithParams]]" restamp>
+      <template>
+        <granite-spinner
+            color="#ff4081"
+            line-width="0.3em"
+            size="20"
+            active="{{tileLoading}}"></granite-spinner>
+      </template>
+    </dom-if>
     <dom-if if="[[equals(_resultType,'boolean')]]">
       <template>
         <warp10-tiles-display-boolean
@@ -199,6 +210,14 @@
             type: Number,
             value: -1
           },
+
+          /**
+           * Base URL of WarpScript platform
+           */
+          warpscriptBaseUrl: {
+            type: String,
+            value: ""
+          },
           /**
            * The response of the Warp 10 server
            */
@@ -213,6 +232,9 @@
             type: String
           },
           name: {
+            type: String
+          },
+          bootstrap: {
             type: String
           },
 
@@ -251,6 +273,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
+        this.tileLoading = true;
         if (this.debug) {
           console.log('[warp10-dashboard-element] connectedCallback');
         }
@@ -264,7 +287,9 @@
         if (!this._isValidResponse(this.warpscriptResponse)) {
           return null;
         }
-
+        if (this.warpscriptResponse.stack) {
+          this.warpscriptResponse = this.warpscriptResponse.stack
+        }
         if (this.debug) {
           console.log('[warp10-dashboard-element] _getResultType', this.warpscriptResponse[0].type);
         }
@@ -299,7 +324,6 @@
           return;
         }
         this._initializeWarpscript();
-        //this.$.warpscriptcaller.generateWarpscript(this.proxyName);
       }
 
       // --------------------------------------------------------------------------------------------
@@ -313,6 +337,7 @@
       }
 
       _handleResponse(event, response) {
+        this.tileLoading = false;
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
             event: event,
@@ -371,6 +396,7 @@
 
       _handleError(event, error) {
         console.error('[warp10-dashboard-element] _handleError', event, error);
+        this.tileLoading = false;
       }
 
 
@@ -387,6 +413,9 @@
       _isValidResponse(response) {
         if (this.debug) {
           console.log('[warp10-dashboard-element] _isValidResponse - eval', response);
+        }
+        if (response.stack) {
+          response = response.stack
         }
         if (response.length !== 1) {
           if (this.debug) {
@@ -418,7 +447,7 @@
           return false;
         }
         if (this.debug) {
-          console.log('[warp10-dashboard-element] _isValidResponse');
+          console.log('[warp10-dashboard-element] _isValidResponse', response);
         }
         return true;
       }
@@ -429,12 +458,16 @@
         // If we have a value in the `warpscript` attribute, we keep it, else we use the HTML content
 
         console.debug("[warp10-dashboard-element] _initialize - warpscriptScript", this.warpscriptScript);
+
+
         if (this.warpscriptScript === '') {
           this._warpscriptScriptWithParams = htmlContent;
         } else {
           this._warpscriptScriptWithParams = this.warpscriptScript;
         }
-
+        if (this.bootstrap) {
+          this._warpscriptScriptWithParams = this.bootstrap + this._warpscriptScriptWithParams;
+        }
         this._warpscriptScriptWithParams = this._storeParams() + this._warpscriptScriptWithParams;
 
         if (this.debug) {
@@ -456,6 +489,10 @@
           '${this.fgColor}' 'fgColor' STORE
           '${this.bgColor}' 'bgColor' STORE
         `
+      }
+
+      $$(selector) {
+        return this.shadowRoot.querySelector(selector);
       }
     }
 
