@@ -7,6 +7,7 @@
 <link rel="import" href="../polymer/lib/elements/dom-if.html">
 <link rel="import" href="../polymer/lib/elements/dom-repeat.html">
 <link rel="import" href=" ../warp10-tiles/warp10-tiles-dashboard-element.html">
+<link rel="import" href="../warp10-iron/warp10-warpscript-http-proxy.html">
 
 <dom-module id="warp10-tiles-page-generator">
   <template>
@@ -53,6 +54,16 @@
     </style>
 
     <div>
+      <dom-repeat items="[[requesters]]" as="requester">
+        <template>
+          <warp10-warpscript-http-proxy
+              name="[[requester.name]]"
+              presets="[[bootstrap]] [[requester.presets]]"
+              url="[[requester.url]]"
+              interval="[[requester.interval]]"></warp10-warpscript-http-proxy>
+        </template>
+      </dom-repeat>
+
       <dom-repeat items="[[conf.content]]" as="card">
         <template>
           <div class="card">
@@ -65,38 +76,44 @@
             </dom-if>
             <div class="cardBody">
               <div class="masonry">
-                <dom-repeat items="[[card.content]]" as="tile">
+                <dom-repeat items="[[card.content]]">
                   <template>
-                    <dom-if if="_isTile(tile.type)" restamp>
+                    <dom-if if="[[_isTile(item)]]" restamp>
                       <template>
                         <div class="masonry-item">
                           <warp10-tiles-dashboard-element
-                              bg-color="[[_getConfParam('bg-color', conf, card, tile)]]"
-                              fg-color="[[_getConfParam('fg-color', conf, card, tile)]]"
-                              warpscript-script="[[bootstrap]] [[_getConfParam('warpscript-script', conf, card, tile)]]"
-                              warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, tile)]]"
-                              warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, tile)]]"
-                              debug="[[debug]]"></warp10-tiles-dashboard-element>                          
+                              bg-color="[[_getConfParam('bg-color', conf, card, item)]]"
+                              fg-color="[[_getConfParam('fg-color', conf, card, item)]]"
+                              proxy-name="[[item.requester]]"
+                              name="[[item.name]]"
+                              bootstrap="[[bootstrap]]"
+                              warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
+                              warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
+                              warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
+                              debug="[[debug]]"></warp10-tiles-dashboard-element>
                         </div>
                       </template>
                     </dom-if>
-                    <dom-if if="_isRepeat(tile.type)" restamp>
+                    <dom-if if="[[_isRepeat(item)]]" restamp>
                       <template>
-                        <dom-repeat items="[[tile.items]]" as="value">
+                        <dom-repeat items="[[item.items]]" as="value" indexAs="index">
                           <template>
                             <div class="masonry-item">
                               <warp10-tiles-dashboard-element
-                                  bg-color="[[_getInnerTileConfParam('bgColor', conf, card, tile, value)]]"
-                                  fg-color="[[_getInnerTileConfParam('fgColor', conf, card, tile, value)]]"
-                                  warpscript-script="[[bootstrap]] [[_getInnerTileConfParam('warpscript-script', conf, card, tile, value)]]"
-                                  warpscript-reload="[[_getInnerTileConfParam('warpscript-reload', conf, card, tile, value)]]"
-                                  warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, tile, value)]]"
+                                  bg-color="[[_getInnerTileConfParam('bgColor', conf, card, item, value)]]"
+                                  fg-color="[[_getInnerTileConfParam('fgColor', conf, card, item, value)]]"
+                                  proxy-name="[[item.item.requester]]"
+                                  name="[[item.item.name]][[index]]"
+                                  bootstrap="[[bootstrap]]"
+                                  warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, item)]]"
+                                  warpscript-script="[[bootstrap]] [[_getInnerTileConfParam('warpscript-script', conf, card, item, value)]]"
+                                  warpscript-reload="[[_getInnerTileConfParam('warpscript-reload', conf, card, item, value)]]"
                                   debug="[[debug]]"></warp10-tiles-dashboard-element>
                             </div>
                           </template>
-                        </dom-repeat>    
+                        </dom-repeat>
                       </template>
-                    </dom-if>                             
+                    </dom-if>
                   </template>
                 </dom-repeat>
               </div>
@@ -125,7 +142,11 @@
         return {
           conf: {
             type: Object,
-            observer: '_onConfChange',
+            observer: '_onConfChange'
+          },
+          requesters: {
+            type: Array,
+            observer: '_onConfChange'
           },
           bootstrap: {
             type: String,
@@ -144,15 +165,15 @@
         }
       }
 
-      stringify(obj) {
+      static stringify(obj) {
         return JSON.stringify(obj);
       }
 
       _getInnerTileConfParam(param, conf, card, tile, value) {
-          if (this.debug) {
-            console.log('[warp10-tiles-page-generator] _getInnerTileConfParam', value);
-          }
-          return this._getConfParam(param, conf, card, this._getRepeatedTile(tile, value));
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] _getInnerTileConfParam', value);
+        }
+        return this._getConfParam(param, conf, card, this._getRepeatedTile(tile, value));
       }
 
       _getConfParam(param, conf, card, tile) {
@@ -171,15 +192,24 @@
       }
 
       _isTile(tile) {
-        return tile.type == 'tile';
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] isTile', tile.type);
+        }
+        return tile.type === 'tile';
       }
 
       _isRepeat(tile) {
-        return tile.type == 'repeat';
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] _isRepeat', tile.type);
+        }
+        return tile.type === 'repeat';
       }
 
       _getRepeatedTile(tile, value) {
         let innerTile = JSON.parse(JSON.stringify(tile.item));
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] _getRepeatedTile', tile.item, innerTile);
+        }
         innerTile['warpscript-script'] = innerTile['warpscript-script'].replace(new RegExp(tile.variable, 'g'), value);
         return innerTile;
       }
