@@ -266,7 +266,7 @@
       static get observers() {
         return [
           /* eslint max-length: 200 */
-          '_onParamsChange(warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)',
+          '_onParamsChange(bootstrap,warpscriptScript,warpscriptReload,warpscriptBaseUrl,dimensions,bgColor,fgColor,label,_isAttached)',
         ];
       }
 
@@ -311,6 +311,7 @@
       // Observers
       // --------------------------------------------------------------------------------------------
       _onParamsChange() {
+        this.tileLoading = true;
         if (this.debug) {
           console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
         }
