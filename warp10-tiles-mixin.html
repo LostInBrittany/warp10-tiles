@@ -12,9 +12,9 @@
 
 
 <script>
+  /* eslint no-unused-vars: "off" */
   // Mixing grouping features common to all Warp 10 Tiles
-  const Warp10TilesMixin = superclass => class extends superclass {
-
+  const Warp10TilesMixin = (superclass) => class extends superclass {
     static get properties() {
       return {
         /**
@@ -29,7 +29,7 @@
          */
         label: {
           type: String,
-          value: ''
+          value: '',
         },
 
         /**
@@ -37,32 +37,30 @@
          */
         description: {
           type: String,
-          value: ''
+          value: '',
         },
         /**
          * The background color
          */
         bgColor: {
           type: String,
-          value: '#aaa'
+          value: '#aaa',
         },
         /**
          * The foreground color
          */
         fgColor: {
           type: String,
-          value: '#fff'
+          value: '#fff',
         },
         /**
          * If true, print logs
          */
         debug: {
           type: Boolean,
-          value: false
+          value: false,
         },
-
-
-      }
+      };
     }
 
     connectedCallback() {
@@ -76,5 +74,5 @@
     $$(selector) {
       return this.shadowRoot.querySelector(selector);
     }
-  }
+  };
 </script>
