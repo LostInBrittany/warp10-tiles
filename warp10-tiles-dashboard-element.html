@@ -34,15 +34,31 @@
 
     <style include="warp10-tiles-style">
     </style>
-    <warp10-warpscript-request-gatherer
-        id="[[name]]"
-        name="[[name]]"
-        proxy="[[proxyName]]"
-        warpscript="[[_warpscriptScriptWithParams]]"
-        interval="[[warpscriptReload]]"
-        on-response="_handleResponse"
-        on-error="_handleError"
-    ></warp10-warpscript-request-gatherer>
+    <dom-if if="[[proxyName]]" restamp>
+      <template>
+        <warp10-warpscript-request-gatherer
+            id="[[name]]"
+            name="[[name]]"
+            proxy="[[proxyName]]"
+            warpscript="[[_warpscriptScriptWithParams]]"
+            interval="[[warpscriptReload]]"
+            on-response="_handleResponse"
+            on-error="_handleError"
+        ></warp10-warpscript-request-gatherer>
+      </template>
+    </dom-if>
+    <dom-if if="[[warpscriptBaseUrl]]" restamp>
+      <template>
+        <warp10-warpscript-caller
+            id="warpscriptcaller"
+            url="[[warpscriptBaseUrl]]"
+            warpscript="[[_warpscriptScriptWithParams]]"
+            on-response="_handleResponse" on-error="_handleError"
+            reload="[[warpscriptReload]]"
+            loading="{{loading}}"
+            header-name="CityzenData"></warp10-warpscript-caller>
+      </template>
+    </dom-if>
 
     <dom-if if="[[equals(_resultType,'boolean')]]">
       <template>
