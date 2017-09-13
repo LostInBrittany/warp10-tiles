@@ -155,6 +155,7 @@
             current-values="{{_currentValues}}"
             hide-axis="[[hideAxis]]"
             hide-tooltip
+            debug="[[debug]]"
             min="[[min]]"
             max="[[max]]"
             on-mouseenter="_mouseEnter"
@@ -467,7 +468,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions)
         }
-        ;
         this.updateStyles({
           '--chart-width': `${this._dimensions.width - 20}px`,
           '--chart-height': `${this._dimensions.height - 20}px`
@@ -494,7 +494,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _openValueBounds')
         }
-        ;
         this._hideValueBounds = false;
       }
 
@@ -502,7 +501,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds')
         }
-        ;
         this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
       }
 
@@ -510,7 +508,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds')
         }
-        ;
         clearTimeout(this.openTimeout);
       }
 
@@ -518,7 +515,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _closeValueBounds')
         }
-        ;
         this._hideValueBounds = true;
       }
 
