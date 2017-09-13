@@ -35,6 +35,14 @@
 
     <style include="warp10-tiles-style">
     </style>
+
+    <granite-spinner
+        color="#ff4081"
+        line-width="0.3em"
+        size="20"
+        active="{{tileLoading}}"></granite-spinner>
+
+
     <dom-if if="[[proxyName]]" restamp>
       <template>
         <warp10-warpscript-request-gatherer
@@ -62,15 +70,7 @@
             header-name="CityzenData"></warp10-warpscript-caller>
       </template>
     </dom-if>
-    <dom-if if="[[_warpscriptScriptWithParams]]" restamp>
-      <template>
-        <granite-spinner
-            color="#ff4081"
-            line-width="0.3em"
-            size="20"
-            active="{{tileLoading}}"></granite-spinner>
-      </template>
-    </dom-if>
+
     <dom-if if="[[equals(_resultType,'boolean')]]">
       <template>
         <warp10-tiles-display-boolean
