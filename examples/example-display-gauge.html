@@ -28,23 +28,37 @@
     <dom-bind id="template">
       <template>
         <warp10-tiles-display-gauge 
-          data="[[data]]" 
+          data="100"
           label="[[label]]"
           size="[[size]]"
-          fg-color="#fcc"
+          fg-color="#fff"
+          units="[[units]]"
           bg-color="#a77"
           description="[[description]]"></warp10-tiles-display-gauge>
-        <warp10-tiles-display-gauge 
+
+
+        <warp10-tiles-display-gauge
           data="[[data]]" 
           label="[[label]]"
           size="[[size]]"
-          primary-color="[[primaryColor]]"
-          secondary-value="[[secondaryValue]]"
-          secondary-color="[[secondaryColor]]"
           fg-color="#cfc"
           bg-color="#7a7"
+          precision="4"
+          units=" "
           min="30"
           max="50"
+          colors='{"pattern":["#FF0000", "#F97600", "#F6C600", "#60B044"], "threshold":{"values":[40, 42, 44, 48]}}'
+          description="[[description]]"
+          debug></warp10-tiles-display-gauge>
+
+        <warp10-tiles-display-gauge
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="#827717"
+          bg-color="#eeff41"
+          min="0"
+          max="100"
           description="[[description]]"
           debug></warp10-tiles-display-gauge>
       </template>
@@ -55,10 +69,11 @@
   <script>
       var autobind = document.querySelector('dom-bind');
 
-      autobind.data = 42.123456;
+      autobind.data =  '42.123456';
       
 
       autobind.label = 'A nice gauge';
+      autobind.units = 'dummy';
       autobind.size = 'large';
       autobind.fgColor = 'white';
       autobind.bgColor = 'orange';

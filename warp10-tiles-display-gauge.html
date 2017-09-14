@@ -13,6 +13,7 @@
 
 <!-- Import elements -->
 <link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../granite-c3/granite-c3.html">
 
 <link rel="import" href="./warp10-tiles-engine.html">
 <link rel="import" href="./warp10-tiles-style.html">
@@ -22,7 +23,7 @@
 
   <template>
 
-    <style include="warp10-tiles-style">
+    <style include="warp10-tiles-style granite-c3-css">
       :host {
         display: inline-block;
       }
@@ -31,21 +32,14 @@
         font-size: 2.5rem;
       }
 
-      paper-progress {
-        --paper-progress-active-color: var(--primary-color, #0F9D58);
-        --paper-progress-secondary-color: var(--secondary-color, #B7E1CD);
-        --paper-progress-height: var(--progressHeight, 8px);
-        width: var(--progressWidth, 120px);
-        height: var(--progressHeight, 8px);
+      .c3-chart-arcs .c3-chart-arcs-gauge-max, .c3-chart-arcs .c3-chart-arcs-gauge-min {
+        fill: --fg-color;
       }
 
-      paper-progress.outside_bounds {
-        -webkit-box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
-        -moz-box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
-        box-shadow: 0px 0px 10px 5px rgba(255, 0, 0, 1);
+      .c3-chart-arc .c3-gauge-value {
+        fill: --fg-color;
       }
     </style>
-
     <warp10-tiles-engine
         size="[[size]]"
         fg-color="[[fgColor]]"
@@ -56,14 +50,13 @@
         on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">
       <div id="value" slot="value">
-        <paper-progress
-            id="progress"
-            value="[[_displayValue]]"
-            secondary-progress="[[secondaryValue]]"
-            min="[[min]]"
-            max="[[max]]"
-            class$="[[_outsideBounds]]">
-        </paper-progress>
+        <granite-c3
+            id="granite-c3"
+            data="{{_getData(label, _displayValue)}}"
+            gauge="{{_getGaugeOptions(min, max, units, precision)}}"
+            color='[[colors]]'
+            debug="[[debug]]"
+            debug></granite-c3>
       </div>
     </warp10-tiles-engine>
   </template>
@@ -101,21 +94,17 @@
             type: Number,
             value: 100
           },
-          /**
-           * The primary color of the gauge
-           */
-          primaryColor: {
-            type: String,
-            value: "#0F9D58",
-            observer: "_onPrimaryColorChange"
+          precision: {
+            type: Number,
+            value: 2
           },
-          /**
-           * The secondary color of the gauge
-           */
-          secondaryColor: {
+          units: {
             type: String,
-            value: "#B7E1CD",
-            observer: "_onSecondaryColorChange"
+            value: '%'
+          },
+          colors: {
+            type: Object,
+            value: {pattern: ["#f44336", "#ff9800", "#ffc107", "#8bc34a"], threshold: {values: [30, 60, 90, 100]}}
           },
         }
       }
@@ -123,6 +112,20 @@
 
       static get observers() {
         return []
+      }
+
+      _getGaugeOptions(min, max, units, precision) {
+        return {
+          "min": min, "max": max, label: {
+            format: (value, ratio) => {
+              return (parseFloat(value.toFixed(precision)).toFixed(precision) - 0) + ' ' + units;
+            }
+          }
+        };
+      }
+
+      _getData(label, _displayValue) {
+        return {"columns": [[label, _displayValue]], "type": "gauge"};
       }
 
       connectedCallback() {
@@ -134,7 +137,7 @@
 
       // --------------------------------------------------------------------------------------------
       // Observers
-      // --------------------------------------------------------------------------------------------  
+      // --------------------------------------------------------------------------------------------
 
       _onDimensionsChanged(evt) {
         let usefulWidth = parseInt(evt.detail.value.width);
@@ -164,22 +167,6 @@
             '--progressWidth': progressWidth.toString() + 'px'
           });
         }
-
-      }
-
-      _onMinChange(min) {
-        if (this.debug) {
-          console.log('[warp10-tiles-display-gauge] _onMinChange', min);
-        }
-      }
-
-
-      _onPrimaryColorChange(color) {
-        this.updateStyles({'--primary-color': color});
-      }
-
-      _onSecondaryColorChange(color) {
-        this.updateStyles({'--secondary-color': color});
       }
     }
 
