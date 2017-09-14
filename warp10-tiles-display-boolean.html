@@ -66,10 +66,11 @@
   <script>
 
     // Extend Polymer.Element base class
+    /* global Warp10TilesMixin */
+    /* eslint new-cap:  ["error", { "capIsNewExceptions": ["Warp10TilesMixin"] }] */
     class Warp10TilesDisplayBoolean extends Warp10TilesMixin(Polymer.Element) {
-
       static get is() {
-        return 'warp10-tiles-display-boolean'
+        return 'warp10-tiles-display-boolean';
       }
 
       static get properties() {
@@ -79,7 +80,7 @@
            */
           data: {
             type: Number,
-            value: 0
+            value: 0,
           },
 
           /**
@@ -87,31 +88,31 @@
            */
           iconForTrue: {
             type: String,
-            value: "check"
+            value: 'check',
           },
           /**
            * Icon to show when the value is true
            */
           iconForFalse: {
             type: String,
-            value: "clear"
+            value: 'clear',
           },
           /**
            * If true, it tries to use external images for the state icons
            */
           useExternalImages: {
             type: Boolean,
-            value: false
+            value: false,
           },
           _iconName: {
             type: String,
-            computed: "_getIconName(data, _isAttached)"
+            computed: '_getIconName(data, _isAttached)',
           },
           _isAttached: {
             type: Boolean,
-            value: false
+            value: false,
           },
-        }
+        };
       }
 
       connectedCallback() {
@@ -136,11 +137,13 @@
       }
 
       _onDimensionsChanged(evt) {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-boolean]  _onDimensionsChanged', evt.detail);
+        }
         this.updateStyles({
-          '--icon-size': `${evt.detail.value.width - 40}px`
+          '--icon-size': `${Math.min(evt.detail.value.width, evt.detail.value.height) - 40}px`,
         });
       }
-
     }
 
     // Register custom element definition using standard platform API

@@ -106,9 +106,7 @@
         width: 100%;
         padding-top: 8px;
         padding-bottom: 8px;
-        flex-basis: content;
         text-align: center;
-        height: var(--tile-height, 150px);
         font-size: 1em;
       }
 
@@ -271,8 +269,9 @@
         this._isAttached = true;
         if (this.debug) {
           console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight);
+          window.setTimeout((it) =>
+            console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight), 100);
         }
-        window.setTimeout((it) => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight), 100);
       }
 
 
@@ -293,8 +292,8 @@
           console.log('[warp10-tiles-engine] _onDimensionsChanged', dimensions);
         }
         this.updateStyles({
-          '--tile-width': dimensions.width + 'px',
-          '--tile-height': dimensions.height + 'px',
+          '--tile-width': `var(${dimensions.width})`,
+          '--tile-height': `var(${dimensions.height})`,
         });
         // we need to wait for the label property to be set in the DOM
         // I havent yet found a clean way to do it...
@@ -319,14 +318,14 @@
 
       _openDescription() {
         if (this.debug) {
-          console.debug('[warp10-tiles-engine] _openDescription');
+          console.log('[warp10-tiles-engine] _openDescription');
         }
         this._hideDescription = false;
       }
 
       _initOpenDescription() {
         if (this.debug) {
-          console.debug('[warp10-tiles-engine] _initOpenDescription');
+          console.log('[warp10-tiles-engine] _initOpenDescription');
         }
         this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
       }
@@ -334,14 +333,14 @@
       _cancelOpenDescription() {
         this._mouseIn = '';
         if (this.debug) {
-          console.debug('[warp10-tiles-engine] _cancelOpenDescription');
+          console.log('[warp10-tiles-engine] _cancelOpenDescription');
         }
         clearTimeout(this.openTimeout);
       }
 
       _closeDescription() {
         if (this.debug) {
-          console.debug('[warp10-tiles-engine] _closeDescription');
+          console.log('[warp10-tiles-engine] _closeDescription');
         }
         this._hideDescription = true;
       }
@@ -359,6 +358,13 @@
       // --------------------------------------------------------------------------------------------  
 
       _getUsefulDimensions() {
+        if (this.debug) {
+          console.log('[warp10-tiles-engine] _getUsefulDimensions', {
+              mainContentClientWidth: this.$$('.main-content').clientWidth,
+              mainContentClientHeight: this.$$('.main-content').clientHeight,
+              tileContentClientHeight: this.$$('.tile-content').clientHeight,
+            });
+        }
         let usefulDimensions = {
           width: this.$$('.main-content').clientWidth,
           height: Math.min(this.$$('.main-content').clientHeight, this.$$('.tile-content').clientHeight - 30),

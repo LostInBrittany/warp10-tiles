@@ -9,8 +9,64 @@
 <dom-module id="warp10-tiles-style">
   <template>
     <style>
-      * {
-        font-family: 'Roboto', 'Open Sans', 'Droid Sans', sans-serif
+      :host {
+        font-family: 'Roboto', 'Open Sans', 'Droid Sans', sans-serif;
+        --tile-margin: 5px;
+        --small-tile-width:  calc(25vmin - 2 * var(--tile-margin));
+        --small-tile-height: calc(25vmin - 2 * var(--tile-margin));
+        --normal-tile-width:  calc(25vmin - 2 * var(--tile-margin));
+        --normal-tile-height: calc(25vmin - 2 * var(--tile-margin));
+        --large-tile-width:   calc(50vmin - 2 * var(--tile-margin));
+        --large-tile-height:  calc(50vmin - 2 * var(--tile-margin));
+        --big-tile-width:   calc(75vmin - 2 * var(--tile-margin));
+        --big-tile-height:  calc(75vmin - 2 * var(--tile-margin));
+        --super-tile-width:   calc(100vmin - 2 * var(--tile-margin));
+        --super-tile-height:  calc(100vmin - 2 * var(--tile-margin));        
+      }              
+
+      @media (max-width: 640px) {
+        :host {
+          --small-tile-width:  calc(160px - 2 * var(--tile-margin));
+          --small-tile-height: calc(160px - 2 * var(--tile-margin));
+          --normal-tile-width:  calc(160px - 2 * var(--tile-margin));
+          --normal-tile-height: calc(160px - 2 * var(--tile-margin));
+          --large-tile-width:   calc(320px - 2 * var(--tile-margin));
+          --large-tile-height:  calc(320px - 2 * var(--tile-margin));
+          --big-tile-width:   calc(480px - 2 * var(--tile-margin));
+          --big-tile-height:  calc(480px - 2 * var(--tile-margin));
+          --super-tile-width:   calc(480px - 2 * var(--tile-margin));
+          --super-tile-height:  calc(480px - 2 * var(--tile-margin));
+        }
+      }
+
+      @media (max-width: 480px) {
+        :host {
+          --small-tile-width:  calc(160px - 2 * var(--tile-margin));
+          --small-tile-height: calc(160px - 2 * var(--tile-margin));
+          --normal-tile-width:  calc(160px - 2 * var(--tile-margin));
+          --normal-tile-height: calc(160px - 2 * var(--tile-margin));
+          --large-tile-width:   calc(320px - 2 * var(--tile-margin));
+          --large-tile-height:  calc(320px - 2 * var(--tile-margin));
+          --big-tile-width:   calc(320px - 2 * var(--tile-margin));
+          --big-tile-height:  calc(320px - 2 * var(--tile-margin));
+          --super-tile-width:   calc(320px - 2 * var(--tile-margin));
+          --super-tile-height:  calc(320px - 2 * var(--tile-margin));
+        }
+      }
+
+      @media (max-width: 320px),(max-height: 320px) {
+        :host {
+          --small-tile-width:  calc(50vmin - 2 * var(--tile-margin));
+          --small-tile-height: calc(50vmin - 2 * var(--tile-margin));
+          --normal-tile-width:  calc(50vmin - 2 * var(--tile-margin));
+          --normal-tile-height: calc(50vmin - 2 * var(--tile-margin));
+          --large-tile-width:   calc(100vmin - 2 * var(--tile-margin));
+          --large-tile-height:  calc(100vmin - 2 * var(--tile-margin));
+          --big-tile-width:   calc(100vmin - 2 * var(--tile-margin));
+          --big-tile-height:  calc(100vmin - 2 * var(--tile-margin));
+          --super-tile-width:   calc(100vmin - 2 * var(--tile-margin));
+          --super-tile-height:  calc(100vmin - 2 * var(--tile-margin));
+        }
       }
     </style>
   </template>

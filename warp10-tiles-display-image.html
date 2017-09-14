@@ -26,6 +26,8 @@
       }
 
       iron-image {
+        --image-width: calc( 0.9 * var(--tile-width) - 2 * var(--tile-margin));
+        --image-height: calc( 0.9 * var(--tile-height) - 2 * var(--tile-margin) - 1em);
         width: var(--image-width, 64px);
         height: var(--image-height, 64px);
       }
@@ -83,14 +85,6 @@
       // --------------------------------------------------------------------------------------------  
 
       _onDimensionsChanged(evt) {
-        this.updateStyles({
-          '--image-width': `${evt.detail.value.width - 20}px`,
-          '--image-height': `${evt.detail.value.height - 40}px`,
-        });
-        if (this.debug) {
-          console.log('[warp10-tiles-display-image] _onDimensionsChanged',
-              `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px`);
-        }
       }
     }
 
