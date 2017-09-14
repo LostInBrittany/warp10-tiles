@@ -1,0 +1,61 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+<title>Warp10 Dashboard - Display donut test</title>
+
+<style>
+  .container {
+    display: flex;
+    flex-flow: row wrap;
+  }
+</style>
+<script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
+<link   rel="import" href=" ../../polymer/polymer-element.html">
+
+
+<link   rel="import" href=" ../warp10-tiles-display-donut.html">
+</head>
+<body>
+
+  <div class="container">
+
+    <dom-bind id="template">
+      <template>
+
+        <warp10-tiles-display-donut
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="[[fgColor]]"
+          bg-color="[[bgColor]]"
+          description="[[description]]"
+          debug></warp10-tiles-display-donut>
+      </template>
+    </dom-bind>
+
+  </div>
+
+  <script>
+      let autobind = document.querySelector('dom-bind');
+      autobind.data =  [['data 1', 20], ['data 2', 30], ['data 3', 80], ];
+      autobind.label = 'A nice donut';
+      autobind.units = '$';
+      autobind.size = 'large';
+      autobind.fgColor = 'white';
+      autobind.bgColor = 'orange';
+      autobind.description = 'This is an example donut';
+      autobind.primaryColor = "navy";
+      autobind.secondaryColor = "grey";
+      autobind.secondaryValue = "47"
+  </script>
+  
+  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+</html>

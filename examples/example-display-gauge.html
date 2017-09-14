@@ -6,28 +6,28 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>Warp10 Dashboard - Display num test</title>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Warp10 Dashboard - Display Gauge test</title>
 
-<style>
-  .container {
-    display: flex;
-    flex-flow: row wrap;
-  }
-</style>
-<script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
-<link   rel="import" href=" ../../polymer/polymer-element.html">
+  <style>
+    .container {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  </style>
+  <script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href=" ../polymer/polymer-element.html">
 
 
-<link   rel="import" href=" ../warp10-tiles-display-gauge.html">
+  <link rel="import" href=" ../warp10-tiles-display-gauge.html">
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <dom-bind id="template">
-      <template>
-        <warp10-tiles-display-gauge 
+  <dom-bind id="template">
+    <template>
+      <warp10-tiles-display-gauge
           data="100"
           label="[[label]]"
           size="[[size]]"
@@ -37,8 +37,8 @@
           description="[[description]]"></warp10-tiles-display-gauge>
 
 
-        <warp10-tiles-display-gauge
-          data="[[data]]" 
+      <warp10-tiles-display-gauge
+          data="[[data]]"
           label="[[label]]"
           size="[[size]]"
           fg-color="#cfc"
@@ -51,7 +51,7 @@
           description="[[description]]"
           debug></warp10-tiles-display-gauge>
 
-        <warp10-tiles-display-gauge
+      <warp10-tiles-display-gauge
           data="[[data]]"
           label="[[label]]"
           size="[[size]]"
@@ -61,29 +61,29 @@
           max="100"
           description="[[description]]"
           debug></warp10-tiles-display-gauge>
-      </template>
-    </dom-bind>
+    </template>
+  </dom-bind>
 
-  </div>
+</div>
 
-  <script>
-      var autobind = document.querySelector('dom-bind');
+<script>
+  var autobind = document.querySelector('dom-bind');
 
-      autobind.data =  '42.123456';
-      
+  autobind.data = '42.123456';
 
-      autobind.label = 'A nice gauge';
-      autobind.units = 'dummy';
-      autobind.size = 'large';
-      autobind.fgColor = 'white';
-      autobind.bgColor = 'orange';
-      autobind.description = 'This is an example gauge';
-      autobind.primaryColor = "navy"
-      autobind.secondaryColor = "grey"
-      autobind.secondaryValue = "47"
-  </script>
-  
-  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+  autobind.label = 'A nice gauge';
+  autobind.units = 'dummy';
+  autobind.size = 'large';
+  autobind.fgColor = 'white';
+  autobind.bgColor = 'orange';
+  autobind.description = 'This is an example gauge';
+  autobind.primaryColor = "navy"
+  autobind.secondaryColor = "grey"
+  autobind.secondaryValue = "47"
+</script>
+
+<p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 
 </body>
 </html>
