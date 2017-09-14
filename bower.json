@@ -52,45 +52,9 @@
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#1 - 2",
     "web-animations-js": "web-animations/web-animations-js#1 - 2"
   },
-  "variants": {
-    "1.x": {
-      "dependencies": {
-        "polymer": "Polymer/polymer#^1.9",
-        "iron-image": "PolymerElements/iron-image#^1.0.0",
-        "iron-icons": "PolymerElements/iron-icons#^1.0.0",
-        "paper-progress": "PolymerElements/paper-progress#^1.0.0",
-        "font-roboto": "PolymerElements/font-roboto-local#^1.0.1",
-        "font-roboto-condensed": "LostInBrittany/font-roboto-condensed#^1.0.0",
-        "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.13.0",
-        "moment-js": "lostinbrittany/moment-js#0.8-rc2",
-        "moment-timezone": "moment-timezone#^0.5.13",
-        "granite-yaml": "LostInBrittany/granite-yaml#^1.1.0",
-        "granite-c3": "LostInBrittany/granite-c3#^2.1.0"
-      },
-      "devDependencies": {
-        "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-        "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
-        "iron-icon": "PolymerElements/iron-icon#^1.0.0",
-        "iron-icons": "PolymerElements/iron-icons#^1.0.0",
-        "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
-        "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-        "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
-        "web-component-tester": "Polymer/web-component-tester#^4.0.0",
-        "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^1.0.0",
-        "paper-item": "PolymerElements/paper-item#^1.0.0",
-        "paper-listbox": "PolymerElements/paper-listbox#^1.0.0",
-        "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.0.0",
-        "web-animations-js": "web-animations/web-animations-js#^1.0.0"
-      },
-      "resolutions": {
-        "webcomponentsjs": "^0.7"
-      }
-    }
-  },
   "resolutions": {
     "iron-meta": "^2.0.0",
-    "iron-resizable-behavior": "^2.0.0",
-    "polymer": "1.9 - 2",
-    "webcomponentsjs": "^v1.0.2"
+    "webcomponentsjs": "^v1.0.2",
+    "polymer": "^2.0.0"
   }
 }

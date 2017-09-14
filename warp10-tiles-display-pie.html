@@ -19,25 +19,13 @@
 <link rel="import" href="./warp10-tiles-style.html">
 
 
-<dom-module id="warp10-tiles-display-gauge">
+<dom-module id="warp10-tiles-display-pie">
 
   <template>
 
     <style include="warp10-tiles-style granite-c3-css">
       :host {
         display: inline-block;
-      }
-
-      #value {
-        font-size: 2.5rem;
-      }
-
-      .c3-chart-arcs .c3-chart-arcs-gauge-max, .c3-chart-arcs .c3-chart-arcs-gauge-min {
-        fill: --fg-color;
-      }
-
-      .c3-chart-arc .c3-gauge-value {
-        fill: --fg-color;
       }
     </style>
     <warp10-tiles-engine
@@ -52,11 +40,8 @@
         debug="[[debug]]">
       <div id="value" slot="value">
         <granite-c3
-            data="[[_getData(label, _displayValue)]]"
-            gauge="[[_getGaugeOptions(min, max, units, precision)]]"
-            color='[[colors]]'
-            debug="[[debug]]"
-        ></granite-c3>
+            data="[[_getData(data)]]"
+            debug="[[debug]]"></granite-c3>
       </div>
     </warp10-tiles-engine>
   </template>
@@ -64,74 +49,28 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesDisplayGauge extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
+    class Warp10TilesDisplayPie extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
 
       static get is() {
-        return 'warp10-tiles-display-gauge'
+        return 'warp10-tiles-display-pie'
       }
 
       static get properties() {
-        return {
-          /**
-           * The secondary value of the gauge
-           */
-          secondaryValue: {
-            type: Number,
-            value: 0
-          },
-          /**
-           * The minimum value of the gauge
-           */
-          min: {
-            type: Number,
-            value: 0,
-            observer: "_onMinChange"
-          },
-          /**
-           * The maximum value of the gauge
-           */
-          max: {
-            type: Number,
-            value: 100
-          },
-          precision: {
-            type: Number,
-            value: 2
-          },
-          units: {
-            type: String,
-            value: '%'
-          },
-          colors: {
-            type: Object,
-            value: {pattern: ['#f44336', '#ff9800', '#ffc107', '#8bc34a'], threshold: {values: [30, 60, 90, 100]}}
-          },
-        }
+        return {}
       }
-
 
       static get observers() {
         return []
       }
 
-      _getGaugeOptions(min, max, units, precision) {
-        return {
-          min: min, max: max, label: {
-            format: (value, ratio) => {
-              return (parseFloat(value.toFixed(precision)).toFixed(precision) - 0) + ' ' + units;
-            }
-          }
-        };
-      }
-
-      _getData(label, _displayValue) {
-        return {'columns': [[label, _displayValue]], 'type': 'gauge'};
+      _getData(data) {
+        return {'columns': data, 'type': 'pie'};
       }
 
       connectedCallback() {
         super.connectedCallback();
         if (this.debug) {
-          console.log('[warp10-tiles-display-gauge] connectedCallback');
+          console.log('[warp10-tiles-display-pie] connectedCallback');
         }
       }
 
@@ -162,7 +101,7 @@
         });
 
         if (this.debug) {
-          console.log('[warp10-tiles-display-gauge] _onDimensionsChanged', evt.detail.value, {
+          console.log('[warp10-tiles-display-pie] _onDimensionsChanged', evt.detail.value, {
             '--progressHeight': progressHeight.toString() + 'px',
             '--progressWidth': progressWidth.toString() + 'px'
           });
@@ -171,7 +110,7 @@
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplayGauge.is, Warp10TilesDisplayGauge);
+    customElements.define(Warp10TilesDisplayPie.is, Warp10TilesDisplayPie);
   </script>
 
 </dom-module>  
