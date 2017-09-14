@@ -54,10 +54,10 @@
   <script>
 
     // Extend Polymer.Element base class
+    /* global Warp10TilesMixin */
     class Warp10TilesDisplayMap extends Warp10TilesMixin(Polymer.Element) {
-
       static get is() {
-        return 'warp10-tiles-display-map'
+        return 'warp10-tiles-display-map';
       }
 
       static get properties() {
@@ -67,18 +67,18 @@
            */
           data: {
             type: Object,
-            observer: '_onDatachange'
+            observer: '_onDatachange',
           },
           _dimensions: {
             type: Object,
           },
           _valueFontSize: {
             type: Number,
-            value: 1
+            value: 1,
           },
           _isAttached: {
             type: Boolean,
-            value: false
+            value: false,
           },
           /**
            * The level of zoom
@@ -86,21 +86,21 @@
           zoom: {
             type: Number,
             notify: true,
-            value: 10
+            value: 10,
           },
           /**
            * The longitude of the map center
            */
           longitude: {
             type: Number,
-            notify: true
+            notify: true,
           },
           /**
            * The latitude of the map center
            */
           latitude: {
             type: Number,
-            notify: true
+            notify: true,
           },
           /**
            * The selected value set
@@ -108,7 +108,7 @@
           currentValues: {
             type: Object,
             observer: '_currentValuesChanged',
-            notify: true
+            notify: true,
           },
           /**
            * The timestamp of the selected annotationsSelectedTimestamp
@@ -116,17 +116,17 @@
           annotationsSelectedTimestamp: {
             type: Number,
             notify: true,
-            observer: "_annotationsSelectedTimestampChanged",
-            value: -1
-          }
-        }
+            observer: '_annotationsSelectedTimestampChanged',
+            value: -1,
+          },
+        };
       }
 
 
       static get observers() {
         return [
-          "_adjustValueSize(data,_isAttached,_dimensions)"
-        ]
+          '_adjustValueSize(data,_isAttached,_dimensions)',
+        ];
       }
 
       _onDatachange() {
@@ -154,16 +154,16 @@
           console.log('[warp10-tiles-display-date] _onUsefulDimensionsChange', evt.detail.value);
         }
         this._dimensions = evt.detail.value;
-        //this.updateStyles({'--max-width': this._dimensions.width+'px'});
+        // this.updateStyles({'--max-width': this._dimensions.width+'px'});
       }
 
       _adjustValueSize() {
-        window.setTimeout(it => this._textHeight(), 50);
+        window.setTimeout((it) => this._textHeight(), 50);
       }
 
       _momentIsReady() {
         if (this.debug) {
-          console.debug('[warp10-tiles-display-map] _momentIsReady')
+          console.debug('[warp10-tiles-display-map] _momentIsReady');
         }
         this._adjustValueSize();
       }
@@ -180,11 +180,11 @@
             || this.$.value.scrollWidth > this.$.value.clientWidth
             || this.$.value.offsetHeight > this._dimensions.height
             || this.$.value.offsetWidth > this._dimensions.width) {
-          let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px", ""));
-          let newFontSize = currentFontSize * 0.9 + "px";
+          let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace('px', ''));
+          let newFontSize = currentFontSize * 0.9 + 'px';
           this.$.value.style.fontSize = newFontSize;
           if (this.debug) {
-            console.debug("[warp10-display-map] _textHeight - value.style", newFontSize);
+            console.debug('[warp10-display-map] _textHeight - value.style', newFontSize);
           }
           this._textHeight();
         }

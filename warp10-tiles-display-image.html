@@ -50,10 +50,11 @@
   <script>
 
     // Extend Polymer.Element base class
+    /* global Warp10TilesMixin */
+    /* eslint new-cap:  ["error", { "capIsNewExceptions": ["Warp10TilesMixin"] }] */
     class Warp10TilesDisplayImage extends Warp10TilesMixin(Polymer.Element) {
-
       static get is() {
-        return 'warp10-tiles-display-image'
+        return 'warp10-tiles-display-image';
       }
 
       static get properties() {
@@ -63,9 +64,9 @@
            */
           data: {
             type: String,
-            value: ""
+            value: '',
           },
-        }
+        };
       }
 
       connectedCallback() {
@@ -84,14 +85,13 @@
       _onDimensionsChanged(evt) {
         this.updateStyles({
           '--image-width': `${evt.detail.value.width - 20}px`,
-          '--image-height': `${evt.detail.value.height - 40}px`
+          '--image-height': `${evt.detail.value.height - 40}px`,
         });
         if (this.debug) {
-          console.log('[warp10-tiles-display-image] _onDimensionsChanged', `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px`);
+          console.log('[warp10-tiles-display-image] _onDimensionsChanged',
+              `${evt.detail.width - 20}px`, `${evt.detail.height - 20}px`);
         }
       }
-
-
     }
 
     // Register custom element definition using standard platform API

@@ -23,6 +23,9 @@
     <style include="warp10-tiles-style">
       :host {
         display: inline-block;
+        --tile-margin: 5px;
+        width: calc(var(--tile-width, 150px) + 2 * var(--tile-margin));
+        height: calc(var(--tile-height, 150px) + 2 * var(--tile-margin));
       }
 
       .tile {
@@ -32,7 +35,7 @@
         background-color: var(--bg-color, grey);
         display: block;
         position: relative;
-        margin: 5px;
+        margin: var(--tile-margin);
         box-shadow: inset 0 0 1px #FFFFCC;
         cursor: pointer;
         overflow: hidden;
@@ -105,6 +108,7 @@
         padding-bottom: 8px;
         flex-basis: content;
         text-align: center;
+        height: var(--tile-height, 150px);
         font-size: 1em;
       }
 
@@ -189,8 +193,9 @@
   <script>
 
     // Extend Polymer.Element base class
+    /* global Warp10TilesSizesMixin */
+    /* eslint new-cap:  ["error", { "capIsNewExceptions": ["Warp10TilesSizesMixin"] }] */
     class Warp10TilesEngine extends Warp10TilesSizesMixin(Polymer.Element) {
-
       /**
        * Fired when the useful dimensions of the element change
        *
@@ -199,7 +204,7 @@
        */
 
       static get is() {
-        return 'warp10-tiles-engine'
+        return 'warp10-tiles-engine';
       }
 
       static get properties() {
@@ -209,7 +214,7 @@
            */
           label: {
             type: String,
-            value: ''
+            value: '',
           },
 
           /**
@@ -217,48 +222,48 @@
            */
           description: {
             type: String,
-            value: ''
+            value: '',
           },
           /**
            * The background color
            */
           bgColor: {
             type: String,
-            observer: '_onBgColorChanged'
+            observer: '_onBgColorChanged',
           },
           /**
            * The foreground color
            */
           fgColor: {
             type: String,
-            observer: '_onFgColorChanged'
+            observer: '_onFgColorChanged',
           },
           icon: {
-            type: String
+            type: String,
           },
           _hideDescription: {
             type: Boolean,
-            value: true
+            value: true,
           },
           _hoverDelay: {
             type: Number,
-            value: 500
+            value: 500,
           },
           _mouseIn: {
             type: String,
-            value: ''
+            value: '',
           },
           usefulDimensions: {
             type: Object,
             readOnly: true,
             notify: true,
-          }
-        }
+          },
+        };
       }
 
 
       static get observers() {
-        return []
+        return [];
       }
 
       connectedCallback() {
@@ -267,7 +272,7 @@
         if (this.debug) {
           console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight);
         }
-        window.setTimeout(it => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight), 100)
+        window.setTimeout((it) => console.log('[warp10-tiles-engine] connectedCallback', this.$$('.label').clientHeight), 100);
       }
 
 
@@ -288,12 +293,12 @@
           console.log('[warp10-tiles-engine] _onDimensionsChanged', dimensions);
         }
         this.updateStyles({
-          '--tile-width': dimensions.width + "px",
-          '--tile-height': dimensions.height + "px",
+          '--tile-width': dimensions.width + 'px',
+          '--tile-height': dimensions.height + 'px',
         });
         // we need to wait for the label property to be set in the DOM
         // I havent yet found a clean way to do it...
-        window.setTimeout(it => this._getUsefulDimensions(), 50);
+        window.setTimeout((it) => this._getUsefulDimensions(), 50);
       }
 
 
@@ -314,14 +319,14 @@
 
       _openDescription() {
         if (this.debug) {
-          console.debug("[warp10-tiles-engine] _openDescription");
+          console.debug('[warp10-tiles-engine] _openDescription');
         }
         this._hideDescription = false;
       }
 
       _initOpenDescription() {
         if (this.debug) {
-          console.debug("[warp10-tiles-engine] _initOpenDescription");
+          console.debug('[warp10-tiles-engine] _initOpenDescription');
         }
         this.openTimeout = setTimeout(this._openDescription.bind(this), this._hoverDelay);
       }
@@ -329,14 +334,14 @@
       _cancelOpenDescription() {
         this._mouseIn = '';
         if (this.debug) {
-          console.debug("[warp10-tiles-engine] _cancelOpenDescription");
+          console.debug('[warp10-tiles-engine] _cancelOpenDescription');
         }
         clearTimeout(this.openTimeout);
       }
 
       _closeDescription() {
         if (this.debug) {
-          console.debug("[warp10-tiles-engine] _closeDescription");
+          console.debug('[warp10-tiles-engine] _closeDescription');
         }
         this._hideDescription = true;
       }
@@ -354,11 +359,10 @@
       // --------------------------------------------------------------------------------------------  
 
       _getUsefulDimensions() {
-
         let usefulDimensions = {
           width: this.$$('.main-content').clientWidth,
-          height: Math.min(this.$$('.main-content').clientHeight, this.$$('.tile-content').clientHeight - 30)
-        }
+          height: Math.min(this.$$('.main-content').clientHeight, this.$$('.tile-content').clientHeight - 30),
+        };
 
         this._setUsefulDimensions(usefulDimensions);
         this.dispatchEvent(new CustomEvent('useful-dimensions-change', {detail: usefulDimensions}));
