@@ -1,0 +1,124 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../polymer/polymer-element.html">
+
+<!-- Import mixins -->
+<link rel="import" href="./warp10-tiles-mixin.html">
+<link rel="import" href="./warp10-tiles-num-mixin.html">
+
+<!-- Import elements -->
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../granite-c3/granite-c3.html">
+
+<link rel="import" href="./warp10-tiles-engine.html">
+<link rel="import" href="./warp10-tiles-style.html">
+
+
+<dom-module id="warp10-tiles-display-donut">
+
+  <template>
+
+    <style include="warp10-tiles-style granite-c3-css">
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <warp10-tiles-engine
+        size="[[size]]"
+        fg-color="[[fgColor]]"
+        bg-color="[[bgColor]]"
+        label="[[label]]"
+        icon="[[icon]]"
+        description="[[description]]"
+        useful-dimensions="{{usefulDimensions}}"
+        on-useful-dimensions-changed="_onDimensionsChanged"
+        debug="[[debug]]">
+      <div id="value" slot="value">
+        <granite-c3
+            data="[[_getData(data)]]"
+            donnut="[[_getDesc(label)]]"
+            debug="[[debug]]"></granite-c3>
+      </div>
+    </warp10-tiles-engine>
+  </template>
+
+  <script>
+
+    // Extend Polymer.Element base class
+    class Warp10TilesDisplayDonut extends Warp10TilesNumMixin(Warp10TilesMixin(Polymer.Element)) {
+
+      static get is() {
+        return 'warp10-tiles-display-donut'
+      }
+
+      static get properties() {
+        return {}
+      }
+
+      static get observers() {
+        return []
+      }
+
+      _getDesc(label) {
+        return {
+          title: label
+        }
+      }
+
+      _getData(data) {
+        return {'columns': data, 'type': 'donut'};
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        if (this.debug) {
+          console.log('[warp10-tiles-display-donut] connectedCallback');
+        }
+      }
+
+      // --------------------------------------------------------------------------------------------
+      // Observers
+      // --------------------------------------------------------------------------------------------
+
+      _onDimensionsChanged(evt) {
+        let usefulWidth = parseInt(evt.detail.value.width);
+        let usefulHeight = parseInt(evt.detail.value.height);
+        let progressWidth = 120;
+        let progressHeight = 8;
+
+        if (usefulWidth > 200 || usefulHeight > 200) {
+          progressHeight = 12;
+        }
+        if (usefulWidth > 260) {
+          progressWidth = parseInt(usefulWidth) - 40;
+        }
+
+        if (usefulWidth > 260 && usefulHeight > 260) {
+          progressHeight = 30;
+        }
+
+        this.updateStyles({
+          '--progressHeight': progressHeight.toString() + 'px',
+          '--progressWidth': progressWidth.toString() + 'px'
+        });
+
+        if (this.debug) {
+          console.log('[warp10-tiles-display-donut] _onDimensionsChanged', evt.detail.value, {
+            '--progressHeight': progressHeight.toString() + 'px',
+            '--progressWidth': progressWidth.toString() + 'px'
+          });
+        }
+      }
+    }
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10TilesDisplayDonut.is, Warp10TilesDisplayDonut);
+  </script>
+
+</dom-module>  
+
