@@ -13,6 +13,7 @@
 
 <!-- Import shared styles -->
 <link rel="import" href="./warp10-tiles-style.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 
 
 <dom-module id="warp10-tiles-engine">
@@ -137,6 +138,14 @@
       .description-close::before {
         content: "X";
       }
+
+      .tile-icon {
+        --iron-icon-width: 50px;
+        --iron-icon-height: 50px;
+        padding: 5px;
+        margin-left: 0;
+        margin-right: auto;
+      }
     </style>
 
 
@@ -150,6 +159,7 @@
             on-mouseleave="_cancelOpenDescription"></div>
         <div class="tile-content">
           <div class="main-content">
+            <iron-icon class="tile-icon" icon="[[icon]]"></iron-icon>
             <slot name='value'></slot>
           </div>
           <div class='label'>[[label]]</div>
@@ -215,6 +225,9 @@
           fgColor: {
             type: String,
             observer: '_onFgColorChanged'
+          },
+          icon: {
+            type: String
           },
           _hideDescription: {
             type: Boolean,
