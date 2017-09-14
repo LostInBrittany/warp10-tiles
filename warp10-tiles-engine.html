@@ -140,11 +140,14 @@
       }
 
       .tile-icon {
-        --iron-icon-width: 50px;
-        --iron-icon-height: 50px;
+        --iron-icon-width: 20px;
+        --iron-icon-height: 20px;
         padding: 5px;
         margin-left: 0;
         margin-right: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
     </style>
 
@@ -158,8 +161,12 @@
             on-mouseenter="_initOpenDescription"
             on-mouseleave="_cancelOpenDescription"></div>
         <div class="tile-content">
+          <dom-if if="[[icon]]">
+            <template>
+              <iron-icon class="tile-icon" icon="[[icon]]"></iron-icon>
+            </template>
+          </dom-if>
           <div class="main-content">
-            <iron-icon class="tile-icon" icon="[[icon]]"></iron-icon>
             <slot name='value'></slot>
           </div>
           <div class='label'>[[label]]</div>
