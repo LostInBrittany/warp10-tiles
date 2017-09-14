@@ -35,7 +35,6 @@
 
     <style include="warp10-tiles-style">
     </style>
-
     <granite-spinner
         color="#ff4081"
         line-width="0.3em"
@@ -82,6 +81,7 @@
             use-external-images="[[_responseParams.useExternalImages]]"
             data="[[_responseParams.data]]"
             label="[[_responseParams.label]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-boolean>
       </template>
@@ -97,6 +97,7 @@
             data="[[_responseParams.data]]"
             utc-offset="[[_responseParams.utcOffset]]"
             label="[[_responseParams.label]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-date>
       </template>
@@ -111,6 +112,7 @@
             data="[[_responseParams.data]]"
             precision="[[_responseParams.precision]]"
             label="[[_responseParams.label]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-num>
       </template>
@@ -130,6 +132,7 @@
             primary-color="[[_responseParams.data.color]]"
             secondary-color="[[_responseParams.data.secondaryColor]]"
             label="[[_responseParams.label]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-gauge>
       </template>
@@ -147,6 +150,7 @@
             description="[[_responseParams.description]]"
             hide-axis="[[_responseParams.hideAxis]]"
             debug="[[debug]]"
+            icon="[[_responseParams.icon]]"
             y-lower-bound="[[_responseParams.yLowerBound]]"
             y-upper-bound="[[_responseParams.yUpperBound]]"
         ></warp10-tiles-display-sparkline>
@@ -161,6 +165,7 @@
             fg-color="[[_responseParams.fgColor]]"
             data="[[_responseParams.data]]"
             label="[[_responseParams.label]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-message>
       </template>
@@ -176,11 +181,11 @@
             zoom="[[_responseParams.zoom]]"
             latitude="[[_responseParams.latitude]]"
             longitude="[[_responseParams.longitude]]"
+            icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
             debug="[[debug]]"></warp10-tiles-display-map>
       </template>
     </dom-if>
-
   </template>
 
   <script>
