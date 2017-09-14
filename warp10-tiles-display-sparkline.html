@@ -138,7 +138,6 @@
         padding-right: 16px;
       }
     </style>
-
     <warp10-tiles-engine
         size="[[size]]"
         fg-color="[[fgColor]]"
@@ -155,8 +154,9 @@
             current-values="{{_currentValues}}"
             hide-axis="[[hideAxis]]"
             hide-tooltip
-            min="[[min]]"
-            max="[[max]]"
+            debug="[[debug]]"
+            y-lower-bound="[[yLowerBound]]"
+            y-upper-bound="[[yUpperBound]]"
             on-mouseenter="_mouseEnter"
             on-mouseleave="_mouseLeave"></warp10-display-chart>
       </div>
@@ -240,6 +240,12 @@
               return [];
             }
           },
+          yLowerBound: {
+            type: Number,
+          },
+          yUpperBound: {
+            type: Number,
+          },
 
           _hideValueBounds: {
             type: Boolean,
@@ -266,12 +272,6 @@
           _isAttached: {
             type: Boolean,
             value: false
-          },
-          min: {
-            type: Number,
-          },
-          max: {
-            type: Number,
           },
         }
       }
@@ -467,7 +467,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions)
         }
-        ;
         this.updateStyles({
           '--chart-width': `${this._dimensions.width - 20}px`,
           '--chart-height': `${this._dimensions.height - 20}px`
@@ -494,7 +493,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _openValueBounds')
         }
-        ;
         this._hideValueBounds = false;
       }
 
@@ -502,7 +500,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds')
         }
-        ;
         this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
       }
 
@@ -510,7 +507,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds')
         }
-        ;
         clearTimeout(this.openTimeout);
       }
 
@@ -518,7 +514,6 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _closeValueBounds')
         }
-        ;
         this._hideValueBounds = true;
       }
 
