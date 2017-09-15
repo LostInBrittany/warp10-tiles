@@ -22,7 +22,6 @@
 <link rel="import" href="./warp10-tiles-display-map.html">
 <link rel="import" href="./warp10-tiles-display-num.html">
 <link rel="import" href="./warp10-tiles-display-sparkline.html">
-<link rel="import" href="../granite-spinner/granite-spinner.html">
 
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
@@ -35,12 +34,6 @@
 
     <style include="warp10-tiles-style">
     </style>
-    <granite-spinner
-        color="#ff4081"
-        line-width="0.3em"
-        size="20"
-        active="{{tileLoading}}"></granite-spinner>
-
 
     <dom-if if="[[proxyName]]" restamp>
       <template>
@@ -278,7 +271,6 @@
       connectedCallback() {
         super.connectedCallback();
         this._isAttached = true;
-        this.tileLoading = true;
         if (this.debug) {
           console.log('[warp10-dashboard-element] connectedCallback');
         }
@@ -316,7 +308,6 @@
       // Observers
       // --------------------------------------------------------------------------------------------
       _onParamsChange() {
-        this.tileLoading = true;
         if (this.debug) {
           console.log('[warp10-dashboard-element] _onParamsChange', this.warpscriptScript, this.warpscriptReload, this.dimensions, this.bgColor, this.fgColor, this.label, this._isAttached);
         }
@@ -343,7 +334,6 @@
       }
 
       _handleResponse(event, response) {
-        this.tileLoading = false;
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
             event: event,
@@ -402,7 +392,6 @@
 
       _handleError(event, error) {
         console.error('[warp10-dashboard-element] _handleError', event, error);
-        this.tileLoading = false;
       }
 
 
