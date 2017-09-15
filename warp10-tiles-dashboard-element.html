@@ -472,9 +472,9 @@
           this._warpscriptScriptWithParams = this.warpscriptScript;
         }
         if (this.bootstrap) {
-          this._warpscriptScriptWithParams = this.bootstrap + this._warpscriptScriptWithParams;
+          this._warpscriptScriptWithParams = `${this.bootstrap} ${this._warpscriptScriptWithParams}`;
         }
-        this._warpscriptScriptWithParams = this._storeParams() + this._warpscriptScriptWithParams;
+        this._warpscriptScriptWithParams = `${this._storeParams()} ${this._warpscriptScriptWithParams}`;
 
         if (this.debug) {
           console.log('[warp10-dashboard-element] _initialize - warpscriptScript', {

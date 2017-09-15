@@ -2,6 +2,10 @@
   "type": "dashboard",
   "name": "dash_a",
   "title": "Dashboard A",
+  "variables": {
+    "varA": 42,
+    "varB": "A value"
+  },
   "content": [
     { 
       "type": "page",
