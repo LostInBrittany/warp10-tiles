@@ -26,14 +26,22 @@
     <style include="warp10-tiles-style granite-c3-css">
       :host {
         display: inline-block;
+        --fg-color: 'black';
+        --bg-color: 'white'
       }
 
       #value {
         font-size: 2.5rem;
       }
-
+      granite-c3 {
+        --c3-gauge-max-color: var(--fg-color);
+        --c3-gauge-min-color: var(--fg-color);
+        --c3-gauge-units-color: var(--fg-color);
+        --c3-gauge-value-color: var(--fg-color);
+        display: inline-block;
+      }
       .c3-chart-arcs .c3-chart-arcs-gauge-max, .c3-chart-arcs .c3-chart-arcs-gauge-min {
-        fill: --fg-color;
+        fill: var(--fg-color);
       }
 
       .c3-chart-arc .c3-gauge-value {
@@ -133,6 +141,10 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-gauge] connectedCallback');
         }
+        this.updateStyles({
+          '--fg-color': this.fgColor,
+          '--bg-color': this.bgColor,
+        });
       }
 
       // --------------------------------------------------------------------------------------------
