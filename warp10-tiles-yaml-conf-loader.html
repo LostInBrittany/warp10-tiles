@@ -119,7 +119,7 @@
       }
 
       _onDashboardResponse(evt) {
-        event.stopPropagation();
+        evt.stopPropagation();
 
         if (!evt.detail || !evt.detail.obj ||
             !evt.detail.obj.type ||
@@ -135,7 +135,7 @@
       }
 
       _onMainConfResponse(evt) {
-        event.stopPropagation();
+        evt.stopPropagation();
 
         if (this.debug) {
           console.log('[warp10-tiles-conf-loader] _onMainConfResponse', evt);
