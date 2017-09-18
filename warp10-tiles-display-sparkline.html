@@ -316,12 +316,12 @@
       }
 
       _maxValue(currentValues) {
-        var max = -Number.MAX_VALUE;
-        var maxIndex = -1;
+        let max = -Number.MAX_VALUE;
+        let maxIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
-        for (var i = 0; i < currentValues.yValues.length; i++) {
+        for (let i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval > max) {
             max = currentValues.yValues[i].yval;
             maxIndex = i;
@@ -331,12 +331,12 @@
       }
 
       _minValue(currentValues) {
-        var min = Number.MAX_VALUE;
-        var minIndex = -1;
+        let min = Number.MAX_VALUE;
+        let minIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
-        for (var i = 0; i < currentValues.yValues.length; i++) {
+        for (let i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             minIndex = i;
@@ -356,7 +356,7 @@
         if (!currentValues) {
           return "";
         }
-        var ts = currentValues.xValue;
+        let ts = currentValues.xValue;
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _getDate', ts)
         }
@@ -367,14 +367,13 @@
         if (!currentValues || !currentValues.yValues) {
           return "";
         }
-        var label = currentValues.yValues[i].name;
+        let label = currentValues.yValues[i].name;
         if (!label) {
           label = "Line " + i;
         }
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _getName', label)
         }
-        ;
         return label;
       }
 
@@ -382,22 +381,21 @@
         if (!currentValues || !currentValues.yValues) {
           return "";
         }
-        var color = currentValues.yValues[i].color;
+        let color = currentValues.yValues[i].color;
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues)
         }
-        ;
         return color;
       }
 
       _getMaxColor(currentValues) {
-        var color = "";
-        var max = -Number.MAX_VALUE;
-        var maxIndex = -1;
+        let color = "";
+        let max = -Number.MAX_VALUE;
+        let maxIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
-        for (var i = 0; i < currentValues.yValues.length; i++) {
+        for (let i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval > max) {
             max = currentValues.yValues[i].yval;
             color = currentValues.yValues[i].color;
@@ -408,13 +406,13 @@
       }
 
       _getMinColor(currentValues) {
-        var color = "";
-        var min = Number.MAX_VALUE;
-        var minIndex = -1;
+        let color = "";
+        let min = Number.MAX_VALUE;
+        let minIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
-        for (var i = 0; i < currentValues.yValues.length; i++) {
+        for (let i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             color = currentValues.yValues[i].color;
@@ -425,9 +423,9 @@
       }
 
       _getMaxName(currentValues) {
-        var name = "";
-        var max = -Number.MAX_VALUE;
-        var maxIndex = -1;
+        let name = "";
+        let max = -Number.MAX_VALUE;
+        let maxIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
@@ -442,13 +440,13 @@
       }
 
       _getMinName(currentValues) {
-        var name = "";
-        var min = Number.MAX_VALUE;
-        var minIndex = -1;
+        let name = "";
+        let min = Number.MAX_VALUE;
+        let minIndex = -1;
         if (!currentValues || !currentValues.yValues) {
           return;
         }
-        for (var i = 0; i < currentValues.yValues.length; i++) {
+        for (let i = 0; i < currentValues.yValues.length; i++) {
           if (currentValues.yValues[i].yval < min) {
             min = currentValues.yValues[i].yval;
             name = currentValues.yValues[i].name;
