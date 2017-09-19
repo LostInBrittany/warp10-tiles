@@ -11,7 +11,6 @@
 <link rel="import" href="./warp10-tiles-mixin.html">
 
 <!-- Import elements -->
-<link rel="import" href="../moment-js/moment-js.html">
 <link rel="import" href="./warp10-tiles-engine.html">
 <link rel="import" href="./warp10-tiles-style.html">
 
@@ -56,6 +55,7 @@
 
     // Extend Polymer.Element base class
     /* global Warp10TilesMixin */
+    /* eslint new-cap:  ["error", { "capIsNewExceptions": ["Warp10TilesMixin"] }] */
     class Warp10TilesDisplayMap extends Warp10TilesMixin(Polymer.Element) {
       static get is() {
         return 'warp10-tiles-display-map';
@@ -156,39 +156,6 @@
         }
         this._dimensions = evt.detail.value;
         // this.updateStyles({'--max-width': this._dimensions.width+'px'});
-      }
-
-      _adjustValueSize() {
-        window.setTimeout((it) => this._textHeight(), 50);
-      }
-
-      _momentIsReady() {
-        if (this.debug) {
-          console.debug('[warp10-tiles-display-map] _momentIsReady');
-        }
-        this._adjustValueSize();
-      }
-
-      _textHeight() {
-        if (!this._isAttached || !this._dimensions) {
-          return;
-        }
-        if (this.debug) {
-          console.debug(`[warp10-tiles-display-map] _textHeight clientHeight: ${this.$.value.clientHeight}, scrollHeight: ${this.$.value.scrollHeight}, scrollWidth: ${ this.$.value.scrollWidth}, clientwidth: ${this.$.value.clientWidth}, dimensions.width: ${this._dimensions.width}, dimensions.height: ${this._dimensions.height}, offsetWidth: ${this.$.value.offsetWidth}  `);
-        }
-
-        if (this.$.value.scrollHeight > this.$.value.clientHeight
-            || this.$.value.scrollWidth > this.$.value.clientWidth
-            || this.$.value.offsetHeight > this._dimensions.height
-            || this.$.value.offsetWidth > this._dimensions.width) {
-          let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace('px', ''));
-          let newFontSize = currentFontSize * 0.9 + 'px';
-          this.$.value.style.fontSize = newFontSize;
-          if (this.debug) {
-            console.debug('[warp10-display-map] _textHeight - value.style', newFontSize);
-          }
-          this._textHeight();
-        }
       }
     }
 
