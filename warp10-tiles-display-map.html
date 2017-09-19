@@ -122,13 +122,6 @@
         };
       }
 
-
-      static get observers() {
-        return [
-          '_adjustValueSize(data,_isAttached,_dimensions)',
-        ];
-      }
-
       _onDatachange() {
         if (this.debug) {
           console.log('[warp10-tiles-display-map] _onDatachange', this.data);
