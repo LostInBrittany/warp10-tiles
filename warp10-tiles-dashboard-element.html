@@ -34,7 +34,6 @@
 
     <style include="warp10-tiles-style">
     </style>
-
     <dom-if if="[[proxyName]]" restamp>
       <template>
         <warp10-warpscript-request-gatherer
@@ -143,6 +142,7 @@
             description="[[_responseParams.description]]"
             hide-axis="[[_responseParams.hideAxis]]"
             debug="[[debug]]"
+            timezone="[[timezone]]"
             icon="[[_responseParams.icon]]"
             y-lower-bound="[[_responseParams.yLowerBound]]"
             y-upper-bound="[[_responseParams.yUpperBound]]"
