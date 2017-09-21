@@ -360,11 +360,11 @@
           console.log('[warp10-tiles-display-sparkline] _getDate', ts)
         }
         return moment.tz(ts, this.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
-   //     return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
+        //     return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
       }
 
       _getName(currentValues, i) {
-        if (!currentValues || !currentValues.yValues || currentValues.yValues[i]) {
+        if (!currentValues || !currentValues.yValues || currentValues.yValues[i] === undefined) {
           return "";
         }
         let label = currentValues.yValues[i].name;
@@ -378,7 +378,7 @@
       }
 
       _getColor(currentValues, i) {
-        if (!currentValues || !currentValues.yValues || !currentValues.yValues[i]) {
+        if (!currentValues || !currentValues.yValues || !currentValues.yValues[i] === undefined) {
           return "";
         }
         let color = currentValues.yValues[i].color;
@@ -392,7 +392,7 @@
         let color = "";
         let max = -Number.MAX_VALUE;
         let maxIndex = -1;
-        if (!currentValues || !currentValues.yValues || currentValues.yValues[i]) {
+        if (!currentValues || !currentValues.yValues || currentValues.yValues[i] === undefined) {
           return;
         }
         for (let i = 0; i < currentValues.yValues.length; i++) {
@@ -534,4 +534,4 @@
     customElements.define(Warp10TilesDisplaySparkline.is, Warp10TilesDisplaySparkline);
   </script>
 
-</dom-module>  
+</dom-module>
