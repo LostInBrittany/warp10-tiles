@@ -95,6 +95,7 @@
                               proxy-name="[[item.requester]]"
                               name="[[item.name]]"
                               bootstrap="[[bootstrap]]"
+                              timezone="[[timezone]]"
                               warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
                               warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
                               warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
@@ -159,6 +160,9 @@
           bootstrap: {
             type: String,
             value: '',
+          },
+          timezone: {
+            type: String,
           },
           debug: {
             type: Boolean,

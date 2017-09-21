@@ -156,14 +156,13 @@
             hide-axis="[[hideAxis]]"
             hide-tooltip
             debug="[[debug]]"
+            timezone="[[timezone]]"
             y-lower-bound="[[yLowerBound]]"
             y-upper-bound="[[yUpperBound]]"
             on-mouseenter="_mouseEnter"
             on-mouseleave="_mouseLeave"></warp10-display-chart>
       </div>
     </warp10-tiles-engine>
-
-
     <div class="value-bounds" hidden="{{_hideValueBounds}}">
       <div class="value-bounds-close" on-click="_closeValueBounds"></div>
       <div class="value-bounds-content">
@@ -360,11 +359,12 @@
         if (this.debug) {
           console.log('[warp10-tiles-display-sparkline] _getDate', ts)
         }
-        return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
+        return moment.tz(ts, this.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
+   //     return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
       }
 
       _getName(currentValues, i) {
-        if (!currentValues || !currentValues.yValues) {
+        if (!currentValues || !currentValues.yValues || currentValues.yValues[i]) {
           return "";
         }
         let label = currentValues.yValues[i].name;
@@ -378,7 +378,7 @@
       }
 
       _getColor(currentValues, i) {
-        if (!currentValues || !currentValues.yValues) {
+        if (!currentValues || !currentValues.yValues || !currentValues.yValues[i]) {
           return "";
         }
         let color = currentValues.yValues[i].color;
@@ -392,7 +392,7 @@
         let color = "";
         let max = -Number.MAX_VALUE;
         let maxIndex = -1;
-        if (!currentValues || !currentValues.yValues) {
+        if (!currentValues || !currentValues.yValues || currentValues.yValues[i]) {
           return;
         }
         for (let i = 0; i < currentValues.yValues.length; i++) {
