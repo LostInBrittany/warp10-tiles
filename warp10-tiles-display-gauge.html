@@ -33,6 +33,7 @@
       #value {
         font-size: 2.5rem;
       }
+
       granite-c3 {
         --c3-gauge-max-color: var(--fg-color);
         --c3-gauge-min-color: var(--fg-color);
@@ -40,6 +41,7 @@
         --c3-gauge-value-color: var(--fg-color);
         display: inline-block;
       }
+
       .c3-chart-arcs .c3-chart-arcs-gauge-max, .c3-chart-arcs .c3-chart-arcs-gauge-min {
         fill: var(--fg-color);
       }
@@ -62,7 +64,7 @@
         <granite-c3
             data="[[_getData(label, _displayValue)]]"
             gauge="[[_getGaugeOptions(min, max, units, precision)]]"
-            color='[[colors]]'
+            color='[[_getColor(colors)]]'
             debug="[[debug]]"
         ></granite-c3>
       </div>
@@ -111,8 +113,7 @@
             value: '%'
           },
           colors: {
-            type: Object,
-            value: {pattern: ['#f44336', '#ff9800', '#ffc107', '#8bc34a'], threshold: {values: [30, 60, 90, 100]}}
+            type: Object
           },
         }
       }
@@ -120,6 +121,21 @@
 
       static get observers() {
         return []
+      }
+
+      _stringify(o) {
+        return JSON.stringify(o);
+      }
+
+      _getColor(color) {
+        if (this.debug) {
+          console.log('[warp10-tiles-display-gauge] _getColor', color);
+        }
+        if(!color.hasOwnProperty('pattern')) {
+          return {pattern: ['#f44336', '#ff9800', '#ffc107', '#8bc34a'], threshold: {values: [30, 60, 90, 100]}};
+        } else {
+          return color;
+        }
       }
 
       _getGaugeOptions(min, max, units, precision) {
@@ -187,4 +203,3 @@
   </script>
 
 </dom-module>  
-
