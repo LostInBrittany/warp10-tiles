@@ -121,9 +121,9 @@
             max="[[_responseParams.max]]"
             units="[[_responseParams.units]]"
             precision="[[_responseParams.precision]]"
+            colors="[[_wrapUndefined(_responseParams.colors)]]"
             primary-color="[[_responseParams.data.color]]"
             secondary-color="[[_responseParams.data.secondaryColor]]"
-            colors="[[_responseParams.colors]]"
             label="[[_responseParams.label]]"
             icon="[[_responseParams.icon]]"
             description="[[_responseParams.description]]"
@@ -223,7 +223,7 @@
            */
           warpscriptResponse: {
             type: Array,
-            value: function () {
+            value: function() {
               return [];
             },
           },
@@ -251,7 +251,7 @@
           },
           _responseParams: {
             type: Object,
-            value: function () {
+            value: function() {
               return {};
             },
           },
@@ -276,6 +276,12 @@
           console.log('[warp10-dashboard-element] connectedCallback');
         }
       }
+      _wrapUndefined(o) {
+        return o? o : {};
+      }
+      _stringify(o) {
+        return JSON.stringify(o);
+      }
 
       // --------------------------------------------------------------------------------------------
       // Computed properties
@@ -293,6 +299,7 @@
         }
         return this.warpscriptResponse[0].type;
       }
+
 
       // --------------------------------------------------------------------------------------------
       // Computed properties
@@ -496,4 +503,4 @@
     customElements.define(Warp10TilesDashboardElement.is, Warp10TilesDashboardElement);
   </script>
 
-</dom-module>      
+</dom-module>
