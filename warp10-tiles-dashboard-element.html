@@ -259,6 +259,11 @@
             type: Boolean,
             value: false,
           },
+          loading: {
+            type: Boolean,
+            value: false,
+            notify: true,
+          }
         }
       }
 
@@ -276,9 +281,11 @@
           console.log('[warp10-dashboard-element] connectedCallback');
         }
       }
+
       _wrapUndefined(o) {
-        return o? o : {};
+        return o ? o : {};
       }
+
       _stringify(o) {
         return JSON.stringify(o);
       }

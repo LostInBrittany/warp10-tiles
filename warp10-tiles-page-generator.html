@@ -68,6 +68,7 @@
               name="[[requester.name]]"
               presets="[[bootstrap]] [[requester.presets]]"
               url="[[requester.url]]"
+              loading="{{loading}}"
               interval="[[requester.interval]]"></warp10-warpscript-http-proxy>
         </template>
       </dom-repeat>
@@ -96,6 +97,7 @@
                               name="[[item.name]]"
                               bootstrap="[[bootstrap]]"
                               timezone="[[timezone]]"
+                              loading="{{loading}}"
                               warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
                               warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
                               warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
@@ -113,6 +115,7 @@
                                   fg-color="[[_getInnerTileConfParam('fgColor', conf, card, item, value)]]"
                                   proxy-name="[[item.item.requester]]"
                                   name="[[item.item.name]][[index]]"
+                                  loading="{{loading]}"
                                   bootstrap="[[bootstrap]]"
                                   warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, item)]]"
                                   warpscript-script="[[_getInnerTileConfParam('warpscript-script', conf, card, item, value)]]"
@@ -168,6 +171,11 @@
             type: Boolean,
             value: false,
           },
+          loading: {
+            type: Boolean,
+            value: false,
+            notify: true,
+          }
         };
       }
 

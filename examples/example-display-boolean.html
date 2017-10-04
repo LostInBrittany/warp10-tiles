@@ -17,17 +17,21 @@
 </style>
 <script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
 <link   rel="import" href=" ../../polymer/polymer-element.html">
+  <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+  <script src="../../moment/moment.js"></script>
+  <script src="../../moment-timezone/builds/moment-timezone-with-data.min.js"></script>
 
 
 <link   rel="import" href=" ../warp10-tiles-display-boolean.html">
 </head>
 <body>
-
   <div class="container">
     <dom-bind id="template">
       <template>
+
+        <paper-toggle-button checked="{{data1}}">[[data1]]</paper-toggle-button>
         <warp10-tiles-display-boolean
-          data="[[data1]]" 
+          data="[[data1]]"
           label="[[label1]]"
           size="[[size1]]"
           fg-color="[[fgColor1]]"
@@ -58,7 +62,7 @@
       autobind.label1 = 'A nice boolean';
       autobind.size1 = 'large';
       autobind.fgColor1 = 'white';
-      autobind.bgColor1 = 'orange';
+      autobind.bgColor1 = 'green';
       autobind.description1 = 'This is an example boolean';
 
       autobind.data2 = false;
