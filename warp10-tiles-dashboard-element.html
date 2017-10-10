@@ -42,6 +42,7 @@
             proxy="[[proxyName]]"
             warpscript="[[_warpscriptScriptWithParams]]"
             interval="[[warpscriptReload]]"
+            debug="[[debug]]"
             on-response="_handleResponse"
             on-error="_handleError"
         ></warp10-warpscript-request-gatherer>
@@ -54,9 +55,10 @@
             url="[[warpscriptBaseUrl]]"
             warpscript="[[_warpscriptScriptWithParams]]"
             on-response="_handleResponse"
-            on-error="_handleError"
+            on-request="_handleRequest"
+            on-error="_handleErrorCaller"
             reload="[[warpscriptReload]]"
-            loading="{{loading}}"
+            debug="[[debug]]"
             auto
             header-name="CityzenData"></warp10-warpscript-caller>
       </template>
@@ -260,8 +262,8 @@
             value: false,
           },
           loading: {
-            type: Boolean,
-            value: false,
+            type: Array,
+            value: [],
             notify: true,
           }
         }
@@ -348,6 +350,24 @@
         }
       }
 
+      _handleRequest(event) {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _handleRequest', this.name, this.loading);
+        }
+        let me = this;
+        if (this.loading.filter(function(i) {
+              return i.key === me.name;
+            }).length < 1) {
+          this.loading.push({key: this.name, val: true});
+        }
+        this.loading.forEach(function(i) {
+          if (i.key === me.name) {
+            i.val = true;
+          }
+        });
+        this.loading = this.loading.slice();
+      }
+
       _handleResponse(event, response) {
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
@@ -403,9 +423,21 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] _handleResponse - Response params', this._responseParams);
         }
+        this.loading.forEach(function(i) {
+          if(i.key === this.name) {
+            i.val = false;
+          }
+        }, this);
+        this.loading = this.loading.slice();
       }
 
-      _handleError(event, error) {
+      _handleErrorCaller(event, error) {
+        this.loading.forEach(function(i) {
+          if(i.key === this.name) {
+            i.val = false;
+          }
+        }, this);
+        this.loading = this.loading.slice();
         console.error('[warp10-dashboard-element] _handleError', event, error);
       }
 

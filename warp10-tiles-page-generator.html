@@ -24,8 +24,6 @@
         margin: 0;
       }
 
-
-
       @media (min-width: 400px) {
         .card {
           margin: 16px 5px;
@@ -60,7 +58,6 @@
       }
 
     </style>
-
     <div>
       <dom-repeat items="[[requesters]]" as="requester">
         <template>
@@ -68,6 +65,7 @@
               name="[[requester.name]]"
               presets="[[bootstrap]] [[requester.presets]]"
               url="[[requester.url]]"
+              debug="[[debug]]"
               loading="{{loading}}"
               interval="[[requester.interval]]"></warp10-warpscript-http-proxy>
         </template>
@@ -172,8 +170,8 @@
             value: false,
           },
           loading: {
-            type: Boolean,
-            value: false,
+            type: Array,
+            value: [],
             notify: true,
           }
         };
@@ -185,7 +183,7 @@
         }
       }
 
-      static stringify(obj) {
+      _stringify(obj) {
         return JSON.stringify(obj);
       }
 
@@ -199,12 +197,12 @@
       _getConfParam(param, conf, card, tile) {
         if (this.debug) {
           console.log('[warp10-tiles-page-generator] _getConfParam',
-              param, this._joinIfArray(tile[param] || card[param] || conf[param]));
+              param, Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]));
         }
-        return this._joinIfArray(tile[param] || card[param] || conf[param]);
+        return Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]);
       }
 
-      _joinIfArray(obj) {
+      static _joinIfArray(obj) {
         if (Array.isArray(obj)) {
           return obj.join('\n');
         }
