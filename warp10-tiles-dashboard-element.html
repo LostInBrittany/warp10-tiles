@@ -427,6 +427,9 @@
           },
         });
         this.dispatchEvent(evt);
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _handleResponse - Response CustomEvent', evt, this.name, event);
+        }
       }
 
       _handleErrorCaller(evt, error) {

@@ -174,7 +174,9 @@
           },
           loading: {
             type: Array,
-            value: [],
+            value: function() {
+              return [];
+            },
             notify: true,
           }
         };
@@ -182,31 +184,36 @@
 
       _onRequest(evt) {
         if (this.debug) {
-          console.log('[warp10-tiles-page-generator] loading _onRequest', evt);
+          console.log('[warp10-tiles-page-generator] loading _handleRequest', evt);
         }
-
-        this.loading.forEach(function(i) {
-          if (i.key === evt.detail.name) {
-            i.val = false;
+        if (evt.detail.name) {
+          if (this.loading.filter(function(i) {
+                return i.key === evt.detail.name;
+              }, this).length < 1) {
+            this.loading.push({key: evt.detail.name, val: true});
           }
-        }, this);
-        this.loading = this.loading.slice();
+          this.loading.forEach(function(i) {
+            if (i.key === evt.detail.name) {
+              i.val = true;
+            }
+          }, this);
+
+          this.loading = this.loading.slice();
+        }
       }
 
       _onResponse(evt) {
         if (this.debug) {
           console.log('[warp10-tiles-page-generator] loading _onResponse', evt);
         }
-        if (this.loading.filter(function(i) {
-              return i.key === evt.detail.name;
-            }, this).length < 1) {
-          this.loading.push({key: evt.detail.name, val: true});
+        if (evt.detail.name) {
+          this.loading.forEach(function(i) {
+            if (i.key === evt.detail.name) {
+              i.val = false;
+            }
+          }, this);
+          this.loading = this.loading.slice();
         }
-        this.loading.forEach(function(i) {
-          if (i.key === evt.detail.name) {
-            i.val = true;
-          }
-        }, this);
       }
 
       _onConfChange(conf) {
