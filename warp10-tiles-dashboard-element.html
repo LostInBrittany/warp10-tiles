@@ -42,7 +42,6 @@
             proxy="[[proxyName]]"
             warpscript="[[_warpscriptScriptWithParams]]"
             interval="[[warpscriptReload]]"
-            debug="[[debug]]"
             on-response="_handleResponse"
             on-error="_handleError"
         ></warp10-warpscript-request-gatherer>
@@ -261,11 +260,12 @@
             type: Boolean,
             value: false,
           },
+
           loading: {
-            type: Array,
-            value: [],
+            type: Boolean,
+            value: false,
             notify: true,
-          }
+          },
         }
       }
 
@@ -350,22 +350,17 @@
         }
       }
 
-      _handleRequest(event) {
+      _handleRequest(evt) {
         if (this.debug) {
           console.log('[warp10-dashboard-element] _handleRequest', this.name, this.loading);
         }
-        let me = this;
-        if (this.loading.filter(function(i) {
-              return i.key === me.name;
-            }).length < 1) {
-          this.loading.push({key: this.name, val: true});
-        }
-        this.loading.forEach(function(i) {
-          if (i.key === me.name) {
-            i.val = true;
-          }
+        let event = new CustomEvent('request', {
+          detail: {
+            name: this.name
+          },
         });
-        this.loading = this.loading.slice();
+        //    document.dispatchEvent(event);
+        this.dispatchEvent(event);
       }
 
       _handleResponse(event, response) {
@@ -423,21 +418,24 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] _handleResponse - Response params', this._responseParams);
         }
-        this.loading.forEach(function(i) {
-          if(i.key === this.name) {
-            i.val = false;
-          }
-        }, this);
-        this.loading = this.loading.slice();
+
+        let evt = new CustomEvent('response', {
+          detail: {
+            name: this.name,
+            interval: this.interval,
+            response: response,
+          },
+        });
+        this.dispatchEvent(evt);
       }
 
-      _handleErrorCaller(event, error) {
-        this.loading.forEach(function(i) {
-          if(i.key === this.name) {
-            i.val = false;
-          }
-        }, this);
-        this.loading = this.loading.slice();
+      _handleErrorCaller(evt, error) {
+        let event = new CustomEvent('response', {
+          detail: {
+            name: this.name
+          },
+        });
+        this.dispatchEvent(event);
         console.error('[warp10-dashboard-element] _handleError', event, error);
       }
 

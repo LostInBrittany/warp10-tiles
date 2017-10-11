@@ -66,7 +66,8 @@
               presets="[[bootstrap]] [[requester.presets]]"
               url="[[requester.url]]"
               debug="[[debug]]"
-              loading="{{loading}}"
+              on-request="_onRequest"
+              on-response="_onResponse"
               interval="[[requester.interval]]"></warp10-warpscript-http-proxy>
         </template>
       </dom-repeat>
@@ -95,7 +96,8 @@
                               name="[[item.name]]"
                               bootstrap="[[bootstrap]]"
                               timezone="[[timezone]]"
-                              loading="{{loading}}"
+                              on-request="_onRequest"
+                              on-response="_onResponse"
                               warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
                               warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
                               warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
@@ -113,7 +115,8 @@
                                   fg-color="[[_getInnerTileConfParam('fgColor', conf, card, item, value)]]"
                                   proxy-name="[[item.item.requester]]"
                                   name="[[item.item.name]][[index]]"
-                                  loading="{{loading]}"
+                                  on-request="_onRequest"
+                                  on-response="_onResponse"
                                   bootstrap="[[bootstrap]]"
                                   warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, item)]]"
                                   warpscript-script="[[_getInnerTileConfParam('warpscript-script', conf, card, item, value)]]"
@@ -175,6 +178,35 @@
             notify: true,
           }
         };
+      }
+
+      _onRequest(evt) {
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] loading _onRequest', evt);
+        }
+
+        this.loading.forEach(function(i) {
+          if (i.key === evt.detail.name) {
+            i.val = false;
+          }
+        }, this);
+        this.loading = this.loading.slice();
+      }
+
+      _onResponse(evt) {
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] loading _onResponse', evt);
+        }
+        if (this.loading.filter(function(i) {
+              return i.key === evt.detail.name;
+            }, this).length < 1) {
+          this.loading.push({key: evt.detail.name, val: true});
+        }
+        this.loading.forEach(function(i) {
+          if (i.key === evt.detail.name) {
+            i.val = true;
+          }
+        }, this);
       }
 
       _onConfChange(conf) {
