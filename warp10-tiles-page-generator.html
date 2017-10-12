@@ -236,9 +236,9 @@
       _getConfParam(param, conf, card, tile) {
         if (this.debug) {
           console.log('[warp10-tiles-page-generator] _getConfParam',
-              param, Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]));
+              param, this._joinIfArray(tile[param] || card[param] || conf[param]));
         }
-        return Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]);
+        return this._joinIfArray(tile[param] || card[param] || conf[param]);
       }
 
       _joinIfArray(obj) {
