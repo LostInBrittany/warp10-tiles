@@ -241,7 +241,7 @@
         return Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]);
       }
 
-      static _joinIfArray(obj) {
+      _joinIfArray(obj) {
         if (Array.isArray(obj)) {
           return obj.join('\n');
         }
