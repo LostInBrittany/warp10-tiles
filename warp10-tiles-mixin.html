@@ -58,7 +58,7 @@
         },
         timezone: {
           type: String,
-          value: moment.tz.guess()
+          value: window.moment ? window.moment.tz.guess() : undefined,
         },
         /**
          * If true, print logs
