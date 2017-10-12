@@ -54,9 +54,10 @@
             url="[[warpscriptBaseUrl]]"
             warpscript="[[_warpscriptScriptWithParams]]"
             on-response="_handleResponse"
-            on-error="_handleError"
+            on-request="_handleRequest"
+            on-error="_handleErrorCaller"
             reload="[[warpscriptReload]]"
-            loading="{{loading}}"
+            debug="[[debug]]"
             auto
             header-name="CityzenData"></warp10-warpscript-caller>
       </template>
@@ -259,6 +260,12 @@
             type: Boolean,
             value: false,
           },
+
+          loading: {
+            type: Boolean,
+            value: false,
+            notify: true,
+          },
         }
       }
 
@@ -276,9 +283,11 @@
           console.log('[warp10-dashboard-element] connectedCallback');
         }
       }
+
       _wrapUndefined(o) {
-        return o? o : {};
+        return o ? o : {};
       }
+
       _stringify(o) {
         return JSON.stringify(o);
       }
@@ -341,6 +350,19 @@
         }
       }
 
+      _handleRequest(evt) {
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _handleRequest', this.name, this.loading);
+        }
+        let event = new CustomEvent('request', {
+          detail: {
+            name: this.name
+          },
+        });
+        //    document.dispatchEvent(event);
+        this.dispatchEvent(event);
+      }
+
       _handleResponse(event, response) {
         if (this.debug) {
           console.log('[warp10-dashboard-element] _receivedResponse from event', {
@@ -396,9 +418,27 @@
         if (this.debug) {
           console.log('[warp10-dashboard-element] _handleResponse - Response params', this._responseParams);
         }
+
+        let evt = new CustomEvent('response', {
+          detail: {
+            name: this.name,
+            interval: this.interval,
+            response: response,
+          },
+        });
+        this.dispatchEvent(evt);
+        if (this.debug) {
+          console.log('[warp10-dashboard-element] _handleResponse - Response CustomEvent', evt, this.name, event);
+        }
       }
 
-      _handleError(event, error) {
+      _handleErrorCaller(evt, error) {
+        let event = new CustomEvent('response', {
+          detail: {
+            name: this.name
+          },
+        });
+        this.dispatchEvent(event);
         console.error('[warp10-dashboard-element] _handleError', event, error);
       }
 

@@ -24,8 +24,6 @@
         margin: 0;
       }
 
-
-
       @media (min-width: 400px) {
         .card {
           margin: 16px 5px;
@@ -60,7 +58,6 @@
       }
 
     </style>
-
     <div>
       <dom-repeat items="[[requesters]]" as="requester">
         <template>
@@ -68,6 +65,9 @@
               name="[[requester.name]]"
               presets="[[bootstrap]] [[requester.presets]]"
               url="[[requester.url]]"
+              debug="[[debug]]"
+              on-request="_onRequest"
+              on-response="_onResponse"
               interval="[[requester.interval]]"></warp10-warpscript-http-proxy>
         </template>
       </dom-repeat>
@@ -96,6 +96,8 @@
                               name="[[item.name]]"
                               bootstrap="[[bootstrap]]"
                               timezone="[[timezone]]"
+                              on-request="_onRequest"
+                              on-response="_onResponse"
                               warpscript-base-url="[[_getConfParam('warpscript-base-url', conf, card, item)]]"
                               warpscript-script="[[_getConfParam('warpscript-script', conf, card, item)]]"
                               warpscript-reload="[[_getConfParam('warpscript-reload', conf, card, item)]]"
@@ -113,6 +115,8 @@
                                   fg-color="[[_getInnerTileConfParam('fgColor', conf, card, item, value)]]"
                                   proxy-name="[[item.item.requester]]"
                                   name="[[item.item.name]][[index]]"
+                                  on-request="_onRequest"
+                                  on-response="_onResponse"
                                   bootstrap="[[bootstrap]]"
                                   warpscript-base-url="[[_getInnerTileConfParam('warpscript-base-url', conf, card, item)]]"
                                   warpscript-script="[[_getInnerTileConfParam('warpscript-script', conf, card, item, value)]]"
@@ -168,7 +172,48 @@
             type: Boolean,
             value: false,
           },
+          loading: {
+            type: Array,
+            value: function() {
+              return [];
+            },
+            notify: true,
+          }
         };
+      }
+
+      _onRequest(evt) {
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] loading _handleRequest', evt);
+        }
+        if (evt.detail.name) {
+          if (this.loading.filter(function(i) {
+                return i.key === evt.detail.name;
+              }, this).length < 1) {
+            this.loading.push({key: evt.detail.name, val: true});
+          }
+          this.loading.forEach(function(i) {
+            if (i.key === evt.detail.name) {
+              i.val = true;
+            }
+          }, this);
+
+          this.loading = this.loading.slice();
+        }
+      }
+
+      _onResponse(evt) {
+        if (this.debug) {
+          console.log('[warp10-tiles-page-generator] loading _onResponse', evt);
+        }
+        if (evt.detail.name) {
+          this.loading.forEach(function(i) {
+            if (i.key === evt.detail.name) {
+              i.val = false;
+            }
+          }, this);
+          this.loading = this.loading.slice();
+        }
       }
 
       _onConfChange(conf) {
@@ -177,7 +222,7 @@
         }
       }
 
-      static stringify(obj) {
+      _stringify(obj) {
         return JSON.stringify(obj);
       }
 
@@ -191,9 +236,9 @@
       _getConfParam(param, conf, card, tile) {
         if (this.debug) {
           console.log('[warp10-tiles-page-generator] _getConfParam',
-              param, this._joinIfArray(tile[param] || card[param] || conf[param]));
+              param, Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]));
         }
-        return this._joinIfArray(tile[param] || card[param] || conf[param]);
+        return Warp10TilesPageGenerator._joinIfArray(tile[param] || card[param] || conf[param]);
       }
 
       _joinIfArray(obj) {
