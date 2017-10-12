@@ -31,7 +31,7 @@
     "iron-image": "PolymerElements/iron-image#^2.0.0",
     "iron-icons": "PolymerElements/iron-icons#^2.0.0",
     "paper-progress": "PolymerElements/paper-progress#^2.0.0",
-    "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.14.7",
+    "warp10-quantumviz": "CityzenData/warp10-quantumviz#^1.14.8",
     "moment-js": "lostinbrittany/moment-js#0.8-rc2",
     "moment-timezone": "moment-timezone#^0.5.13",
     "granite-yaml": "LostInBrittany/granite-yaml#^1.1.0",
