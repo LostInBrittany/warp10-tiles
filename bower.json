@@ -35,7 +35,7 @@
     "moment-js": "lostinbrittany/moment-js#0.8-rc2",
     "moment-timezone": "moment-timezone#^0.5.13",
     "granite-yaml": "LostInBrittany/granite-yaml#^1.1.0",
-    "granite-c3": "LostInBrittany/granite-c3#^2.1.0"
+    "granite-c3": "LostInBrittany/granite-c3#^2.2.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
