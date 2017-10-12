@@ -155,11 +155,11 @@
         return {
           conf: {
             type: Object,
-            observer: '_onConfChange'
+            observer: '_onConfChange',
           },
           requesters: {
             type: Array,
-            observer: '_onConfChange'
+            observer: '_onConfChange',
           },
           bootstrap: {
             type: String,
@@ -178,7 +178,7 @@
               return [];
             },
             notify: true,
-          }
+          },
         };
       }
 
