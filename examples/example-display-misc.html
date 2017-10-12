@@ -1,0 +1,133 @@
+<!--
+@author Horacio Gonzalez (@lostinbrittany)
+@copyright (c) 2017 Cityzen Data
+@license Apache 2.0
+-->
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Warp10 Dashboard - Display spline test</title>
+
+  <style>
+    .container {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  </style>
+  <script src=" ../../webcomponentsjs/webcomponents-loader.js"></script>
+  <link   rel="import" href=" ../../polymer/polymer-element.html">
+
+
+  <link   rel="import" href=" ../warp10-tiles-display-sparkline.html">
+  <link   rel="import" href=" ../warp10-tiles-display-bar.html">
+</head>
+<body>
+<h1>Some other graphs</h1>
+<div class="container">
+  <dom-bind id="template0">
+    <template>
+      <warp10-tiles-display-sparkline
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="[[fgColor]]"
+          bg-color="[[bgColor]]"
+          description="[[description]]"
+          reload="[[reload]]"></warp10-tiles-display-sparkline>
+    </template>
+  </dom-bind>
+
+  <dom-bind id="template1">
+    <template>
+      <warp10-tiles-display-sparkline
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="[[fgColor]]"
+          bg-color="[[bgColor]]"
+          description="[[description]]"
+          reload="[[reload]]"
+          debug></warp10-tiles-display-sparkline>
+    </template>
+  </dom-bind>
+
+  <dom-bind id="template2">
+    <template>
+      <warp10-tiles-display-sparkline
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="[[fgColor]]"
+          bg-color="[[bgColor]]"
+          description="[[description]]"
+          reload="[[reload]]"
+          debug></warp10-tiles-display-sparkline>
+    </template>
+  </dom-bind>
+
+  <dom-bind id="template3">
+    <template>
+      <warp10-tiles-display-bar
+          data="[[data]]"
+          label="[[label]]"
+          size="[[size]]"
+          fg-color="[[fgColor]]"
+          bg-color="[[bgColor]]"
+          description="[[description]]"
+          reload="[[reload]]"
+          debug></warp10-tiles-display-bar>
+    </template>
+  </dom-bind>
+</div>
+<script>
+
+  var template0 = document.querySelector('#template0');
+
+  template0.data = [{"gts":[{"c":"blue","l":{},"a":{},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"params":[{"key":"blue","color":"#0795ff", "strokeWidth":3}],"globalParams":{"interpolate":"step"}}];
+
+  template0.label = "A nice step graph";
+  template0.size = "large";
+  template0.fgColor = "black";
+  template0.bgColor = "white";
+  template0.description = "This is an example step graph";
+  template0.reload = "10";
+
+  var template1 = document.querySelector('#template1');
+
+  template1.data = [{"gts":[{"c":"blue","l":{},"a":{},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]},{"c":"violet","l":{},"a":{},"v":[[1470410730914218,55414.01666666667],[1470410677022182,53583.683333333334],[1470410617142142,54312.333333333336],[1470410557262102,55085.5],[1470410497382062,52591.35],[1470410437502022,52235.25],[1470410377621982,53641.666666666664],[1470410311753938,54288.51666666667],[1470410257861902,51778.333333333336],[1470410197981862,53105.566666666666],[1470410132113818,53902.916666666664],[1470410072233778,53303.73333333333],[1470410018341742,52529.71666666667],[1470409952473698,53921.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"params":[{"key":"blue","color":"#0795ff", "strokeWidth":3}, {"key":"violet","color":"#9507ff", "strokeWidth":3}],"globalParams":{"interpolate":"area-spline"}}];
+
+  template1.label = "A nice area-spline";
+  template1.size = "largewide";
+  template1.fgColor = "black";
+  template1.bgColor = "white";
+  template1.description = "This is an example area-spline";
+  template1.reload = "10";
+
+  var template2 = document.querySelector('#template2');
+
+  template2.data = [{"gts":[{"c":"blue","l":{},"a":{"quantumParams":{"key":"blue","color":"#0795ff", "strokeWidth":3}},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]},{"c":"violet","l":{},"a":{"quantumParams":"{\"key\":\"violet\",\"color\":\"#9507ff\", \"strokeWidth\":3}"},"v":[[1470410730914218,55414.01666666667],[1470410677022182,53583.683333333334],[1470410617142142,54312.333333333336],[1470410557262102,55085.5],[1470410497382062,52591.35],[1470410437502022,52235.25],[1470410377621982,53641.666666666664],[1470410311753938,54288.51666666667],[1470410257861902,51778.333333333336],[1470410197981862,53105.566666666666],[1470410132113818,53902.916666666664],[1470410072233778,53303.73333333333],[1470410018341742,52529.71666666667],[1470409952473698,53921.1],[1470409892593658,0.0],[1470409838701622,0.0]]},{"c":"red","l":{},"a":{"quantum-key":"red","quantum-color":"#ff0744","quantum-strokeWidth":3},"v":[[1470410730914218,155414.01666666667],[1470410677022182,153583.683333333334],[1470410617142142,154312.333333333336],[1470410557262102,5085.5],[1470410497382062,2591.35],[1470410437502022,2235.25],[1470410377621982,53641.666666666664],[1470410311753938,56288.51666666667],[1470410257861902,52778.333333333336],[1470410197981862,57505.566666666666],[1470410132113818,55502.916666666664],[1470410072233778,58803.73333333333],[1470410018341742,55829.71666666667],[1470409952473698,57521.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"globalParams":{"interpolate":"cardinal"}}];
+
+  template2.label = "A nice spline";
+  template2.size = "large";
+  template2.fgColor = "black";
+  template2.bgColor = "white";
+  template2.description = "This is an example spline";
+  template2.reload = "10";
+
+  var template3 = document.querySelector('#template3');
+
+  template3.data = [{"gts":[{"c":"blue","l":{},"a":{},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]},{"c":"violet","l":{},"a":{},"v":[[1470410730914218,55414.01666666667],[1470410677022182,53583.683333333334],[1470410617142142,54312.333333333336],[1470410557262102,55085.5],[1470410497382062,52591.35],[1470410437502022,52235.25],[1470410377621982,53641.666666666664],[1470410311753938,54288.51666666667],[1470410257861902,51778.333333333336],[1470410197981862,53105.566666666666],[1470410132113818,53902.916666666664],[1470410072233778,53303.73333333333],[1470410018341742,52529.71666666667],[1470409952473698,53921.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"params":[{"key":"blue","color":"#0795ff", "strokeWidth":3}, {"key":"violet","color":"#9507ff", "strokeWidth":3}],"globalParams":{"interpolate":"bar"}}];
+
+  template3.label = "A nice bar chart";
+  template3.size = "largewide";
+  template3.fgColor = "black";
+  template3.bgColor = "white";
+  template3.description = "This is an example bar chart";
+  template3.reload = "10";
+</script>
+
+<p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+
+</body>
+</html>

@@ -27,6 +27,22 @@
       :host {
         display: inline-block;
       }
+
+      #value {
+        font-size: 5rem;
+        text-align: center;
+      }
+
+      granite-c3 {
+        width: var(--chart-width, 100%);
+        height: var(--chart-height, 100%);
+        --c3-chart-arc text: var(--fg-color);
+        display: inline-block;
+      }
+
+      granite-c3::shadow /deep/ .c3-tooltip /deep/ .name, granite-c3::shadow /deep/ .c3-tooltip /deep/ .value {
+        color: black;
+      }
     </style>
     <warp10-tiles-engine
         size="[[size]]"
@@ -41,6 +57,8 @@
       <div id="value" slot="value">
         <granite-c3
             data="[[_getData(data)]]"
+            legend="[[legend]]"
+            tooltip="[[tooltip]]"
             debug="[[debug]]"></granite-c3>
       </div>
     </warp10-tiles-engine>
@@ -56,7 +74,23 @@
       }
 
       static get properties() {
-        return {}
+        return {
+          legend: {
+            type: Object,
+            value: function () {
+              return {hide: true};
+            }
+          },
+          tooltip: {
+            type: Object,
+            value: function () {
+              return {
+                format: {},
+                grouped: false // Default true
+              };
+            }
+          },
+        }
       }
 
       static get observers() {
