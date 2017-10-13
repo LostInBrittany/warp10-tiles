@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>Warp10 Dashboard - Display num test</title>
+<title>Warp10 Dashboard - Display sparkline test</title>
 
 <style>
   .container {
@@ -22,11 +22,10 @@
 <link   rel="import" href=" ../warp10-tiles-display-sparkline.html">
 </head>
 <body>
-
   <div class="container">
     <dom-bind id="template0">
       <template>
-        <warp10-tiles-display-sparkline 
+        <warp10-tiles-display-sparkline
           data="[[data]]" 
           label="[[label]]"
           size="[[size]]"
@@ -39,7 +38,7 @@
 
     <dom-bind id="template1">
       <template>
-        <warp10-tiles-display-sparkline 
+        <warp10-tiles-display-sparkline
           data="[[data]]" 
           label="[[label]]"
           size="[[size]]"
@@ -53,7 +52,7 @@
 
     <dom-bind id="template2">
       <template>
-        <warp10-tiles-display-sparkline 
+        <warp10-tiles-display-sparkline
           data="[[data]]" 
           label="[[label]]"
           size="[[size]]"
@@ -73,8 +72,8 @@
 
       template0.label = "A nice sparkline";
       template0.size = "large";
-      template0.fgColor = "white";
-      template0.bgColor = "orange";
+      template0.fgColor = "black";
+      template0.bgColor = "white";
       template0.description = "This is an example sparkline";
       template0.reload = "10";
 
@@ -83,9 +82,9 @@
       template1.data = [{"gts":[{"c":"blue","l":{},"a":{},"v":[[1470410730914218,65414.01666666667],[1470410677022182,63583.683333333334],[1470410617142142,64312.333333333336],[1470410557262102,65085.5],[1470410497382062,62591.35],[1470410437502022,62235.25],[1470410377621982,63641.666666666664],[1470410311753938,64288.51666666667],[1470410257861902,61778.333333333336],[1470410197981862,63105.566666666666],[1470410132113818,63902.916666666664],[1470410072233778,63303.73333333333],[1470410018341742,62529.71666666667],[1470409952473698,63921.1],[1470409892593658,0.0],[1470409838701622,0.0]]},{"c":"violet","l":{},"a":{},"v":[[1470410730914218,55414.01666666667],[1470410677022182,53583.683333333334],[1470410617142142,54312.333333333336],[1470410557262102,55085.5],[1470410497382062,52591.35],[1470410437502022,52235.25],[1470410377621982,53641.666666666664],[1470410311753938,54288.51666666667],[1470410257861902,51778.333333333336],[1470410197981862,53105.566666666666],[1470410132113818,53902.916666666664],[1470410072233778,53303.73333333333],[1470410018341742,52529.71666666667],[1470409952473698,53921.1],[1470409892593658,0.0],[1470409838701622,0.0]]}],"params":[{"key":"blue","color":"#0795ff", "strokeWidth":3}, {"key":"violet","color":"#9507ff", "strokeWidth":3}],"globalParams":{"interpolate":"linear"}}];
 
       template1.label = "A nice sparkline";
-      template1.size = "large";
-      template1.fgColor = "white";
-      template1.bgColor = "orange";
+      template1.size = "largewide";
+      template1.fgColor = "black";
+      template1.bgColor = "white";
       template1.description = "This is an example sparkline";
       template1.reload = "10";
 
@@ -95,8 +94,8 @@
 
       template2.label = "A nice sparkline";
       template2.size = "large";
-      template2.fgColor = "white";
-      template2.bgColor = "orange";
+      template2.fgColor = "black";
+      template2.bgColor = "white";
       template2.description = "This is an example sparkline";
       template2.reload = "10";      
 

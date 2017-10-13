@@ -26,6 +26,23 @@
     <style include="warp10-tiles-style granite-c3-css">
       :host {
         display: inline-block;
+        position: relative;
+      }
+
+      #value {
+        font-size: 5rem;
+        text-align: center;
+      }
+
+      granite-c3 {
+        width: var(--chart-width, 100%);
+        height: var(--chart-height, 100%);
+        --c3-chart-arc text: var(--fg-color);
+        display: inline-block;
+      }
+
+      granite-c3::shadow /deep/ .c3-tooltip /deep/  .name, granite-c3::shadow /deep/ .c3-tooltip /deep/  .value {
+        color: black;
       }
     </style>
     <warp10-tiles-engine
@@ -40,10 +57,13 @@
         debug="[[debug]]">
       <div id="value" slot="value">
         <granite-c3
+            legend="[[legend]]"
+            tooltip="[[tooltip]]"
             data="[[_getData(data)]]"
             donnut="[[_getDesc(label)]]"
             debug="[[debug]]"></granite-c3>
       </div>
+
     </warp10-tiles-engine>
   </template>
 
@@ -57,7 +77,23 @@
       }
 
       static get properties() {
-        return {}
+        return {
+          legend: {
+            type: Object,
+            value: function () {
+              return {hide: true};
+            }
+          },
+          tooltip: {
+            type: Object,
+            value: function () {
+              return {
+                format: {},
+                grouped: false // Default true
+              };
+            }
+          },
+        }
       }
 
       static get observers() {
@@ -84,35 +120,15 @@
       // --------------------------------------------------------------------------------------------
       // Observers
       // --------------------------------------------------------------------------------------------
-
       _onDimensionsChanged(evt) {
-        let usefulWidth = parseInt(evt.detail.value.width);
-        let usefulHeight = parseInt(evt.detail.value.height);
-        let progressWidth = 120;
-        let progressHeight = 8;
-
-        if (usefulWidth > 200 || usefulHeight > 200) {
-          progressHeight = 12;
-        }
-        if (usefulWidth > 260) {
-          progressWidth = parseInt(usefulWidth) - 40;
-        }
-
-        if (usefulWidth > 260 && usefulHeight > 260) {
-          progressHeight = 30;
-        }
-
-        this.updateStyles({
-          '--progressHeight': progressHeight.toString() + 'px',
-          '--progressWidth': progressWidth.toString() + 'px'
-        });
-
+        this._dimensions = evt.detail.value;
         if (this.debug) {
-          console.log('[warp10-tiles-display-donut] _onDimensionsChanged', evt.detail.value, {
-            '--progressHeight': progressHeight.toString() + 'px',
-            '--progressWidth': progressWidth.toString() + 'px'
-          });
+          console.log('[warp10-tiles-display-donut] _onDimensionsChanged', this._dimensions)
         }
+        this.updateStyles({
+          '--donut-width': `${this._dimensions.width - 20}px`,
+          '--donut-height': `${this._dimensions.height - 20}px`
+        })
       }
     }
 
