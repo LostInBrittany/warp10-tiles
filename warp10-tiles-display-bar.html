@@ -14,10 +14,10 @@
 <link rel="import" href="./warp10-tiles-engine.html">
 <link rel="import" href="./warp10-tiles-style.html">
 
-<link rel="import" href="../warp10-quantumviz/warp10-display-c3-chart.html">
+<link rel="import" href="../warp10-quantumviz/warp10-display-c3-bar-chart.html">
 
 
-<dom-module id="warp10-tiles-display-sparkline">
+<dom-module id="warp10-tiles-display-bar">
 
   <template>
 
@@ -72,7 +72,7 @@
         font-size: 0.80rem;
       }
 
-      warp10-display-chart {
+      warp10-display-bar-chart {
         width: var(--chart-width, 100%);
         height: var(--chart-height, 100%);
       }
@@ -148,7 +148,7 @@
         on-useful-dimensions-changed="_onDimensionsChanged"
         debug="[[debug]]">
       <div id="value" slot="value">
-        <warp10-display-chart
+        <warp10-display-bar-chart
             id="warp10-display-chart" value-bounds="{{valueBounds}}"
             data="[[data]]"
             line-width="0.75"
@@ -160,7 +160,7 @@
             y-lower-bound="[[yLowerBound]]"
             y-upper-bound="[[yUpperBound]]"
             on-mouseenter="_mouseEnter"
-            on-mouseleave="_mouseLeave"></warp10-display-chart>
+            on-mouseleave="_mouseLeave"></warp10-display-bar-chart>
       </div>
     </warp10-tiles-engine>
     <div class="value-bounds" hidden="{{_hideValueBounds}}">
@@ -213,10 +213,10 @@
   <script>
 
     // Extend Polymer.Element base class
-    class Warp10TilesDisplaySparkline extends Warp10TilesMixin(Polymer.Element) {
+    class Warp10TilesDisplayBar extends Warp10TilesMixin(Polymer.Element) {
 
       static get is() {
-        return 'warp10-tiles-display-sparkline'
+        return 'warp10-tiles-display-bar'
       }
 
       static get properties() {
@@ -284,7 +284,7 @@
         super.connectedCallback();
         this._isAttached = true;
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] connectedCallback');
+          console.log('[warp10-tiles-display-bar] connectedCallback');
         }
       }
 
@@ -296,7 +296,7 @@
 
       _hasNLines(currentValues, n) {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _hasNLines', currentValues)
+          console.log('[warp10-tiles-display-bar] _hasNLines', currentValues)
         }
         if (!currentValues || !currentValues.yValues) {
           return false;
@@ -306,7 +306,7 @@
 
       _hasMoreThanNLines(currentValues, n) {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _hasMoreThanNLines', currentValues)
+          console.log('[warp10-tiles-display-bar] _hasMoreThanNLines', currentValues)
         }
         if (!currentValues || !currentValues.yValues) {
           return false;
@@ -357,7 +357,7 @@
         }
         let ts = currentValues.xValue;
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _getDate', ts)
+          console.log('[warp10-tiles-display-bar] _getDate', ts)
         }
         return moment.tz(ts, this.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
         //     return d3.time.format('%Y-%m-%d %H:%M:%S.%L')(new Date(ts))
@@ -372,7 +372,7 @@
           label = "Line " + i;
         }
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _getName', label)
+          console.log('[warp10-tiles-display-bar] _getName', label)
         }
         return label;
       }
@@ -383,7 +383,7 @@
         }
         let color = currentValues.yValues[i].color;
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _getColor', color, currentValues)
+          console.log('[warp10-tiles-display-bar] _getColor', color, currentValues)
         }
         return color;
       }
@@ -463,7 +463,7 @@
       _onDimensionsChanged(evt) {
         this._dimensions = evt.detail.value;
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _onDimensionsChanged', this._dimensions)
+          console.log('[warp10-tiles-display-bar] _onDimensionsChanged', this._dimensions)
         }
         this.updateStyles({
           '--chart-width': `${this._dimensions.width - 20}px`,
@@ -489,28 +489,28 @@
 
       _openValueBounds() {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _openValueBounds')
+          console.log('[warp10-tiles-display-bar] _openValueBounds')
         }
         this._hideValueBounds = false;
       }
 
       _initOpenValueBounds() {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _initOpenValueBounds')
+          console.log('[warp10-tiles-display-bar] _initOpenValueBounds')
         }
         this.openTimeout = setTimeout(this._openValueBounds.bind(this), this._hoverDelay);
       }
 
       _cancelOpenValueBounds() {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _cancelOpenValueBounds')
+          console.log('[warp10-tiles-display-bar] _cancelOpenValueBounds')
         }
         clearTimeout(this.openTimeout);
       }
 
       _closeValueBounds() {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _closeValueBounds')
+          console.log('[warp10-tiles-display-bar] _closeValueBounds')
         }
         this._hideValueBounds = true;
       }
@@ -525,13 +525,13 @@
 
       _onCurrentValuesChange(currentValues) {
         if (this.debug) {
-          console.log('[warp10-tiles-display-sparkline] _onCurrentValuesChange', currentValues)
+          console.log('[warp10-tiles-display-bar] _onCurrentValuesChange', currentValues)
         }
       }
     }
 
     // Register custom element definition using standard platform API
-    customElements.define(Warp10TilesDisplaySparkline.is, Warp10TilesDisplaySparkline);
+    customElements.define(Warp10TilesDisplayBar.is, Warp10TilesDisplayBar);
   </script>
 
 </dom-module>
