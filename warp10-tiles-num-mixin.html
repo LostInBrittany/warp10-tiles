@@ -8,9 +8,9 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <script>
+  /* eslint no-unused-vars: "off" */
   // Mixing grouping features common to all Warp 10 Tiles
-  const Warp10TilesNumMixin = superclass => class extends superclass {
-
+  const Warp10TilesNumMixin = (superclass) => class extends superclass {
     static get properties() {
       return {
         /**
@@ -18,14 +18,14 @@
          */
         data: {
           type: Number,
-          value: 0
+          value: 0,
         },
         /**
          * The number of decimal digits to show, default all
          */
         precision: {
           type: Number,
-          value: -1
+          value: -1,
         },
         usefulDimensions: {
           type: Object,
@@ -35,26 +35,26 @@
          */
         debug: {
           type: Boolean,
-          value: false
+          value: false,
         },
         _displayValue: {
           type: String,
-          computed: "_getDisplayValue(data, precision)",
+          computed: '_getDisplayValue(data, precision)',
         },
         _dimensions: {
           type: Object,
         },
         _isAttached: {
           type: Boolean,
-          value: false
+          value: false,
         },
-      }
+      };
     }
 
     static get observers() {
       return [
-        "_textWidth(_displayValue, _isAttached, _dimensions)"
-      ]
+        '_textWidth(_displayValue, _isAttached, _dimensions)',
+      ];
     }
 
 
@@ -76,9 +76,9 @@
         data = Math.floor(data * Math.pow(10, precision)) / Math.pow(10, precision);
       }
       let dataElements = data.toString().split('.');
-      let dataAsString = dataElements[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      let dataAsString = dataElements[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
       if (dataElements.length > 1) {
-        dataAsString += "." + dataElements[1];
+        dataAsString += '.' + dataElements[1];
       }
       if (this.debug) {
         console.log('[warp10-tiles-num-mixin] _getDisplayValue', dataAsString);
@@ -99,11 +99,11 @@
         console.debug(`[warp10-tiles-num-mixin] _textWidth - value: ${this._displayValue}, clientWidth: ${this.$.value.clientWidth}, widget width: ${this._dimensions.width}`);
       }
       if (this.$.value.clientWidth >= this._dimensions.width) {
-        let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace("px", ""));
-        let newFontSize = currentFontSize * 0.9 + "px";
+        let currentFontSize = parseFloat(getComputedStyle(this.$.value).fontSize.replace('px', ''));
+        let newFontSize = currentFontSize * 0.9 + 'px';
         this.$.value.style.fontSize = newFontSize;
         if (this.debug) {
-          console.debug("[warp10-tiles-num-mixin] _textWidth - value.style", newFontSize);
+          console.debug('[warp10-tiles-num-mixin] _textWidth - value.style', newFontSize);
         }
         this._textWidth();
       }
@@ -115,10 +115,9 @@
 
     _onDimensionsChange(evt) {
       if (this.debug) {
-        console.debug("[warp10-tiles-num-mixin] _onDimensionsChange", evt.detail.value);
+        console.debug('[warp10-tiles-num-mixin] _onDimensionsChange', evt.detail.value);
       }
       this._dimensions = evt.detail.value;
     }
-
-  }
+  };
 </script>
